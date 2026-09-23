@@ -2,6 +2,124 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.8](https://github.com/descope/descope-js/compare/react-sdk-3.3.7...react-sdk-3.3.8) (2026-09-23)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.7.4`
+* `tenant-profile-widget` updated to version `0.10.4`
+* `user-management-widget` updated to version `0.20.4`
+* `user-profile-widget` updated to version `0.19.4`
+* `web-component` updated to version `4.4.3`
+## [3.3.7](https://github.com/descope/descope-js/compare/react-sdk-3.3.6...react-sdk-3.3.7) (2026-09-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.6`
+* `applications-portal-widget` updated to version `0.9.6`
+* `audit-management-widget` updated to version `0.9.6`
+* `outbound-applications-widget` updated to version `0.7.3`
+* `role-management-widget` updated to version `0.10.6`
+* `tenant-profile-widget` updated to version `0.10.3`
+* `user-management-widget` updated to version `0.20.3`
+* `user-profile-widget` updated to version `0.19.3`
+## [3.3.6](https://github.com/descope/descope-js/compare/react-sdk-3.3.5...react-sdk-3.3.6) (2026-09-17)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.5`
+* `applications-portal-widget` updated to version `0.9.5`
+* `audit-management-widget` updated to version `0.9.5`
+* `core-js-sdk` updated to version `2.73.0`
+* `outbound-applications-widget` updated to version `0.7.2`
+* `role-management-widget` updated to version `0.10.5`
+* `tenant-profile-widget` updated to version `0.10.2`
+* `user-management-widget` updated to version `0.20.2`
+* `user-profile-widget` updated to version `0.19.2`
+* `web-component` updated to version `4.4.2`
+* `web-js-sdk` updated to version `1.53.2`
+## [3.3.5](https://github.com/descope/descope-js/compare/react-sdk-3.3.4...react-sdk-3.3.5) (2026-09-17)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.7.1`
+* `tenant-profile-widget` updated to version `0.10.1`
+* `user-management-widget` updated to version `0.20.1`
+* `user-profile-widget` updated to version `0.19.1`
+* `web-component` updated to version `4.4.1`
+## [3.3.4](https://github.com/descope/descope-js/compare/react-sdk-3.3.3...react-sdk-3.3.4) (2026-09-16)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.4`
+* `applications-portal-widget` updated to version `0.9.4`
+* `audit-management-widget` updated to version `0.9.4`
+* `core-js-sdk` updated to version `2.72.0`
+* `outbound-applications-widget` updated to version `0.7.0`
+* `role-management-widget` updated to version `0.10.4`
+* `sdk-helpers` updated to version `0.10.0`
+* `tenant-profile-widget` updated to version `0.10.0`
+* `user-management-widget` updated to version `0.20.0`
+* `user-profile-widget` updated to version `0.19.0`
+* `web-component` updated to version `4.4.0`
+* `web-js-sdk` updated to version `1.53.1`
+## [3.3.3](https://github.com/descope/descope-js/compare/react-sdk-3.3.2...react-sdk-3.3.3) (2026-09-11)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.6.4`
+* `tenant-profile-widget` updated to version `0.9.4`
+* `user-management-widget` updated to version `0.19.3`
+* `user-profile-widget` updated to version `0.18.4`
+* `web-component` updated to version `4.3.4`
+## [3.3.2](https://github.com/descope/descope-js/compare/react-sdk-3.3.1...react-sdk-3.3.2) (2026-09-10)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.3`
+* `applications-portal-widget` updated to version `0.9.3`
+* `audit-management-widget` updated to version `0.9.3`
+* `core-js-sdk` updated to version `2.71.0`
+* `outbound-applications-widget` updated to version `0.6.3`
+* `role-management-widget` updated to version `0.10.3`
+* `tenant-profile-widget` updated to version `0.9.3`
+* `user-management-widget` updated to version `0.19.2`
+* `user-profile-widget` updated to version `0.18.3`
+* `web-component` updated to version `4.3.3`
+* `web-js-sdk` updated to version `1.53.0`
+## [3.3.1](https://github.com/descope/descope-js/compare/react-sdk-3.3.0...react-sdk-3.3.1) (2026-09-08)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.2`
+* `applications-portal-widget` updated to version `0.9.2`
+* `audit-management-widget` updated to version `0.9.2`
+* `core-js-sdk` updated to version `2.70.1`
+* `outbound-applications-widget` updated to version `0.6.2`
+* `role-management-widget` updated to version `0.10.2`
+* `tenant-profile-widget` updated to version `0.9.2`
+* `user-management-widget` updated to version `0.19.1`
+* `user-profile-widget` updated to version `0.18.2`
+* `web-component` updated to version `4.3.2`
+* `web-js-sdk` updated to version `1.52.1`
+## [3.3.0](https://github.com/descope/descope-js/compare/react-sdk-3.2.0...react-sdk-3.3.0) (2026-09-07)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.1`
+* `applications-portal-widget` updated to version `0.9.1`
+* `audit-management-widget` updated to version `0.9.1`
+* `outbound-applications-widget` updated to version `0.6.1`
+* `role-management-widget` updated to version `0.10.1`
+* `tenant-profile-widget` updated to version `0.9.1`
+* `user-management-widget` updated to version `0.19.0`
+* `user-profile-widget` updated to version `0.18.1`
+* `web-component` updated to version `4.3.1`
+
+### Features
+
+* **react-sdk:** support Preact via preact/compat ([#1478](https://github.com/descope/descope-js/issues/1478)) ([c3fa1ee](https://github.com/descope/descope-js/commit/c3fa1ee9b38b48699fde507fc2797312a94513fe))
+
 ## [3.2.0](https://github.com/descope/descope-js/compare/react-sdk-3.1.0...react-sdk-3.2.0) (2026-08-24)
 
 ### Dependency Updates

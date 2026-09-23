@@ -1,6 +1,6 @@
 {
   "name": "@descope/role-management-widget",
-  "version": "0.10.0",
+  "version": "0.10.6",
   "author": "Descope Team <info@descope.com>",
   "homepage": "https://github.com/descope/descope-js",
   "bugs": {
@@ -19,7 +19,7 @@
     "test:unit": "jest --silent",
     "test:e2e": "DESCOPE_PROJECT_ID=pid DESCOPE_TENANT=tid DESCOPE_WIDGET_ID=wid npm run build:app && npx playwright test",
     "test:e2e:ui": "npm run test:e2e -- --ui",
-    "lint": "eslint '+(src|test)/**/*.ts'"
+    "lint": "eslint '+(src|test|e2e)/**/*.ts'"
   },
   "license": "MIT",
   "repository": {

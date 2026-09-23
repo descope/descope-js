@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.10.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.9.0...sdk-helpers-0.10.0) (2026-09-16)
+
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+
 ## [0.9.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.8.0...sdk-helpers-0.9.0) (2026-06-28)
 
 

@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.27.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.26.1...sdk-mixins-0.27.0) (2026-09-16)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.17.0`
+* `sdk-helpers` updated to version `0.10.0`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+* **web-component:** track client-side form validation errors RELEASE ([#1482](https://github.com/descope/descope-js/issues/1482)) ([4846b6b](https://github.com/descope/descope-js/commit/4846b6b72a0e1a9e90e2dbe3600ac2d10d5ad675)), closes [descope/etc#15181](https://github.com/descope/etc/issues/15181) [descope/etc#15181](https://github.com/descope/etc/issues/15181)
+
+## [0.26.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.26.0...sdk-mixins-0.26.1) (2026-09-07)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.16.0`
+
+### Bug Fixes
+
+* **sdk-mixins:** guard process.env telemetry reads for the browser RELEASE ([#1469](https://github.com/descope/descope-js/issues/1469)) ([4c1a89c](https://github.com/descope/descope-js/commit/4c1a89cd3d4487f9c0a46154e695f150ff1a5338))
+
 ## [0.26.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.25.0...sdk-mixins-0.26.0) (2026-08-24)
 
 

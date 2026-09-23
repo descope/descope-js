@@ -4,7 +4,11 @@ import {
   MultiSsoConfigurationsDriver,
 } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import { loggerMixin, modalMixin, flowInputMixin } from '@descope/sdk-mixins';
+import {
+  loggerMixin,
+  flowModalMixin,
+  flowInputMixin,
+} from '@descope/sdk-mixins';
 import {
   getAdditionalSSOIds,
   getSSOConfigurations,
@@ -18,7 +22,7 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
     class InitMultiSsoConfigurationsMixinClass extends compose(
       flowSyncThemeMixin,
       stateManagementMixin,
-      modalMixin,
+      flowModalMixin,
       loggerMixin,
       initWidgetRootMixin,
       flowInputMixin,
@@ -34,7 +38,7 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
       #deleteFlow: FlowDriver;
 
       #initCreateModal() {
-        this.#createModal = this.createModal({
+        this.#createModal = this.createFlowModal({
           'data-id': 'multi-sso-create-modal',
         });
 
@@ -46,7 +50,7 @@ export const initMultiSsoConfigurationsMixin = createSingletonMixin(
       }
 
       #initDeleteModal() {
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'multi-sso-delete-modal',
         });
         this.#deleteFlow = new FlowDriver(

@@ -8,7 +8,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
@@ -24,7 +24,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       passwordUserAuthMethod: UserAuthMethodDriver;
@@ -36,7 +36,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
       #initModal() {
         if (!this.passwordUserAuthMethod.flowId) return;
 
-        this.#modal = this.createModal({
+        this.#modal = this.createFlowModal({
           'data-id': 'password',
           'close-on-outside-click': 'true',
         });

@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { AttributeTypeName } from '../../../api/types';
@@ -40,7 +40,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       // flow Id is key in all maps
@@ -133,7 +133,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         if (editFlowId) {
           // Only create modal and flow if they don't exist yet
           if (!this.#editModals[editFlowId]) {
-            this.#editModals[editFlowId] = this.createModal({
+            this.#editModals[editFlowId] = this.createFlowModal({
               'data-id': `edit-${customAttrName}`,
             });
 
@@ -163,7 +163,7 @@ export const initTenantCustomAttributesMixin = createSingletonMixin(
         if (deleteFlowId) {
           // Only create modal and flow if they don't exist yet
           if (!this.#deleteModals[deleteFlowId]) {
-            this.#deleteModals[deleteFlowId] = this.createModal({
+            this.#deleteModals[deleteFlowId] = this.createFlowModal({
               'data-id': `delete-${customAttrName}`,
             });
 

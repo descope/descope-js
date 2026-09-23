@@ -8,7 +8,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
@@ -25,7 +25,7 @@ export const initTenantSessionSettingsUserAuthMethodMixin =
         loggerMixin,
         initWidgetRootMixin,
         cookieConfigMixin,
-        modalMixin,
+        flowModalMixin,
         flowInputMixin,
       )(superclass) {
         TenantSessionSettingsUserAuthMethodDriver: UserAuthMethodDriver;
@@ -37,7 +37,7 @@ export const initTenantSessionSettingsUserAuthMethodMixin =
         #initModal() {
           if (!this.TenantSessionSettingsUserAuthMethodDriver.flowId) return;
 
-          this.#modal = this.createModal({
+          this.#modal = this.createFlowModal({
             'data-id': 'session-settings',
           });
           this.#flow = new FlowDriver(

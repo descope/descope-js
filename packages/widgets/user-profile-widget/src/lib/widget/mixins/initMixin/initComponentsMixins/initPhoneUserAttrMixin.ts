@@ -11,7 +11,7 @@ import {
 import {
   localeMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   cookieConfigMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
@@ -29,7 +29,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       phoneUserAttr: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.phoneUserAttr.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-phone',
           'close-on-outside-click': 'true',
         });
@@ -70,7 +70,7 @@ export const initPhoneUserAttrMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.phoneUserAttr.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-phone',
           'close-on-outside-click': 'true',
         });

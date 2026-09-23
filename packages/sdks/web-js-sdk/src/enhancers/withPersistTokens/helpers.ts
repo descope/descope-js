@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { BeforeRequestHook, WebJWTResponse } from '../../types';
 import {
   ID_TOKEN_KEY,
+  KNOWN_DEVICE_TOKEN_KEY,
   REFRESH_COOKIE_NAME_KEY,
   REFRESH_TOKEN_KEY,
   SESSION_TOKEN_KEY,
@@ -87,7 +88,7 @@ export const persistTokens = (
   refreshTokenViaCookie: boolean | CookieConfig = false,
 ): LastCookieOptions | undefined => {
   // persist refresh token
-  const { sessionJwt, refreshJwt, trustedDeviceJwt } = authInfo;
+  const { sessionJwt, refreshJwt, trustedDeviceJwt, knownDeviceJwt } = authInfo;
   let cookieOptions: LastCookieOptions | undefined;
 
   if (refreshJwt) {
@@ -184,6 +185,17 @@ export const persistTokens = (
     );
   }
 
+  // persist known device token (DKD) in local storage if returned in response body
+  // In cookie mode, backend sets DKD as HttpOnly cookie (inaccessible to JS).
+  // Always persisted regardless of whether a DTD is also present - see beforeRequest for why
+  // only one of the two is actually sent on outgoing requests.
+  if (knownDeviceJwt) {
+    setLocalStorage(
+      `${storagePrefix}${KNOWN_DEVICE_TOKEN_KEY}`,
+      knownDeviceJwt,
+    );
+  }
+
   return cookieOptions;
 };
 
@@ -225,6 +237,13 @@ export function getTrustedDeviceToken(prefix: string = ''): string {
   return getLocalStorage(`${prefix}${TRUSTED_DEVICE_TOKEN_KEY}`) || '';
 }
 
+/**
+ * Return the known device token (DKD) from localStorage.
+ */
+export function getKnownDeviceToken(prefix: string = ''): string {
+  return getLocalStorage(`${prefix}${KNOWN_DEVICE_TOKEN_KEY}`) || '';
+}
+
 /** Return the server-returned refresh cookie name from localStorage, if available */
 export function getStoredRefreshCookieName(prefix: string = ''): string | null {
   return getLocalStorage(`${prefix}${REFRESH_COOKIE_NAME_KEY}`);
@@ -232,7 +251,8 @@ export function getStoredRefreshCookieName(prefix: string = ''): string | null {
 
 /** Remove auth tokens from localStorage (refresh JWT, session JWT, ID token, server-returned refresh cookie name)
  * and clear the corresponding cookies if configured.
- * Note: DTD (Trusted Device Token) is NOT removed as it should stay after logging out and outlive these tokens
+ * Note: DTD (Trusted Device Token) and DKD (Known Device Token) are NOT removed, as both should
+ * stay after logging out and outlive these tokens
  */
 export function clearTokens(
   prefix: string = '',
@@ -280,6 +300,14 @@ export const beforeRequest =
       updatedConfig.headers = {
         ...(updatedConfig.headers || {}),
         'x-descope-trusted-device-token': dtd,
+      };
+    }
+
+    const dkd = getKnownDeviceToken(prefix);
+    if (dkd) {
+      updatedConfig.headers = {
+        ...(updatedConfig.headers || {}),
+        'x-descope-known-device-token': dkd,
       };
     }
 

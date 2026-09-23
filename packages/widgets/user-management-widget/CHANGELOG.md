@@ -2,6 +2,75 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.20.4](https://github.com/descope/descope-js/compare/user-management-widget-0.20.3...user-management-widget-0.20.4) (2026-09-23)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.3`
+## [0.20.3](https://github.com/descope/descope-js/compare/user-management-widget-0.20.2...user-management-widget-0.20.3) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
+## [0.20.2](https://github.com/descope/descope-js/compare/user-management-widget-0.20.1...user-management-widget-0.20.2) (2026-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.2`
+* `web-component` updated to version `4.4.2`
+## [0.20.1](https://github.com/descope/descope-js/compare/user-management-widget-0.20.0...user-management-widget-0.20.1) (2026-09-17)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.1`
+## [0.20.0](https://github.com/descope/descope-js/compare/user-management-widget-0.19.3...user-management-widget-0.20.0) (2026-09-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.1`
+* `web-component` updated to version `4.4.0`
+* `sdk-helpers` updated to version `0.10.0`
+* `sdk-mixins` updated to version `0.27.0`
+* `sdk-component-drivers` updated to version `0.17.0`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+
+## [0.19.3](https://github.com/descope/descope-js/compare/user-management-widget-0.19.2...user-management-widget-0.19.3) (2026-09-11)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.3.4`
+## [0.19.2](https://github.com/descope/descope-js/compare/user-management-widget-0.19.1...user-management-widget-0.19.2) (2026-09-10)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.0`
+* `web-component` updated to version `4.3.3`
+## [0.19.1](https://github.com/descope/descope-js/compare/user-management-widget-0.19.0...user-management-widget-0.19.1) (2026-09-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.52.1`
+* `web-component` updated to version `4.3.2`
+## [0.19.0](https://github.com/descope/descope-js/compare/user-management-widget-0.18.0...user-management-widget-0.19.0) (2026-09-07)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.3.1`
+* `sdk-mixins` updated to version `0.26.1`
+* `sdk-component-drivers` updated to version `0.16.0`
+
+### Features
+
+* **user-management-widget:** show role descriptions in roles selector ([#1476](https://github.com/descope/descope-js/issues/1476)) ([70b7232](https://github.com/descope/descope-js/commit/70b72322229668aac5467c8a509288a34c1c2de6)), closes [descope/etc#18131](https://github.com/descope/etc/issues/18131)
+
+
+### Bug Fixes
+
+* **user-management-widget:** dedupe re-invited user in the users table RELEASE ([#1480](https://github.com/descope/descope-js/issues/1480)) ([bf6ea0b](https://github.com/descope/descope-js/commit/bf6ea0b1b0d43778ba224b35759d2b91d18901ac)), closes [descope/etc#17997](https://github.com/descope/etc/issues/17997)
+
 ## [0.18.0](https://github.com/descope/descope-js/compare/user-management-widget-0.17.2...user-management-widget-0.18.0) (2026-08-24)
 
 ### Dependency Updates

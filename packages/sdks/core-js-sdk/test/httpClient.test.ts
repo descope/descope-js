@@ -707,6 +707,114 @@ describe('createFetchLogger', () => {
     });
   });
 
+  describe('transformResponse with prototype-accessor responses', () => {
+    // Unlike the plain-object mocks above, a spec-compliant `Response` keeps
+    // `ok`, `status` and `headers` on the prototype.
+    class ProtoAccessorResponse {
+      constructor(
+        private body: string,
+        private code: number,
+        private setCookie = '',
+      ) {}
+
+      get ok() {
+        return this.code >= 200 && this.code < 300;
+      }
+
+      get status() {
+        return this.code;
+      }
+
+      get statusText() {
+        return this.ok ? 'OK' : 'Bad Request';
+      }
+
+      get headers() {
+        return new Headers(
+          this.setCookie ? { 'set-cookie': this.setCookie } : {},
+        );
+      }
+
+      text() {
+        return Promise.resolve(this.body);
+      }
+    }
+
+    it('should keep ok, status and headers on a 2xx response', async () => {
+      mockFetch.mockReturnValue(
+        new ProtoAccessorResponse(
+          JSON.stringify({ test: 123 }),
+          200,
+          'DSR=123, DS=456',
+        ),
+      );
+
+      const res = await hookedHttpClient.post('1/2/3', {});
+
+      expect(res.ok).toBe(true);
+      expect(res.status).toBe(200);
+      expect(res.headers.get('set-cookie')).toBe('DSR=123, DS=456');
+      expect(await res.json()).toEqual({
+        test: 123,
+        refreshJwt: '123',
+        sessionJwt: '456',
+      });
+    });
+
+    it('should keep ok and status on a non-2xx response', async () => {
+      mockFetch.mockReturnValue(
+        new ProtoAccessorResponse(
+          JSON.stringify({ errorCode: 'E011002' }),
+          400,
+        ),
+      );
+
+      const res = await hookedHttpClient.post('1/2/3', {});
+
+      expect(res.ok).toBe(false);
+      expect(res.status).toBe(400);
+      expect(await res.json()).toEqual({ errorCode: 'E011002' });
+    });
+
+    it('should keep the transformed json when the response is cloned', async () => {
+      mockFetch.mockReturnValue(
+        new ProtoAccessorResponse(JSON.stringify({ test: 123 }), 200, 'DS=456'),
+      );
+
+      const res = await hookedHttpClient.post('1/2/3', {});
+      const clone = res.clone();
+
+      expect(clone.ok).toBe(true);
+      expect(clone.status).toBe(200);
+      expect(await clone.json()).toEqual({ test: 123, sessionJwt: '456' });
+    });
+
+    it('should let a hook mutate the response without touching the original', async () => {
+      const original = new ProtoAccessorResponse(
+        JSON.stringify({ test: 123 }),
+        200,
+      );
+      mockFetch.mockReturnValue(original);
+
+      const mutatingClient = createHttpClient({
+        baseUrl: 'http://descope.com',
+        projectId,
+        hooks: {
+          transformResponse: async (response: ExtendedResponse) => {
+            (response as any).extra = 'added';
+            return response;
+          },
+        },
+      });
+
+      const res = await mutatingClient.post('1/2/3', {});
+
+      expect((res as any).extra).toBe('added');
+      expect((original as any).extra).toBeUndefined();
+      expect(res.ok).toBe(true);
+    });
+  });
+
   describe('retry functionality', () => {
     let logger: any;
     let fetch: jest.Mock;
@@ -987,6 +1095,85 @@ describe('createFetchLogger', () => {
       expect(await response.text()).toBe('Error 4');
       expect(response.retries).toBe(3);
     });
+
+    it('should not retry when the request opts out', async () => {
+      // Callers that run their own bounded retry (best-effort telemetry) opt
+      // out, so a single failure is not multiplied by two stacked policies.
+      fetch.mockResolvedValue({
+        ok: false,
+        text: () => 'Error',
+        url: 'http://descope.com/',
+        headers: new Headers({ header: 'header' }),
+        status: 503,
+        statusText: 'Service Unavailable',
+      });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'POST',
+        headers: new Headers({ test: '123' }),
+        disableRetry: true,
+      } as any);
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      // One attempt only, where the same 503 would otherwise cost four.
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(503);
+      expect(response.retries).toBeUndefined();
+    });
+
+    it.each(['get', 'delete'] as const)(
+      'should honour disableRetry on %s',
+      async (verb) => {
+        // The option is advertised on every verb's config, so every verb has to
+        // forward it - otherwise it silently does nothing.
+        fetch.mockResolvedValue({
+          ok: false,
+          text: () => 'Error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        });
+
+        const client = createHttpClient({
+          baseUrl: 'http://descope.com',
+          projectId,
+          fetch,
+        }) as any;
+        const promise = client[verb]('/path', { disableRetry: true });
+        await jest.runAllTimersAsync();
+        await promise;
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it.each(['patch', 'put'] as const)(
+      'should honour disableRetry on %s',
+      async (verb) => {
+        fetch.mockResolvedValue({
+          ok: false,
+          text: () => 'Error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        });
+
+        const client = createHttpClient({
+          baseUrl: 'http://descope.com',
+          projectId,
+          fetch,
+        }) as any;
+        const promise = client[verb]('/path', {}, { disableRetry: true });
+        await jest.runAllTimersAsync();
+        await promise;
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+      },
+    );
 
     it('should use correct delays: 100ms for first retry, 5000ms for subsequent retries', async () => {
       fetch

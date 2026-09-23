@@ -2,6 +2,23 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.16.0...sdk-component-drivers-0.17.0) (2026-09-16)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.10.0`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+
+## [0.16.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.15.0...sdk-component-drivers-0.16.0) (2026-09-07)
+
+
+### Features
+
+* **user-management-widget:** show role descriptions in roles selector ([#1476](https://github.com/descope/descope-js/issues/1476)) ([70b7232](https://github.com/descope/descope-js/commit/70b72322229668aac5467c8a509288a34c1c2de6)), closes [descope/etc#18131](https://github.com/descope/etc/issues/18131)
+
 ## [0.15.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.14.1...sdk-component-drivers-0.15.0) (2026-08-10)
 
 

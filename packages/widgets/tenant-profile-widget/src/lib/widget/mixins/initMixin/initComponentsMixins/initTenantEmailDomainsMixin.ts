@@ -12,7 +12,7 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
 import { getTenantEmailDomains } from '../../../state/selectors';
@@ -29,7 +29,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      modalMixin,
+      flowModalMixin,
       flowInputMixin,
     )(superclass) {
       tenantEmailDomainsDriver: UserAttributeDriver;
@@ -45,7 +45,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
       #initEditModal() {
         if (!this.tenantEmailDomainsDriver.editFlowId) return;
 
-        this.#editModal = this.createModal({
+        this.#editModal = this.createFlowModal({
           'data-id': 'edit-tenant-email-domains',
         });
         this.#editFlow = new FlowDriver(
@@ -76,7 +76,7 @@ export const initTenantEmailDomainsMixin = createSingletonMixin(
       #initDeleteModal() {
         if (!this.tenantEmailDomainsDriver.deleteFlowId) return;
 
-        this.#deleteModal = this.createModal({
+        this.#deleteModal = this.createFlowModal({
           'data-id': 'delete-tenant-email-domains',
         });
         this.#deleteFlow = new FlowDriver(

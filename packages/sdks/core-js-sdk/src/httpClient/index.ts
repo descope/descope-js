@@ -5,6 +5,7 @@ import {
   AfterRequest,
   BeforeRequest,
   CreateHttpClientConfig,
+  ExtendedResponse,
   HttpClient,
   HTTPMethods,
   MultipleHooks,
@@ -129,7 +130,16 @@ const createHttpClient = ({
       ? hooks.beforeRequest(config)
       : config;
 
-    const { path, body, headers, queryParams, method, token } = requestConfig;
+    const {
+      path,
+      body,
+      headers,
+      queryParams,
+      method,
+      token,
+      keepalive,
+      disableRetry,
+    } = requestConfig;
 
     const serializedBody = serializeBody(body);
     const requestInit: RequestInit = {
@@ -142,6 +152,10 @@ const createHttpClient = ({
       ),
       method,
       body: serializedBody,
+      // only set when asked - fetch treats keepalive:false as a real value
+      ...(keepalive ? { keepalive: true } : {}),
+      // read back by fetchWithRetries; not a standard RequestInit field
+      ...(disableRetry ? { disableRetry: true } : {}),
     };
 
     // On edge runtimes like Cloudflare, the fetch implementation does not support credentials
@@ -163,13 +177,29 @@ const createHttpClient = ({
     if (hooks?.transformResponse) {
       const json = await res.json();
       const cookies = transformSetCookie(res.headers?.get('set-cookie') || '');
-      const mutableResponse = {
-        ...res,
+      // Proxy rather than shallow-copy: `{ ...res }` keeps own enumerable
+      // properties only, dropping `ok`/`status` when they are prototype
+      // accessors.
+      const overrides = Object.assign(Object.create(null), {
         json: () => Promise.resolve(json),
         cookies,
-      };
+      });
+      const mutableResponse = new Proxy(res, {
+        get: (target, prop) => {
+          if (prop in overrides) return overrides[prop];
+          const value = target[prop];
+          // bind so the real response stays the receiver
+          return typeof value === 'function' ? value.bind(target) : value;
+        },
+        // hook writes land here - accessors on the response are read-only
+        set: (_target, prop, value) => {
+          overrides[prop] = value;
+          return true;
+        },
+        has: (target, prop) => prop in overrides || prop in target,
+      }) as ExtendedResponse;
       // we want to make sure cloning the response will keep the transformed json data
-      mutableResponse.clone = () => mutableResponse;
+      overrides.clone = () => mutableResponse;
       return hooks.transformResponse(mutableResponse);
     }
 
@@ -177,7 +207,10 @@ const createHttpClient = ({
   };
 
   return {
-    get: (path: string, { headers, queryParams, token } = {}) =>
+    get: (
+      path: string,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -185,8 +218,14 @@ const createHttpClient = ({
         body: undefined,
         method: HTTPMethods.get,
         token,
+        keepalive,
+        disableRetry,
       }),
-    post: (path, body, { headers, queryParams, token } = {}) =>
+    post: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -194,8 +233,14 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.post,
         token,
+        keepalive,
+        disableRetry,
       }),
-    patch: (path, body, { headers, queryParams, token } = {}) =>
+    patch: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -203,8 +248,14 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.patch,
         token,
+        keepalive,
+        disableRetry,
       }),
-    put: (path, body, { headers, queryParams, token } = {}) =>
+    put: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -212,8 +263,13 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.put,
         token,
+        keepalive,
+        disableRetry,
       }),
-    delete: (path, { headers, queryParams, token } = {}) =>
+    delete: (
+      path,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -221,6 +277,8 @@ const createHttpClient = ({
         body: undefined,
         method: HTTPMethods.delete,
         token,
+        keepalive,
+        disableRetry,
       }),
     hooks,
     buildUrl: (path, queryParams) => {

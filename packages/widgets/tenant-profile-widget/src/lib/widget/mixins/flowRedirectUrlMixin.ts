@@ -1,4 +1,3 @@
-import { getAdditionalSSOIds } from './../state/selectors';
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
@@ -6,10 +5,11 @@ import {
   cookieConfigMixin,
   initLifecycleMixin,
   loggerMixin,
-  modalMixin,
+  flowModalMixin,
   themeMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
+import { getAdditionalSSOIds } from '../state/selectors';
 import { getUrlParam, resetUrlParam } from './helpers';
 import { stateManagementMixin } from './stateManagementMixin';
 
@@ -20,7 +20,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
     class FlowRedirectUrlMixinClass extends compose(
       localeMixin,
       initLifecycleMixin,
-      modalMixin,
+      flowModalMixin,
       stateManagementMixin,
       cookieConfigMixin,
       loggerMixin,
@@ -39,7 +39,7 @@ export const flowRedirectUrlMixin = createSingletonMixin(
       }
 
       #createFlowRedirectModal(widgetFlow: string) {
-        const modal = this.createModal({ 'data-id': 'redirect-flow' });
+        const modal = this.createFlowModal({ 'data-id': 'redirect-flow' });
         modal.setContent(
           this.createFlowTemplate({
             flowId: widgetFlow,
