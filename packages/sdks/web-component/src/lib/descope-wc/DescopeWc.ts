@@ -2035,6 +2035,7 @@ class DescopeWc extends BaseDescopeWc {
 
   #prevPageShowListener: ((e: PageTransitionEvent) => void) | null = null;
 
+  // Returns a reset for the loading/disabled state, for the error path.
   #handleComponentsLoadingState(submitter: HTMLElement) {
     const enabledElements = Array.from(
       this.contentRootElement.querySelectorAll(
@@ -2051,6 +2052,14 @@ class DescopeWc extends BaseDescopeWc {
     // available.
     const screenClientScripts =
       this.flowState.current?.screenState?.clientScripts || [];
+
+    // Set in the click task - from the nextRequestStatus subscriber below they
+    // land a task late and a second submit slips through. #handleSubmit reads
+    // them back as its guard: the components only refuse a repeat via click(),
+    // and these live on the screen, so they also cover the gap after next()
+    // resolves, while the old screen is still mounted.
+    submitter.setAttribute('loading', 'true');
+    enabledElements.forEach((ele) => ele.setAttribute('disabled', 'true'));
 
     // reset the in-flight loading/disabled state set when the next request started
     const resetComponentsState = () => {
@@ -2138,14 +2147,10 @@ class DescopeWc extends BaseDescopeWc {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
+          // the loading/disabled attributes are already set, at click time
           this.addEventListener('popupclosed', restoreComponentsState, {
             once: true,
           });
-          // if the next request is loading, we want to set loading state on the submitter, and disable all other enabled elements
-          submitter.setAttribute('loading', 'true');
-          enabledElements.forEach((ele) =>
-            ele.setAttribute('disabled', 'true'),
-          );
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
           // If the flow completed successfully, no new screen will render to
@@ -2162,6 +2167,8 @@ class DescopeWc extends BaseDescopeWc {
         }
       },
     );
+
+    return resetComponentsState;
   }
 
   #updateExternalInputs() {
@@ -2205,35 +2212,50 @@ class DescopeWc extends BaseDescopeWc {
   #handleSubmit = leadingDebounce(
     async (submitter: HTMLElement, next: NextFn, screenId: string) => {
       if (
+        submitter.getAttribute('loading') === 'true' ||
+        submitter.getAttribute('disabled') === 'true'
+      ) {
+        this.loggerWrapper.debug('Submit already in flight, ignoring');
+        return;
+      }
+
+      if (
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
       ) {
         const submitterId = submitter?.getAttribute('id');
         this.#trackLastUsed(submitter, submitterId, screenId);
 
-        this.#handleComponentsLoadingState(submitter);
+        const resetComponentsState =
+          this.#handleComponentsLoadingState(submitter);
 
-        const formData = await this.#getFormData();
-        const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+        try {
+          const formData = await this.#getFormData();
+          const eleDescopeAttrs = getElementDescopeAttributes(submitter);
 
-        this.nextRequestStatus.update({ isLoading: true });
+          this.nextRequestStatus.update({ isLoading: true });
 
-        const actionArgs = {
-          ...eleDescopeAttrs,
-          ...formData,
-          // 'origin' is required to start webauthn. For now we'll add it to every request.
-          // When running in a native flow in a Android app the webauthn authentication
-          // is performed in the native app, so a custom origin needs to be injected
-          // into the webauthn request data.
-          origin: this.nativeOptions?.origin || window.location.origin,
-        };
+          const actionArgs = {
+            ...eleDescopeAttrs,
+            ...formData,
+            // 'origin' is required to start webauthn. For now we'll add it to every request.
+            // When running in a native flow in a Android app the webauthn authentication
+            // is performed in the native app, so a custom origin needs to be injected
+            // into the webauthn request data.
+            origin: this.nativeOptions?.origin || window.location.origin,
+          };
 
-        const res = await next(submitterId, actionArgs);
+          const res = await next(submitterId, actionArgs);
 
-        this.nextRequestStatus.update({ isLoading: false });
+          this.nextRequestStatus.update({ isLoading: false });
 
-        this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
-        this.storeCredentials(formData);
+          this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
+          this.storeCredentials(formData);
+        } catch (e) {
+          // no new screen will render, so clear the loading state here
+          resetComponentsState();
+          throw e;
+        }
       }
     },
   );

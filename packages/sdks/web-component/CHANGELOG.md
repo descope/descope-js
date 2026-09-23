@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.3](https://github.com/descope/descope-js/compare/web-component-4.4.2...web-component-4.4.3) (2026-09-23)
+
+
+### Bug Fixes
+
+* **web-component:** ignore repeat submits while a request is in flight RELEASE ([#1494](https://github.com/descope/descope-js/issues/1494)) ([256bf59](https://github.com/descope/descope-js/commit/256bf598643b06ad16b02696312761a87d8dd649)), closes [descope/etc#18674](https://github.com/descope/etc/issues/18674)
+
 ## [4.4.2](https://github.com/descope/descope-js/compare/web-component-4.4.1...web-component-4.4.2) (2026-09-17)
 
 ### Dependency Updates
