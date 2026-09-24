@@ -7,6 +7,54 @@ import { ExtendedResponse } from '../src/httpClient/types';
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
+// Used when REGIONS is unset. Point REGIONS at the list devops maintains: descope/etc#18332.
+const FALLBACK_REGIONS = [
+  'use1',
+  'euc1',
+  'euw2',
+  'aps1',
+  'aps2',
+  'cac1',
+  'sae1',
+];
+
+const regionsUnderTest = (): string[] => {
+  const raw = process.env.REGIONS;
+  if (raw === undefined) return FALLBACK_REGIONS;
+
+  if (!raw.trim()) {
+    throw new Error(
+      'REGIONS is set but empty; expected a JSON array of symbols or region objects',
+    );
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error(
+      `REGIONS must be a JSON array of symbols or region objects, got: ${raw}`,
+    );
+  }
+
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    throw new Error(`REGIONS must be a non-empty JSON array, got: ${raw}`);
+  }
+
+  return parsed.map((entry) => {
+    const symbol =
+      typeof entry === 'string'
+        ? entry
+        : (entry as { symbol?: string })?.symbol;
+    if (typeof symbol !== 'string' || !symbol) {
+      throw new Error(
+        `REGIONS entry is missing a region symbol: ${JSON.stringify(entry)}`,
+      );
+    }
+    return symbol;
+  });
+};
+
 const afterRequestHook = jest.fn();
 
 const projectId = '456';
@@ -464,6 +512,36 @@ describe('httpClient', () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       'https://api.descope.com/1/2/3',
+      expect.anything(),
+    );
+  });
+  it.each(regionsUnderTest())(
+    'should resolve the %s region from the project id',
+    (region) => {
+      const httpClient = createHttpClient({
+        baseUrl: DEFAULT_BASE_API_URL,
+        projectId: `P${region}2aAc4T2V93bddihGEx2Ryhc8e5Z`,
+      });
+
+      httpClient.get('1/2/3', { token: null });
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `https://api.${region}.descope.com/1/2/3`,
+        expect.anything(),
+      );
+    },
+  );
+
+  it('should resolve a region that does not exist', () => {
+    const httpClient = createHttpClient({
+      baseUrl: DEFAULT_BASE_API_URL,
+      projectId: 'Pzz992aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+
+    httpClient.get('1/2/3', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.zz99.descope.com/1/2/3',
       expect.anything(),
     );
   });
