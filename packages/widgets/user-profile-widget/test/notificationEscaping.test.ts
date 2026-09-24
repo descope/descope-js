@@ -77,20 +77,25 @@ describe('user-profile-widget notification escaping', () => {
     expect(content.querySelector('img')).toBeNull();
   });
 
-  // A whitespace-only message used to render an empty red notification, because
-  // '   ' is truthy and skipped the 'Error' default.
-  it('falls back to a default when the message is only blank characters', () => {
-    const reducer = createReducer(initialState, (builder) =>
-      selectTenant.reducer(builder),
-    );
-    const err = new Error('   ');
-    err.name = 'ApiError';
+  // This widget's withNotifications drops a falsy msg, so a blank message must
+  // still produce something. Both error shapes are pinned: `withErrorHandler`
+  // throws a plain Error (name 'Error'), which is the common path.
+  it.each([['Error'], ['ApiError']])(
+    'falls back to a default for a blank message on a %s',
+    (name) => {
+      const reducer = createReducer(initialState, (builder) =>
+        selectTenant.reducer(builder),
+      );
+      const err = new Error('   ');
+      err.name = name;
 
-    const state = reducer(
-      initialState,
-      selectTenant.action.rejected(err, 'req-id', 'tenant-1'),
-    );
+      const state = reducer(
+        initialState,
+        selectTenant.action.rejected(err, 'req-id', 'tenant-1'),
+      );
 
-    expect(state.notifications[0].msg).toBe('Error');
-  });
+      expect(state.notifications).toHaveLength(1);
+      expect(state.notifications[0].msg).toBe('Error');
+    },
+  );
 });

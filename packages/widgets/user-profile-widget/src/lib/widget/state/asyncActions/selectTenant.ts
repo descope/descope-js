@@ -58,15 +58,11 @@ const reducer = buildAsyncReducer(action)(
   },
   withRequestStatus((state: State) => state.selectTenant),
   withNotifications({
-    getErrorMsg: (action) => {
-      // trim so a whitespace-only message falls through to the 'Error' default
-      // below instead of rendering a blank notification
-      const errorMsg = escapeHtml(action.error?.message).trim();
-      if (action.error?.name === 'Error') {
-        return errorMsg;
-      }
-      return `${errorMsg || 'Error'}`;
-    },
+    // Always default. This widget's withNotifications drops a falsy msg, so a
+    // blank message would otherwise show no notification at all while the
+    // tenant selection silently reverts.
+    getErrorMsg: (action) =>
+      escapeHtml(action.error?.message).trim() || 'Error',
   }),
 );
 
