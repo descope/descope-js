@@ -8,7 +8,15 @@ const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
 // Used when REGIONS is unset. Point REGIONS at the list devops maintains: descope/etc#18332.
-const FALLBACK_REGIONS = ['use1', 'euc1', 'euw2', 'aps1', 'aps2', 'cac1', 'sae1'];
+const FALLBACK_REGIONS = [
+  'use1',
+  'euc1',
+  'euw2',
+  'aps1',
+  'aps2',
+  'cac1',
+  'sae1',
+];
 
 const regionsUnderTest = (): string[] => {
   const raw = process.env.REGIONS;
@@ -23,14 +31,22 @@ const regionsUnderTest = (): string[] => {
     );
   }
 
-  const symbols = (parsed as unknown[])
-    .map((r) => (typeof r === 'string' ? r : (r as { symbol?: string })?.symbol))
-    .filter((s): s is string => !!s);
-
-  if (symbols.length === 0) {
-    throw new Error(`REGIONS parsed but yielded no region symbols: ${raw}`);
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    throw new Error(`REGIONS must be a non-empty JSON array, got: ${raw}`);
   }
-  return symbols;
+
+  return parsed.map((entry) => {
+    const symbol =
+      typeof entry === 'string'
+        ? entry
+        : (entry as { symbol?: string })?.symbol;
+    if (typeof symbol !== 'string' || !symbol) {
+      throw new Error(
+        `REGIONS entry is missing a region symbol: ${JSON.stringify(entry)}`,
+      );
+    }
+    return symbol;
+  });
 };
 
 const afterRequestHook = jest.fn();

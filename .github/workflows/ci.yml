@@ -95,7 +95,7 @@ jobs:
       - name: Test
         run: pnpm run test
         env:
-          REGIONS: '["use1", "euc1", "euw2", "aps1", "aps2", "cac1", "sae1"]'
+          REGIONS: ${{ vars.DESCOPE_PROD_REGIONS }}
 
       - name: E2E
         run: pnpm nx affected --target test:e2e
