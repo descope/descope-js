@@ -247,6 +247,32 @@ describe('debugger', () => {
     );
   });
 
+  it('should render error text as text and never as markup', async () => {
+    const xssPayload = '<img src=x onerror=alert(1)>';
+
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        error: { code: '123', description: xssPayload, message: xssPayload },
+      }),
+    );
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" debug="true"></descope-wc>`;
+
+    // The payload survives as readable text...
+    await waitFor(
+      () =>
+        expect(
+          screen.getByShadowText(`[123]: ${xssPayload}`),
+        ).toBeInTheDocument(),
+      { timeout: 3000 },
+    );
+
+    // ...and the parser never built an element out of it.
+    const debuggerEle = document.getElementsByTagName('descope-debugger')[0];
+    expect(debuggerEle.shadowRoot.querySelector('img')).toBeNull();
+    expect(debuggerEle.shadowRoot.querySelector('script')).toBeNull();
+  });
+
   it('should collapse message when clicking on its title', async () => {
     startMock.mockReturnValue(
       generateSdkResponse({
