@@ -68,6 +68,8 @@ export type UserResponse = User & {
   picture?: string;
   roleNames?: string[];
   userTenants?: UserTenant[];
+  userFamilies?: UserFamily[];
+  dependent?: boolean;
   createdTime: number;
   TOTP: boolean;
   SAML: boolean;
@@ -103,6 +105,14 @@ export type UserTenant = {
   roleNames?: string[];
   permissions?: string[];
   tenantName: string;
+};
+
+/** A family association mapping */
+export type UserFamily = {
+  familyId: string;
+  roleNames?: string[];
+  permissions?: string[];
+  familyScopedAttributes?: Record<string, any>;
 };
 
 export type TemplateOptions = Record<string, string>; // for providing messaging template options (templates that are being sent via email / text message)
