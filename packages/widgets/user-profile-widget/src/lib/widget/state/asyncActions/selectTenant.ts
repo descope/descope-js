@@ -59,7 +59,9 @@ const reducer = buildAsyncReducer(action)(
   withRequestStatus((state: State) => state.selectTenant),
   withNotifications({
     getErrorMsg: (action) => {
-      const errorMsg = escapeHtml(action.error?.message);
+      // trim so a whitespace-only message falls through to the 'Error' default
+      // below instead of rendering a blank notification
+      const errorMsg = escapeHtml(action.error?.message).trim();
       if (action.error?.name === 'Error') {
         return errorMsg;
       }

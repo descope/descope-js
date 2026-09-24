@@ -26,6 +26,14 @@ describe('html helpers', () => {
     it('should leave text without markup untouched', () => {
       expect(escapeHtml('Failed to create user')).toBe('Failed to create user');
     });
+
+    it('should escape every special character in one mixed string', () => {
+      // The single-character cases above pass even with a bad replace order or
+      // a regex that stops after the first match. This one does not.
+      expect(escapeHtml(`a & b < c > d " e ' f`)).toBe(
+        'a &amp; b &lt; c &gt; d &quot; e &#39; f',
+      );
+    });
   });
 
   // The real proof: run the escaped value through the same sink the widgets
