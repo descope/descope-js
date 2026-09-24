@@ -64,13 +64,17 @@ export const withAutoRefresh =
 
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
-        // tab becomes visible and the session is expired, do a refresh
+        // tab becomes visible and the session is expired or about to expire, do a refresh
+        // the refresh timer is skipped while the document is hidden, so the session may be
+        // past its scheduled refresh time (within REFRESH_THRESHOLD of expiration) or already expired
         if (
           document.visibilityState === 'visible' &&
           sessionExpirationDate &&
-          new Date() > sessionExpirationDate
+          Date.now() > sessionExpirationDate.getTime() - REFRESH_THRESHOLD
         ) {
-          logger.debug('Expiration time passed, refreshing session');
+          logger.debug(
+            'Session is expired or about to expire, refreshing session',
+          );
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
