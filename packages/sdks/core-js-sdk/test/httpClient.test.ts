@@ -20,7 +20,13 @@ const FALLBACK_REGIONS = [
 
 const regionsUnderTest = (): string[] => {
   const raw = process.env.REGIONS;
-  if (!raw) return FALLBACK_REGIONS;
+  if (raw === undefined) return FALLBACK_REGIONS;
+
+  if (!raw.trim()) {
+    throw new Error(
+      'REGIONS is set but empty; expected a JSON array of symbols or region objects',
+    );
+  }
 
   let parsed: unknown;
   try {
