@@ -7,17 +7,9 @@ import { ExtendedResponse } from '../src/httpClient/types';
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
-// Production regions, used to check the SDK resolves each one's host. Only the
-// symbol matters here - it is the part that ends up in a project id and so in
-// the host the SDK derives.
+// Used when REGIONS is unset. Point REGIONS at the list devops maintains: descope/etc#18332.
 const FALLBACK_REGIONS = ['use1', 'euc1', 'euw2', 'aps1', 'aps2', 'cac1', 'sae1'];
 
-/**
- * Regions to check, from the REGIONS env var when CI sets one, else the list
- * above. Accepts a JSON array of either bare symbols or the region objects
- * consoleServiceRegions already uses, so whichever shape devops settles on
- * drops in without touching this file.
- */
 const regionsUnderTest = (): string[] => {
   const raw = process.env.REGIONS;
   if (!raw) return FALLBACK_REGIONS;
