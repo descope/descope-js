@@ -95,7 +95,6 @@ export default `
         full-width="true"
         data-create-flow-id="tenant-profile-create-sso-config"
         data-delete-flow-id="tenant-profile-delete-sso-config"
-        data-edit-flow-id="tenant-profile-edit-sso-config"
         label="Configurations"
         allow-create="true"
         allow-delete="true"
