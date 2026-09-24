@@ -16,4 +16,13 @@ describe('umd sdk', () => {
     expect(Descope['SESSION_TOKEN_KEY']).toBeDefined();
     expect(Descope['REFRESH_TOKEN_KEY']).toBeDefined();
   });
+
+  it('should export last user helpers', () => {
+    expect(Descope['getLastUserLoginId']).toBeInstanceOf(Function);
+    expect(Descope['getLastUserDisplayName']).toBeInstanceOf(Function);
+    expect(Descope['setLastUserLoginId']).toBeInstanceOf(Function);
+    expect(Descope['setLastUserDisplayName']).toBeInstanceOf(Function);
+    expect(Descope['removeLastUserLoginId']).toBeInstanceOf(Function);
+    expect(Descope['removeLastUserDisplayName']).toBeInstanceOf(Function);
+  });
 });
