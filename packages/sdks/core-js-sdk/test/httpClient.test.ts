@@ -7,7 +7,8 @@ import { ExtendedResponse } from '../src/httpClient/types';
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
-// Used when REGIONS is unset. Point REGIONS at the list devops maintains: descope/etc#18332.
+// Local runs only. CI sets REGIONS from the list devops generates:
+// https://imgs.descope.com/regions/regions.json (descope/etc#18332).
 const FALLBACK_REGIONS = [
   'use1',
   'euc1',

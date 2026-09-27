@@ -92,6 +92,15 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+      - name: Fetch production regions
+        # The region list devops generates daily (descope/etc#18332). A failed fetch fails the
+        # job on purpose: falling back to the embedded list would let a broken sync look green.
+        shell: bash
+        run: |
+          regions=$(curl --fail --silent --show-error --retry 3 --retry-all-errors \
+            https://imgs.descope.com/regions/regions.json | jq --compact-output --exit-status '.prod')
+          echo "REGIONS=$regions" >> "$GITHUB_ENV"
+
       - name: Test
         run: pnpm run test
 

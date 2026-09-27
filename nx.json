@@ -26,7 +26,12 @@
       "cache": true
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        { "env": "REGIONS" }
+      ],
       "dependsOn": ["^build"],
       "cache": true
     },
