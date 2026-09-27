@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.11](https://github.com/descope/descope-js/compare/angular-sdk-0.28.10...angular-sdk-0.28.11) (2026-09-27)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.7`
+* `audit-management-widget` updated to version `0.9.7`
+* `role-management-widget` updated to version `0.10.7`
+* `user-management-widget` updated to version `0.20.5`
+* `user-profile-widget` updated to version `0.19.5`
+* `tenant-profile-widget` updated to version `0.10.5`
+* `applications-portal-widget` updated to version `0.9.7`
+* `web-component` updated to version `4.4.4`
+* `web-js-sdk` updated to version `1.54.0`
+* `core-js-sdk` updated to version `2.74.0`
 ## [0.28.10](https://github.com/descope/descope-js/compare/angular-sdk-0.28.9...angular-sdk-0.28.10) (2026-09-23)
 
 ### Dependency Updates
