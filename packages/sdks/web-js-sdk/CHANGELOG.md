@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.54.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.53.2...web-js-sdk-1.54.0) (2026-09-27)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.74.0`
+
+### Features
+
+* **core-js-sdk:** add family fields to UserResponse ([#1498](https://github.com/descope/descope-js/issues/1498)) ([7e814cd](https://github.com/descope/descope-js/commit/7e814cdba88fbb5926880d919658424915f0f05c)), closes [descope/node-sdk#793](https://github.com/descope/node-sdk/issues/793)
+
 ## [1.53.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.53.1...web-js-sdk-1.53.2) (2026-09-17)
 
 ### Dependency Updates
