@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.20.5](https://github.com/descope/descope-js/compare/user-management-widget-0.20.4...user-management-widget-0.20.5) (2026-09-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.0`
+* `web-component` updated to version `4.4.4`
+* `sdk-helpers` updated to version `0.10.1`
+* `sdk-mixins` updated to version `0.27.1`
+* `sdk-component-drivers` updated to version `0.17.1`
+
+### Bug Fixes
+
+* **widgets:** escape API error text before it reaches innerHTML RELEASE ([#1496](https://github.com/descope/descope-js/issues/1496)) ([89d3c1d](https://github.com/descope/descope-js/commit/89d3c1d220f5125d7ffa88ddd4be63443a00c42f)), closes [descope/etc#18718](https://github.com/descope/etc/issues/18718) [#39](https://github.com/descope/descope-js/issues/39)
+
 ## [0.20.4](https://github.com/descope/descope-js/compare/user-management-widget-0.20.3...user-management-widget-0.20.4) (2026-09-23)
 
 ### Dependency Updates
