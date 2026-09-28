@@ -31,6 +31,8 @@ export type Tenant = AssociatedTenant & {
 export type TenantAdminLinkSSOResponse = {
   defaultLink: string;
   ssoIdToLink: Record<string, string>;
+  // Only the configurations that verify identity only appear here.
+  ssoIdToAuthenticationOnly?: Record<string, boolean>;
 };
 
 export type SsoConfiguration = {
@@ -39,6 +41,9 @@ export type SsoConfiguration = {
   authType?: string;
   isDefault?: boolean;
   link?: string;
+  // A login through this connection verifies identity and creates no user. Named for the component
+  // attribute it feeds, not for the API field it is read from (ssoIdToAuthenticationOnly).
+  authOnly?: boolean;
 };
 
 export type HttpClient = Sdk['httpClient'];
