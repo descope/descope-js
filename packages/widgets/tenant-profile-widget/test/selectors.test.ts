@@ -57,9 +57,16 @@ describe('getSSOConfigurations', () => {
 // reselect compares input-selector results by identity, so an absent map must come back as the same
 // object each time or the list recomputes on every unrelated store update.
 describe('getSSOConfigurations memoization', () => {
-  it('returns the same array when nothing it reads has changed', () => {
-    const state = buildState(undefined);
+  it('returns the same array across an unrelated store update', () => {
+    const before = buildState(undefined);
+    // An unrelated update hands the selector a new state object while every slice it reads keeps
+    // its identity. Passing the same object twice would only exercise reselect's argument cache
+    // and pass even when the input selector allocates.
+    const after = {
+      ...before,
+      me: { data: { userId: 'u-1' } },
+    } as unknown as State;
 
-    expect(getSSOConfigurations(state)).toBe(getSSOConfigurations(state));
+    expect(getSSOConfigurations(after)).toBe(getSSOConfigurations(before));
   });
 });

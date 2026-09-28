@@ -26,6 +26,7 @@ const EMPTY_AUTHENTICATION_ONLY: Record<string, boolean> = {};
 export const getTenantSSOIdToAuthenticationOnly = (state: State) =>
   state.tenantAdminLinkSSO.data.ssoIdToAuthenticationOnly ||
   EMPTY_AUTHENTICATION_ONLY;
+
 export const getTenantAdminLinkSSOError = (state: State) =>
   state.tenantAdminLinkSSO.error;
 
