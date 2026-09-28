@@ -32,12 +32,8 @@ describe('getSSOConfigurations', () => {
   it('marks only the connections the server reported', () => {
     const configs = getSSOConfigurations(buildState({ verify: true }));
 
-    expect(configs.find((c) => c.id === 'verify')?.authenticationOnly).toBe(
-      true,
-    );
-    expect(configs.find((c) => c.id === 'workforce')?.authenticationOnly).toBe(
-      false,
-    );
+    expect(configs.find((c) => c.id === 'verify')?.authOnly).toBe(true);
+    expect(configs.find((c) => c.id === 'workforce')?.authOnly).toBe(false);
   });
 
   // The default connection owns no entry in the wrapper map, so the server reports it under the
@@ -45,7 +41,7 @@ describe('getSSOConfigurations', () => {
   it('marks the default connection from the reserved id', () => {
     const configs = getSSOConfigurations(buildState({ default_ssoid: true }));
 
-    expect(configs.find((c) => c.isDefault)?.authenticationOnly).toBe(true);
+    expect(configs.find((c) => c.isDefault)?.authOnly).toBe(true);
   });
 
   // An older server does not send the map at all, and that must read as "not classified" rather
@@ -54,7 +50,7 @@ describe('getSSOConfigurations', () => {
     const configs = getSSOConfigurations(buildState(undefined));
 
     expect(configs).toHaveLength(3);
-    expect(configs.every((c) => c.authenticationOnly === false)).toBe(true);
+    expect(configs.every((c) => c.authOnly === false)).toBe(true);
   });
 });
 

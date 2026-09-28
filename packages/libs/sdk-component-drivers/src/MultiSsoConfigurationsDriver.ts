@@ -7,12 +7,12 @@ type Data = {
   isDefault?: boolean;
   link?: string;
   // A login through this connection verifies identity and creates no user.
-  authenticationOnly?: boolean;
+  authOnly?: boolean;
 }[];
 
 type DeleteDetail = { id: string; name: string };
 
-// `data[].authenticationOnly` marks a row as verifying identity only, which descope-multi-sso
+// `data[].authOnly` marks a row as verifying identity only, which descope-multi-sso
 // renders as a badge. Display only: the classification is set when the configuration is created,
 // through the Descoper's create flow, and is not editable from the widget.
 export class MultiSsoConfigurationsDriver extends BaseDriver {

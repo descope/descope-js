@@ -73,8 +73,7 @@ export const getSSOConfigurations = createSelector(
             authType: tenant.authType,
             isDefault: true,
             link: defaultLink,
-            authenticationOnly:
-              ssoIdToAuthenticationOnly[DEFAULT_SSO_ID] || false,
+            authOnly: ssoIdToAuthenticationOnly[DEFAULT_SSO_ID] || false,
           },
         ]
       : [];
@@ -85,7 +84,7 @@ export const getSSOConfigurations = createSelector(
         name,
         authType,
         link: ssoIdToLink[ssoId] || '',
-        authenticationOnly: ssoIdToAuthenticationOnly[ssoId] || false,
+        authOnly: ssoIdToAuthenticationOnly[ssoId] || false,
       }),
     );
 
