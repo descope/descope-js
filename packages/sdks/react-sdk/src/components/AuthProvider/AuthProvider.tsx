@@ -88,6 +88,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
   // if oidc config is enabled, we attempt to finish the login, so we start as loading
   const [isOidcLoading, setIsOidcLoading] = useState(!!oidcConfig);
+  // flips once when the first session fetch settles - unlike isSessionLoading, this change
+  // can't be lost if React batches the loading true/false updates into a single render
+  const [isSessionSettled, setIsSessionSettled] = useState(false);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -136,6 +139,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
         setIsOidcLoading(false);
         // We want that the session will fetched only once
         isSessionFetched.current = true;
+        setIsSessionSettled(true);
       });
     }
   }, []);
@@ -157,6 +161,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       requestAnimationFrame(() => {
         setTimeout(() => {
           setIsSessionLoading(false);
+          setIsSessionSettled(true);
         }, 0);
       });
     };
@@ -195,6 +200,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isSessionLoading,
       isOidcLoading,
       isSessionFetched: isSessionFetched.current,
+      isSessionSettled,
       projectId,
       baseUrl,
       baseStaticUrl,
@@ -220,6 +226,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isSessionLoading,
       isOidcLoading,
       isSessionFetched.current,
+      isSessionSettled,
       projectId,
       baseUrl,
       baseStaticUrl,

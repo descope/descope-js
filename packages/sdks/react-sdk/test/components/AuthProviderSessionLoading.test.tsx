@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createSdk } from '@descope/web-js-sdk';
-import { render, waitFor } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { AuthProvider, useSession, useUser } from '../../src';
 
@@ -50,6 +50,29 @@ describe('AuthProvider loading state on a rejected refresh / me', () => {
     await waitFor(() =>
       expect(getByTestId('session-loading').textContent).toBe('false'),
     );
+  });
+
+  // A heavy app can delay the render of isSessionLoading=true until after the refresh settles,
+  // so both updates land in one render and consumers never see the flag change
+  it('clears isSessionLoading when the loading true/false updates land in one render', async () => {
+    jest.useFakeTimers();
+    try {
+      let getByTestId: ReturnType<typeof render>['getByTestId'];
+      await act(async () => {
+        ({ getByTestId } = render(
+          <AuthProvider projectId="p1">
+            <SessionProbe />
+          </AuthProvider>,
+        ));
+        await Promise.resolve();
+        jest.runAllTimers();
+      });
+
+      expect(refresh).toHaveBeenCalled();
+      expect(getByTestId('session-loading').textContent).toBe('false');
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('clears isUserLoading when me rejects', async () => {
