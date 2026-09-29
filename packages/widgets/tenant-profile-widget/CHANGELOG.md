@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.10.5...tenant-profile-widget-0.11.0) (2026-09-29)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.5`
+* `sdk-mixins` updated to version `0.27.2`
+* `sdk-component-drivers` updated to version `0.18.0`
+
+### Features
+
+* **tenant-profile-widget:** show and edit the authentication-only classification ([#1495](https://github.com/descope/descope-js/issues/1495)) ([f5b9e61](https://github.com/descope/descope-js/commit/f5b9e61c3c0d68545da11493699c989d4e2dea7d)), closes [descope/etc#18650](https://github.com/descope/etc/issues/18650) [descope/backend#2713](https://github.com/descope/backend/issues/2713) [descope/web-components-ui#1108](https://github.com/descope/web-components-ui/issues/1108)
+
 ## [0.10.5](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.10.4...tenant-profile-widget-0.10.5) (2026-09-27)
 
 ### Dependency Updates
