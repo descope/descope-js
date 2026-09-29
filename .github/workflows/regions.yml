@@ -1,0 +1,50 @@
+name: Regions
+
+# Runs the core-js-sdk region tests against the region list devops generates daily
+# (descope/etc#18332). PR CI only runs them when nx marks core-js-sdk as affected, and a new
+# region arrives as a change in descope/deployment with no PR here, so this is what catches it.
+on:
+  schedule:
+    # After the daily regions sync in descope/deployment (00:00 UTC) and its Pages publish.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regions:
+    name: 🌍 Region resolution (core-js-sdk)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Use Latest Corepack
+        run: |
+          npm install -g corepack@latest
+          corepack enable
+          pnpm --version
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          cache: 'pnpm'
+          node-version-file: package.json
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.CI_NPM_READ_ORG }}
+
+      - name: Fetch production regions
+        # A failed fetch fails the job on purpose: falling back to the embedded list would let a
+        # broken sync look green.
+        shell: bash
+        run: |
+          regions=$(curl --fail --silent --show-error --connect-timeout 10 --max-time 30 --retry 3 --retry-all-errors \
+            https://imgs.descope.com/regions/regions.json | jq --compact-output --exit-status '.prod')
+          echo "REGIONS=$regions" >> "$GITHUB_ENV"
+
+      - name: Test
+        run: pnpm nx run core-js-sdk:test --skip-nx-cache
