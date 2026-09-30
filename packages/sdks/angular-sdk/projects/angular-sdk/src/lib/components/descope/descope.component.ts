@@ -72,6 +72,7 @@ const ELEMENT_NODE = 1;
         [attr.nonce]="nonceString"
         [attr.dismiss-screen-error-on-input]="dismissScreenErrorOnInput"
         [attr.popup-origin]="popupOrigin"
+        [attr.popup-opener-origins]="popupOpenerOrigins"
         [attr.form]="formString"
         [customStorage]="customStorage"
       >
@@ -153,6 +154,7 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
   @Input() styleId: string;
   @Input() themeOverride: OverrideThemes;
   @Input() popupOrigin: string;
+  @Input() popupOpenerOrigins: string;
 
   @Output() success: EventEmitter<CustomEvent> =
     new EventEmitter<CustomEvent>();

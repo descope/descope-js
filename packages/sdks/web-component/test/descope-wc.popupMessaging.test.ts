@@ -176,7 +176,7 @@ describe('web-component', () => {
       expect(instance.closed).toBe(true);
     });
 
-    it('notifyOpener uses postMessage fallback with window.name prefix', async () => {
+    it('notifyOpener does not postMessage to a cross-origin opener that is not allowed', async () => {
       fixtures.pageContent = '<div>Loaded popup test</div>';
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
       const wc: any = document.querySelector('descope-wc');
@@ -184,8 +184,103 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      // Set window.name pattern to trigger postMessage fallback
+      // whoever opens the popup controls window.name
+      window.name = 'descope-wc|https://attacker.example';
+
+      wc.flowState.update({
+        executionId: 'exec-untrusted',
+        isPopup: true,
+        code: undefined,
+        exchangeError: undefined,
+      });
+      wc.flowState.update({
+        executionId: 'exec-untrusted',
+        isPopup: true,
+        code: 'secret-code',
+        exchangeError: undefined,
+      });
+      await waitFor(
+        () =>
+          expect(global.BroadcastChannel).toHaveBeenCalledWith(
+            'exec-untrusted',
+          ),
+        {
+          timeout: 2000,
+        },
+      );
+      expect(window.opener.postMessage).not.toHaveBeenCalled();
+    });
+
+    it('notifyOpener does not postMessage when window.name carries a wildcard origin', async () => {
+      fixtures.pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-opener-origins="https://app.example"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      window.name = 'descope-wc|*';
+
+      wc.flowState.update({
+        executionId: 'exec-wildcard',
+        isPopup: true,
+        code: 'secret-code',
+        exchangeError: undefined,
+      });
+      await waitFor(
+        () =>
+          expect(global.BroadcastChannel).toHaveBeenCalledWith('exec-wildcard'),
+        {
+          timeout: 2000,
+        },
+      );
+      expect(window.opener.postMessage).not.toHaveBeenCalled();
+    });
+
+    it('notifyOpener uses postMessage to its own origin', async () => {
+      fixtures.pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      window.name = `descope-wc|${window.location.origin}`;
+
+      wc.flowState.update({
+        executionId: 'exec-same-origin',
+        isPopup: true,
+        code: 'codeSame',
+        exchangeError: undefined,
+      });
+      await waitFor(
+        () => expect(window.opener.postMessage).toHaveBeenCalled(),
+        {
+          timeout: 2000,
+        },
+      );
+      expect(window.opener.postMessage).toHaveBeenCalledWith(
+        {
+          action: 'code',
+          data: { code: 'codeSame', exchangeError: undefined },
+        },
+        window.location.origin,
+      );
+      expect(global.BroadcastChannel).not.toHaveBeenCalledWith(
+        'exec-same-origin',
+      );
+    });
+
+    it('notifyOpener uses postMessage fallback to an allowed cross-origin opener', async () => {
       const crossOrigin = 'https://cross-origin.example';
+      fixtures.pageContent = '<div>Loaded popup test</div>';
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-opener-origins="https://other.example, ${crossOrigin}"></descope-wc>`;
+      const wc: any = document.querySelector('descope-wc');
+      await waitFor(() => screen.getByShadowText('Loaded popup test'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // Set window.name pattern to trigger postMessage fallback
       window.name = `descope-wc|${crossOrigin}`;
 
       wc.flowState.update({
@@ -214,14 +309,14 @@ describe('web-component', () => {
     });
 
     it('notifyOpener handles postMessage errors gracefully', async () => {
+      const crossOrigin = 'https://other.example';
       fixtures.pageContent = '<div>Loaded popup test</div>';
-      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-opener-origins="${crossOrigin}"></descope-wc>`;
       const wc: any = document.querySelector('descope-wc');
       await waitFor(() => screen.getByShadowText('Loaded popup test'), {
         timeout: WAIT_TIMEOUT,
       });
 
-      const crossOrigin = 'https://other.example';
       window.name = `descope-wc|${crossOrigin}`;
       (window.opener.postMessage as jest.Mock).mockImplementation(() => {
         throw new Error('COOP blocked');

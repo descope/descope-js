@@ -190,6 +190,9 @@ export class AppComponent {
     Sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows.
     popupOrigin="https://auth.example.com"
 
+    Required on the popup redirect page for cross-origin OAuth popup flows: comma separated origins of the pages that open the popup, allowed to receive the OAuth result. The page's own origin is always allowed.
+    popupOpenerOrigins="https://app.example.com"
+
     Clear screen error message on user input.
     dismissScreenErrorOnInput=true
 

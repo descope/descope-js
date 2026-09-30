@@ -156,6 +156,8 @@ export type DescopeProps = {
   outboundAppId?: string;
   outboundAppScopes?: string[];
   popupOrigin?: string;
+  // comma separated origins allowed to receive the OAuth result when this page runs in a popup opened from another origin
+  popupOpenerOrigins?: string;
   errorTransformer?: (error: { text: string; type: string }) => string;
   // use to override screen's form inputs in flow execution
   form?: Record<string, any>;

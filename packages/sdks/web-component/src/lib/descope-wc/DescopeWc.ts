@@ -2431,21 +2431,51 @@ class DescopeWc extends BaseDescopeWc {
     return true;
   }
 
+  // window.name is set by whoever opened this window, so the origin it carries is only a claim.
+  // Returns the origin to post to only when it is this page's own origin or listed in popup-opener-origins.
+  #getTrustedOpenerOrigin(openerOrigin: string): string | undefined {
+    let origin: string;
+    try {
+      origin = new URL(openerOrigin).origin;
+    } catch {
+      return undefined;
+    }
+    if (origin === 'null') return undefined;
+    if (origin === window.location.origin) return origin;
+    const isAllowed = this.popupOpenerOrigins.some((allowedOrigin) => {
+      try {
+        return new URL(allowedOrigin).origin === origin;
+      } catch {
+        return false;
+      }
+    });
+    return isAllowed ? origin : undefined;
+  }
+
   // Notify opener with code/exchangeError using either BroadcastChannel or postMessage fallback
   #notifyOpener(executionId: string, code: string, exchangeError: string) {
     const [prefix, openerOrigin] = window.name?.split('|') || [];
-    const usePostMessageFallback = prefix === 'descope-wc' && openerOrigin;
+    const requestsPostMessage = prefix === 'descope-wc' && !!openerOrigin;
+    const targetOrigin = requestsPostMessage
+      ? this.#getTrustedOpenerOrigin(openerOrigin)
+      : undefined;
+    if (requestsPostMessage && !targetOrigin) {
+      this.loggerWrapper.warn(
+        'Popup opener origin is not allowed, add it to popup-opener-origins to send the OAuth result to it',
+        openerOrigin,
+      );
+    }
 
     const message = { data: { code, exchangeError }, action: 'code' };
 
     // PostMessage fallback path (for cross-origin popups)
-    if (usePostMessageFallback) {
+    if (targetOrigin) {
       this.loggerWrapper.debug(
         'Using postMessage fallback to notify opener in origin',
-        openerOrigin,
+        targetOrigin,
       );
       try {
-        window.opener.postMessage(message, openerOrigin);
+        window.opener.postMessage(message, targetOrigin);
       } catch (err) {
         this.loggerWrapper.error(
           'Failed to send postMessage fallback (likely COOP isolation)',

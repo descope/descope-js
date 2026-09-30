@@ -290,6 +290,14 @@ class BaseDescopeWc extends BaseClass {
     return this.getAttribute('popup-origin');
   }
 
+  // comma separated origins that may receive the OAuth result when this page runs inside a popup opened from another origin
+  get popupOpenerOrigins(): string[] {
+    return (this.getAttribute('popup-opener-origins') || '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+  }
+
   // grouped getter/setter for customStorage
   get customStorage(): CustomStorage | undefined {
     return this.#customStorage;
