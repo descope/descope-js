@@ -52,6 +52,10 @@ export const withAutoRefresh =
     let sessionExpirationDate: Date;
     let refreshToken: string;
 
+    // the time the refresh timer is aiming for - either nextRefreshSeconds from the server
+    // or REFRESH_THRESHOLD before the session expiration (see getAutoRefreshTimeout)
+    let scheduledRefreshTime: number;
+
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
     let hasInactivityTimeout = false;
 
@@ -64,13 +68,16 @@ export const withAutoRefresh =
 
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
-        // tab becomes visible and the session is expired, do a refresh
+        // tab becomes visible and the scheduled refresh time already passed, do a refresh
+        // the refresh timer is skipped while the document is hidden, so the session may be
+        // past its scheduled refresh time or already expired
         if (
           document.visibilityState === 'visible' &&
           sessionExpirationDate &&
-          new Date() > sessionExpirationDate
+          scheduledRefreshTime &&
+          Date.now() >= scheduledRefreshTime
         ) {
-          logger.debug('Expiration time passed, refreshing session');
+          logger.debug('Session refresh is overdue, refreshing session');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
@@ -103,6 +110,7 @@ export const withAutoRefresh =
           sessionExpirationDate,
           nextRefreshSeconds,
         );
+        scheduledRefreshTime = Date.now() + timeout;
         clearAllTimers();
 
         if (timeout <= REFRESH_THRESHOLD) {
