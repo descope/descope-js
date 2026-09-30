@@ -125,6 +125,10 @@ Content-Security-Policy:
 
 If the SRI hash is not available in the configuration (older projects), the component will load normally without integrity checks. No breaking changes required.
 
+### Cross-origin OAuth popups
+
+When the OAuth popup's redirect page is on a different origin than the page that opens it (see `popup-origin`), the popup sends the OAuth result only to the opener origin Descope attests for that popup. Descope attests the origin of the page that opened the popup when it is one of the project's approved domains, or when the project has no approved domains. Otherwise the popup answers only over a same-origin `BroadcastChannel`, so list the main application's domain in the project's approved domains.
+
 ## Optional Attributes
 
 | Attribute                                 | Available options                                                                                                                                                                                                                          | Default value |
