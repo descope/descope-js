@@ -92,8 +92,22 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+      - name: Fetch production regions
+        # The region list devops generates daily (descope/etc#18332). A failed fetch fails the
+        # job on purpose: falling back to the embedded list would let a broken sync look green.
+        shell: bash
+        run: |
+          regions=$(curl --fail --silent --show-error --connect-timeout 10 --max-time 30 --retry 3 --retry-all-errors \
+            https://imgs.descope.com/regions/regions.json | jq --compact-output --exit-status '.prod')
+          echo "REGIONS=$regions" >> "$GITHUB_ENV"
+
       - name: Test
         run: pnpm run test
+
+      - name: Region resolution (core-js-sdk)
+        # `nx affected` skips core-js-sdk on PRs that touch other packages. Run it explicitly so
+        # the region tests see the fetched list on every PR; a cache hit unless REGIONS changed.
+        run: pnpm nx run core-js-sdk:test
 
       - name: E2E
         run: pnpm nx affected --target test:e2e
