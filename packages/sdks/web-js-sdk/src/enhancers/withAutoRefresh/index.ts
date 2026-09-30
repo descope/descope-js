@@ -157,13 +157,16 @@ export const withAutoRefresh =
     // offline when the timer fires) would otherwise escape as a global unhandled rejection
     // We prefer the persisted refresh token over the one from the response, for a case that the
     // token was refreshed from another tab, this mostly relevant when the project uses token rotation
+    // Resolves to whether a later attempt could still succeed: HTTP errors resolve rather than
+    // reject, and a 4xx means the refresh token itself is gone, so only transport failures and
+    // 5xx are worth retrying
     const refreshSession = () =>
       sdk
         .refresh(getRefreshToken() || refreshToken)
-        .then(() => true)
+        .then((res) => !res?.ok && res?.code >= 500)
         .catch((err: unknown) => {
           logger.warn('Automatic session refresh failed', err);
-          return false;
+          return true;
         });
 
     const wrapper: SdkFnWrapper<{}> =
@@ -196,8 +199,8 @@ export const withAutoRefresh =
                 // flight, and re-armed on failure so the next markUserActive() can retry
                 refreshWasSkipped = false;
                 clearAllTimers(); // Prevent race condition with pending timer
-                refreshSession().then((ok) => {
-                  if (!ok) {
+                refreshSession().then((canRetry) => {
+                  if (canRetry) {
                     refreshWasSkipped = true;
                   }
                 });

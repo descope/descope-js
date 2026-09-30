@@ -987,6 +987,79 @@ describe('autoRefresh', () => {
       expect(refreshSpy).toHaveBeenCalledTimes(2);
     });
 
+    it('should retry on the next markUserActive when the catch-up refresh gets a 5xx', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      global.fetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          nextRefreshSeconds: 120,
+        }),
+      );
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActivityTracking: true },
+      });
+      // HTTP errors resolve rather than reject, so the catch never sees them
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockResolvedValue({ ok: false, code: 500 } as any);
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+      timeoutFn();
+
+      (sdk as any).markUserActive();
+      await new Promise(process.nextTick);
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+
+      // a 5xx may well succeed later, so activity should retry
+      (sdk as any).markUserActive();
+      await new Promise(process.nextTick);
+      expect(refreshSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('should not retry on the next markUserActive when the catch-up refresh gets a 4xx', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      global.fetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          nextRefreshSeconds: 120,
+        }),
+      );
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActivityTracking: true },
+      });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockResolvedValue({ ok: false, code: 401 } as any);
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+      timeoutFn();
+
+      (sdk as any).markUserActive();
+      await new Promise(process.nextTick);
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+
+      // the refresh token is gone, so retrying it on every click would just hammer the server
+      (sdk as any).markUserActive();
+      await new Promise(process.nextTick);
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+    });
+
     it('markUserActive should log debug when hasInactivityTimeout is false', async () => {
       const loggerDebugMock = logger.debug as jest.Mock;
 
