@@ -71,10 +71,7 @@ export const withAutoRefresh =
           new Date() > sessionExpirationDate
         ) {
           logger.debug('Expiration time passed, refreshing session');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          refreshSession(getRefreshToken() || refreshToken);
+          refreshSession();
         }
       });
     }
@@ -149,10 +146,7 @@ export const withAutoRefresh =
           }
 
           logger.debug('Refreshing session due to timer');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          refreshSession(getRefreshToken() || refreshJwt);
+          refreshSession();
         }, timeout);
       }
     };
@@ -161,10 +155,16 @@ export const withAutoRefresh =
 
     // Background refreshes are fire-and-forget, so a transport failure (e.g. the browser is
     // offline when the timer fires) would otherwise escape as a global unhandled rejection
-    const refreshSession = (token: string) =>
-      sdk.refresh(token).catch((err: unknown) => {
-        logger.warn('Automatic session refresh failed', err);
-      });
+    // We prefer the persisted refresh token over the one from the response, for a case that the
+    // token was refreshed from another tab, this mostly relevant when the project uses token rotation
+    const refreshSession = () =>
+      sdk
+        .refresh(getRefreshToken() || refreshToken)
+        .then(() => true)
+        .catch((err: unknown) => {
+          logger.warn('Automatic session refresh failed', err);
+          return false;
+        });
 
     const wrapper: SdkFnWrapper<{}> =
       (fn) =>
@@ -192,9 +192,15 @@ export const withAutoRefresh =
                 logger.debug(
                   'User became active after skipped refresh, triggering refresh',
                 );
+                // cleared before the call so a refresh is not fired per click while it is in
+                // flight, and re-armed on failure so the next markUserActive() can retry
                 refreshWasSkipped = false;
                 clearAllTimers(); // Prevent race condition with pending timer
-                refreshSession(getRefreshToken() || refreshToken);
+                refreshSession().then((ok) => {
+                  if (!ok) {
+                    refreshWasSkipped = true;
+                  }
+                });
               }
             }
           : () => {

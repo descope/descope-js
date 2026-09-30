@@ -942,6 +942,51 @@ describe('autoRefresh', () => {
       expect(refreshSpy).not.toHaveBeenCalled();
     });
 
+    it('should catch the catch-up refresh rejection and retry on the next markUserActive', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      const loggerWarnMock = logger.warn as jest.Mock;
+
+      const sessionExpiration = Math.floor(Date.now() / 1000) + 10 * 60;
+      global.fetch = jest.fn().mockReturnValue(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          nextRefreshSeconds: 120,
+        }),
+      );
+
+      const sdk = createSdk({
+        projectId: 'pid',
+        autoRefresh: { customActivityTracking: true },
+      });
+      const error = new TypeError('Failed to fetch');
+      const refreshSpy = jest.spyOn(sdk, 'refresh').mockRejectedValue(error);
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      // timer fires while the user is idle - refresh is skipped
+      const timeoutFn = setTimeoutSpy.mock.calls[0][0];
+      timeoutFn();
+      expect(refreshSpy).not.toHaveBeenCalled();
+
+      // user becomes active, the catch-up refresh is attempted and fails offline
+      (sdk as any).markUserActive();
+      await new Promise(process.nextTick);
+
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+      expect(loggerWarnMock).toHaveBeenCalledWith(
+        'Automatic session refresh failed',
+        error,
+      );
+
+      // the skip flag was re-armed, so the next activity retries instead of giving up
+      (sdk as any).markUserActive();
+      await new Promise(process.nextTick);
+
+      expect(refreshSpy).toHaveBeenCalledTimes(2);
+    });
+
     it('markUserActive should log debug when hasInactivityTimeout is false', async () => {
       const loggerDebugMock = logger.debug as jest.Mock;
 
