@@ -220,6 +220,14 @@ document.addEventListener('keydown', () => sdk.markUserActive());
 
 This is useful when Descope's session inactivity feature is enabled, ensuring refreshes only occur for genuinely active users.
 
+### Stopping Auto Refresh
+
+When an SDK instance is discarded before the page is (e.g. re-created in tests or on framework re-initialization), call `sdk.cleanup()` to cancel pending refresh timers and remove the document listeners the auto refresh registered.
+
+```js
+sdk.cleanup();
+```
+
 ### Custom Storage
 
 By default the SDK reads and writes to `window.localStorage` for state that needs to outlive a single page load (last-authenticated user, tokens when they aren't stored in cookies, etc.). If `localStorage` is unavailable or you want to back these keys with something else — `sessionStorage`, an in-memory store, an encrypted wrapper, a cross-frame bridge — pass a `customStorage` object to the SDK.

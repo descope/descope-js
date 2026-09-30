@@ -29,6 +29,7 @@ export const withAutoRefresh =
     ...config
   }: Parameters<T>[0] & AutoRefreshOptions): ReturnType<T> & {
     markUserActive: () => void;
+    cleanup: () => void;
   } => {
     const autoRefreshEnabled = !!autoRefresh;
     const customActivityTracking =
@@ -40,7 +41,11 @@ export const withAutoRefresh =
         markUserActive: () => {
           logger.warn('markUserActive() called but has no effect');
         },
-      }) as ReturnType<T> & { markUserActive: () => void };
+        cleanup: () => {},
+      }) as ReturnType<T> & {
+        markUserActive: () => void;
+        cleanup: () => void;
+      };
     }
 
     // if we hold a single timer id, there might be a case where we override it before canceling the timer, this might cause many calls to refresh
@@ -52,6 +57,10 @@ export const withAutoRefresh =
     let sessionExpirationDate: Date;
     let refreshToken: string;
 
+    // the time the refresh timer is aiming for - either nextRefreshSeconds from the server
+    // or REFRESH_THRESHOLD before the session expiration (see getAutoRefreshTimeout)
+    let scheduledRefreshTime: number;
+
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
     let hasInactivityTimeout = false;
 
@@ -62,25 +71,26 @@ export const withAutoRefresh =
       activityTracker = createActivityTracker();
     }
 
+    // tab becomes visible and the scheduled refresh time already passed, do a refresh
+    // the refresh timer is skipped while the document is hidden, so the session may be
+    // past its scheduled refresh time or already expired
+    const onVisibilityChange = () => {
+      if (
+        document.visibilityState === 'visible' &&
+        sessionExpirationDate &&
+        scheduledRefreshTime &&
+        Date.now() >= scheduledRefreshTime
+      ) {
+        logger.debug('Session refresh is overdue, refreshing session');
+        // We prefer the persisted refresh token over the one from the response
+        // for a case that the token was refreshed from another tab, this mostly relevant
+        // when the project uses token rotation
+        sdk.refresh(getRefreshToken() || refreshToken);
+      }
+    };
+
     if (IS_BROWSER) {
-      document.addEventListener('visibilitychange', () => {
-        // tab becomes visible and the session is expired or about to expire, do a refresh
-        // the refresh timer is skipped while the document is hidden, so the session may be
-        // past its scheduled refresh time (within REFRESH_THRESHOLD of expiration) or already expired
-        if (
-          document.visibilityState === 'visible' &&
-          sessionExpirationDate &&
-          Date.now() > sessionExpirationDate.getTime() - REFRESH_THRESHOLD
-        ) {
-          logger.debug(
-            'Session is expired or about to expire, refreshing session',
-          );
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshToken);
-        }
-      });
+      document.addEventListener('visibilitychange', onVisibilityChange);
     }
 
     const afterRequest: AfterRequestHook = async (req, res) => {
@@ -107,6 +117,7 @@ export const withAutoRefresh =
           sessionExpirationDate,
           nextRefreshSeconds,
         );
+        scheduledRefreshTime = Date.now() + timeout;
         clearAllTimers();
 
         if (timeout <= REFRESH_THRESHOLD) {
@@ -199,6 +210,17 @@ export const withAutoRefresh =
                 'markUserActive() called but customActivityTracking is not enabled — this call has no effect',
               );
             },
+        // stop the auto refresh - cancels pending refresh timers and removes the
+        // document listener, for when the sdk instance is discarded before the page is
+        cleanup: () => {
+          clearAllTimers();
+          if (IS_BROWSER) {
+            document.removeEventListener(
+              'visibilitychange',
+              onVisibilityChange,
+            );
+          }
+        },
       },
-    ) as ReturnType<T> & { markUserActive: () => void };
+    ) as ReturnType<T> & { markUserActive: () => void; cleanup: () => void };
   };
