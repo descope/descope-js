@@ -28,7 +28,6 @@
       :nonce.attr="nonce"
       :dismiss-screen-error-on-input.attr="dismissScreenErrorOnInput"
       :popup-origin.attr="popupOrigin"
-      :popup-opener-origins.attr="popupOpenerOrigins"
       @success="onSuccess"
       @error="onError"
       @ready="onReady"
@@ -131,9 +130,6 @@ const props = defineProps({
     type: Boolean,
   },
   popupOrigin: {
-    type: String,
-  },
-  popupOpenerOrigins: {
     type: String,
   },
 });

@@ -57,7 +57,6 @@ app.mount('#app');
   <!-- styleId="my-awesome-style" Use a custom style name or keep empty to use the default style. -->
   <!-- nonce="rAnd0m" Set a CSP nonce that will be used for style and script tags -->
   <!-- popupOrigin="https://auth.example.com" Sets the expected origin for OAuth popup communication when redirect URL is on different origin than the main application. Required for cross-origin OAuth popup flows -->
-  <!-- popupOpenerOrigins="https://app.example.com" Required on the popup redirect page for cross-origin OAuth popup flows: comma separated origins of the pages that open the popup, allowed to receive the OAuth result. The page's own origin is always allowed -->
   <!-- dismissScreenErrorOnInput=true Clear screen error message on user input -->
 </template>
 

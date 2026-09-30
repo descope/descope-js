@@ -29,6 +29,7 @@ import {
   getAnimationDirection,
   getElementDescopeAttributes,
   getScriptResultPath,
+  getTrustedPopupOpenerOrigin,
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,
@@ -2431,37 +2432,16 @@ class DescopeWc extends BaseDescopeWc {
     return true;
   }
 
-  // window.name is set by whoever opened this window, so the origin it carries is only a claim.
-  // Returns the origin to post to only when it is this page's own origin or listed in popup-opener-origins.
-  #getTrustedOpenerOrigin(openerOrigin: string): string | undefined {
-    let origin: string;
-    try {
-      origin = new URL(openerOrigin).origin;
-    } catch {
-      return undefined;
-    }
-    if (origin === 'null') return undefined;
-    if (origin === window.location.origin) return origin;
-    const isAllowed = this.popupOpenerOrigins.some((allowedOrigin) => {
-      try {
-        return new URL(allowedOrigin).origin === origin;
-      } catch {
-        return false;
-      }
-    });
-    return isAllowed ? origin : undefined;
-  }
-
   // Notify opener with code/exchangeError using either BroadcastChannel or postMessage fallback
   #notifyOpener(executionId: string, code: string, exchangeError: string) {
     const [prefix, openerOrigin] = window.name?.split('|') || [];
     const requestsPostMessage = prefix === 'descope-wc' && !!openerOrigin;
     const targetOrigin = requestsPostMessage
-      ? this.#getTrustedOpenerOrigin(openerOrigin)
+      ? getTrustedPopupOpenerOrigin(openerOrigin)
       : undefined;
     if (requestsPostMessage && !targetOrigin) {
       this.loggerWrapper.warn(
-        'Popup opener origin is not allowed, add it to popup-opener-origins to send the OAuth result to it',
+        'Popup opener origin is not approved for this project, add it to the approved domains to send the OAuth result to it',
         openerOrigin,
       );
     }
