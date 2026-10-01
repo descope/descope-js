@@ -36,4 +36,33 @@ describe('useSession', () => {
     expect(result.current.isAuthenticated).toBe(true);
     expect(fetchSession).not.toHaveBeenCalled();
   });
+
+  // On a heavy page the isSessionLoading true/false updates can land in one render,
+  // so the context goes straight from "not fetched" to "settled" without ever showing loading
+  it('should stop loading when the session settles without ever reporting isSessionLoading', () => {
+    let contextValue = {
+      isSessionLoading: false,
+      isOidcLoading: false,
+      fetchSession: jest.fn(),
+      isSessionFetched: false,
+      isSessionSettled: false,
+      isAuthenticated: false,
+    } as any as IContext;
+    const { result, rerender } = renderHook(() => useSession(), {
+      wrapper: ({ children }: { children?: React.ReactNode }) => (
+        <Context.Provider value={contextValue}>{children}</Context.Provider>
+      ),
+    });
+
+    expect(result.current.isSessionLoading).toBe(true);
+
+    contextValue = {
+      ...contextValue,
+      isSessionFetched: true,
+      isSessionSettled: true,
+    };
+    rerender();
+
+    expect(result.current.isSessionLoading).toBe(false);
+  });
 });
