@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.6](https://github.com/descope/descope-js/compare/web-component-4.4.5...web-component-4.4.6) (2026-10-04)
+
+
+### Bug Fixes
+
+* **web-component:** keep conditional components hidden after an error RELEASE ([#1499](https://github.com/descope/descope-js/issues/1499)) ([e45abc7](https://github.com/descope/descope-js/commit/e45abc7c1822cd50a468f66c463bce9dab2cd00c)), closes [descope/etc#18750](https://github.com/descope/etc/issues/18750) [descope/etc#18730](https://github.com/descope/etc/issues/18730) [#18750](https://github.com/descope/descope-js/issues/18750) [#18730](https://github.com/descope/descope-js/issues/18730)
+
 ## [4.4.5](https://github.com/descope/descope-js/compare/web-component-4.4.4...web-component-4.4.5) (2026-09-29)
 
 ### Dependency Updates
