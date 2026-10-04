@@ -9,9 +9,9 @@ const action = createAsyncThunk<
   TenantAdminLinkSSOResponse,
   { ssoIds: string[] },
   ThunkConfigExtraApi & { state: State }
->('tenant/adminLinkSso', ({ ssoIds }, { extra: { api } }) => {
-  return api.tenant.adminLinkSso({ ssoIds });
-});
+>('tenant/adminLinkSso', ({ ssoIds }, { extra: { api } }) =>
+  api.tenant.adminLinkSso({ ssoIds }),
+);
 
 const reducer = buildAsyncReducer(action)(
   {

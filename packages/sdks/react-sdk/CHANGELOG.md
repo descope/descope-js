@@ -2,6 +2,56 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.10](https://github.com/descope/descope-js/compare/react-sdk-3.3.9...react-sdk-3.3.10) (2026-09-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.8`
+* `applications-portal-widget` updated to version `0.9.8`
+* `audit-management-widget` updated to version `0.9.8`
+* `outbound-applications-widget` updated to version `0.7.6`
+* `role-management-widget` updated to version `0.10.8`
+* `tenant-profile-widget` updated to version `0.11.0`
+* `user-management-widget` updated to version `0.20.6`
+* `user-profile-widget` updated to version `0.19.6`
+* `web-component` updated to version `4.4.5`
+## [3.3.9](https://github.com/descope/descope-js/compare/react-sdk-3.3.8...react-sdk-3.3.9) (2026-09-27)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.7`
+* `applications-portal-widget` updated to version `0.9.7`
+* `audit-management-widget` updated to version `0.9.7`
+* `core-js-sdk` updated to version `2.74.0`
+* `outbound-applications-widget` updated to version `0.7.5`
+* `role-management-widget` updated to version `0.10.7`
+* `sdk-helpers` updated to version `0.10.1`
+* `tenant-profile-widget` updated to version `0.10.5`
+* `user-management-widget` updated to version `0.20.5`
+* `user-profile-widget` updated to version `0.19.5`
+* `web-component` updated to version `4.4.4`
+* `web-js-sdk` updated to version `1.54.0`
+## [3.3.8](https://github.com/descope/descope-js/compare/react-sdk-3.3.7...react-sdk-3.3.8) (2026-09-23)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.7.4`
+* `tenant-profile-widget` updated to version `0.10.4`
+* `user-management-widget` updated to version `0.20.4`
+* `user-profile-widget` updated to version `0.19.4`
+* `web-component` updated to version `4.4.3`
+## [3.3.7](https://github.com/descope/descope-js/compare/react-sdk-3.3.6...react-sdk-3.3.7) (2026-09-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.6`
+* `applications-portal-widget` updated to version `0.9.6`
+* `audit-management-widget` updated to version `0.9.6`
+* `outbound-applications-widget` updated to version `0.7.3`
+* `role-management-widget` updated to version `0.10.6`
+* `tenant-profile-widget` updated to version `0.10.3`
+* `user-management-widget` updated to version `0.20.3`
+* `user-profile-widget` updated to version `0.19.3`
 ## [3.3.6](https://github.com/descope/descope-js/compare/react-sdk-3.3.5...react-sdk-3.3.6) (2026-09-17)
 
 ### Dependency Updates

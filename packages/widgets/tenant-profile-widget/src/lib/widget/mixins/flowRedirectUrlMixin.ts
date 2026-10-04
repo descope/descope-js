@@ -1,4 +1,3 @@
-import { getAdditionalSSOIds } from './../state/selectors';
 import { FlowDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import {
@@ -10,6 +9,7 @@ import {
   themeMixin,
   flowInputMixin,
 } from '@descope/sdk-mixins';
+import { getAdditionalSSOIds } from '../state/selectors';
 import { getUrlParam, resetUrlParam } from './helpers';
 import { stateManagementMixin } from './stateManagementMixin';
 

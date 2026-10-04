@@ -2,6 +2,38 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.11.0](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.10.5...tenant-profile-widget-0.11.0) (2026-09-29)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.5`
+* `sdk-mixins` updated to version `0.27.2`
+* `sdk-component-drivers` updated to version `0.18.0`
+
+### Features
+
+* **tenant-profile-widget:** show and edit the authentication-only classification ([#1495](https://github.com/descope/descope-js/issues/1495)) ([f5b9e61](https://github.com/descope/descope-js/commit/f5b9e61c3c0d68545da11493699c989d4e2dea7d)), closes [descope/etc#18650](https://github.com/descope/etc/issues/18650) [descope/backend#2713](https://github.com/descope/backend/issues/2713) [descope/web-components-ui#1108](https://github.com/descope/web-components-ui/issues/1108)
+
+## [0.10.5](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.10.4...tenant-profile-widget-0.10.5) (2026-09-27)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.74.0`
+* `web-js-sdk` updated to version `1.54.0`
+* `web-component` updated to version `4.4.4`
+* `sdk-helpers` updated to version `0.10.1`
+* `sdk-mixins` updated to version `0.27.1`
+* `sdk-component-drivers` updated to version `0.17.1`
+## [0.10.4](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.10.3...tenant-profile-widget-0.10.4) (2026-09-23)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.3`
+## [0.10.3](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.10.2...tenant-profile-widget-0.10.3) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.10.2](https://github.com/descope/descope-js/compare/tenant-profile-widget-0.10.1...tenant-profile-widget-0.10.2) (2026-09-17)
 
 ### Dependency Updates

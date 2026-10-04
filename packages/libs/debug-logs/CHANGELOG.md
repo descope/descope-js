@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.2](https://github.com/descope/descope-js/compare/debug-logs-0.1.1...debug-logs-0.1.2) (2026-09-22)
+
 ## [0.1.1](https://github.com/descope/descope-js/compare/debug-logs-0.1.0...debug-logs-0.1.1) (2026-09-07)
 
 

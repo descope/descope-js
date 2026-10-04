@@ -2,6 +2,51 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.12](https://github.com/descope/descope-js/compare/angular-sdk-0.28.11...angular-sdk-0.28.12) (2026-09-29)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.8`
+* `audit-management-widget` updated to version `0.9.8`
+* `role-management-widget` updated to version `0.10.8`
+* `user-management-widget` updated to version `0.20.6`
+* `user-profile-widget` updated to version `0.19.6`
+* `tenant-profile-widget` updated to version `0.11.0`
+* `applications-portal-widget` updated to version `0.9.8`
+* `web-component` updated to version `4.4.5`
+## [0.28.11](https://github.com/descope/descope-js/compare/angular-sdk-0.28.10...angular-sdk-0.28.11) (2026-09-27)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.7`
+* `audit-management-widget` updated to version `0.9.7`
+* `role-management-widget` updated to version `0.10.7`
+* `user-management-widget` updated to version `0.20.5`
+* `user-profile-widget` updated to version `0.19.5`
+* `tenant-profile-widget` updated to version `0.10.5`
+* `applications-portal-widget` updated to version `0.9.7`
+* `web-component` updated to version `4.4.4`
+* `web-js-sdk` updated to version `1.54.0`
+* `core-js-sdk` updated to version `2.74.0`
+## [0.28.10](https://github.com/descope/descope-js/compare/angular-sdk-0.28.9...angular-sdk-0.28.10) (2026-09-23)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.20.4`
+* `user-profile-widget` updated to version `0.19.4`
+* `tenant-profile-widget` updated to version `0.10.4`
+* `web-component` updated to version `4.4.3`
+## [0.28.9](https://github.com/descope/descope-js/compare/angular-sdk-0.28.8...angular-sdk-0.28.9) (2026-09-22)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.6`
+* `audit-management-widget` updated to version `0.9.6`
+* `role-management-widget` updated to version `0.10.6`
+* `user-management-widget` updated to version `0.20.3`
+* `user-profile-widget` updated to version `0.19.3`
+* `tenant-profile-widget` updated to version `0.10.3`
+* `applications-portal-widget` updated to version `0.9.6`
 ## [0.28.8](https://github.com/descope/descope-js/compare/angular-sdk-0.28.7...angular-sdk-0.28.8) (2026-09-17)
 
 ### Dependency Updates

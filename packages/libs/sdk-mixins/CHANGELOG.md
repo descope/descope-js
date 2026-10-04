@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.27.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.1...sdk-mixins-0.27.2) (2026-09-29)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.18.0`
+## [0.27.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.0...sdk-mixins-0.27.1) (2026-09-27)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.17.1`
+* `sdk-helpers` updated to version `0.10.1`
+
+### Bug Fixes
+
+* **widgets:** escape API error text before it reaches innerHTML RELEASE ([#1496](https://github.com/descope/descope-js/issues/1496)) ([89d3c1d](https://github.com/descope/descope-js/commit/89d3c1d220f5125d7ffa88ddd4be63443a00c42f)), closes [descope/etc#18718](https://github.com/descope/etc/issues/18718) [#39](https://github.com/descope/descope-js/issues/39)
+
 ## [0.27.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.26.1...sdk-mixins-0.27.0) (2026-09-16)
 
 ### Dependency Updates
