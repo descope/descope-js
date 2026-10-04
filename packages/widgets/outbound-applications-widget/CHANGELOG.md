@@ -2,6 +2,42 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.8](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.7...outbound-applications-widget-0.7.8) (2026-10-04)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.7`
+## [0.7.7](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.6...outbound-applications-widget-0.7.7) (2026-10-04)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.6`
+## [0.7.6](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.5...outbound-applications-widget-0.7.6) (2026-09-29)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.27.2`
+* `sdk-component-drivers` updated to version `0.18.0`
+* `web-component` updated to version `4.4.5`
+## [0.7.5](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.4...outbound-applications-widget-0.7.5) (2026-09-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.0`
+* `sdk-helpers` updated to version `0.10.1`
+* `sdk-mixins` updated to version `0.27.1`
+* `sdk-component-drivers` updated to version `0.17.1`
+* `web-component` updated to version `4.4.4`
+## [0.7.4](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.3...outbound-applications-widget-0.7.4) (2026-09-23)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.3`
+## [0.7.3](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.2...outbound-applications-widget-0.7.3) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.7.2](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.1...outbound-applications-widget-0.7.2) (2026-09-17)
 
 ### Dependency Updates

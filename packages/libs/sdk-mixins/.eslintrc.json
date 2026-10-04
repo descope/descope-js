@@ -49,6 +49,8 @@
     }
   },
   "rules": {
+    "jest-dom/prefer-to-have-attribute": "off",
+    "jest-dom/prefer-to-have-text-content": "off",
     "no-tabs": ["error", { "allowIndentationTabs": true }],
     "@typescript-eslint/indent": ["off"],
     "quotes": [

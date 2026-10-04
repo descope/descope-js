@@ -2,6 +2,30 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.10.8](https://github.com/descope/descope-js/compare/access-key-management-widget-0.10.7...access-key-management-widget-0.10.8) (2026-09-29)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.27.2`
+* `sdk-component-drivers` updated to version `0.18.0`
+## [0.10.7](https://github.com/descope/descope-js/compare/access-key-management-widget-0.10.6...access-key-management-widget-0.10.7) (2026-09-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.0`
+* `sdk-helpers` updated to version `0.10.1`
+* `sdk-mixins` updated to version `0.27.1`
+* `sdk-component-drivers` updated to version `0.17.1`
+
+### Bug Fixes
+
+* **widgets:** escape API error text before it reaches innerHTML RELEASE ([#1496](https://github.com/descope/descope-js/issues/1496)) ([89d3c1d](https://github.com/descope/descope-js/commit/89d3c1d220f5125d7ffa88ddd4be63443a00c42f)), closes [descope/etc#18718](https://github.com/descope/etc/issues/18718) [#39](https://github.com/descope/descope-js/issues/39)
+
+## [0.10.6](https://github.com/descope/descope-js/compare/access-key-management-widget-0.10.5...access-key-management-widget-0.10.6) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
 ## [0.10.5](https://github.com/descope/descope-js/compare/access-key-management-widget-0.10.4...access-key-management-widget-0.10.5) (2026-09-17)
 
 ### Dependency Updates

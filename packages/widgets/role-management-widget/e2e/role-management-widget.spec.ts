@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -22,10 +23,12 @@ const configContent = {
 const apiPath = (prop: 'role' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
-
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await listenForWidgetReady(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -101,9 +104,8 @@ test.describe('widget', () => {
       route.fulfill({ json: { componentsState: {} } }),
     );
 
-    await page.goto(`http://localhost:${widgetPort}`, {
-      waitUntil: 'networkidle',
-    });
+    await page.goto(`http://localhost:${widgetPort}`);
+    await waitForWidgetReady(page);
   });
 
   test('roles table', async ({ page }) => {
@@ -155,9 +157,14 @@ test.describe('widget', () => {
   });
 
   test('edit role', async ({ page }) => {
-    await page.getByTestId('edit-role-trigger').first().isDisabled();
+    // These were isDisabled()/isEnabled() calls whose boolean was discarded, so
+    // they asserted nothing. Same family as the missing awaits: they read like
+    // a check but never fail.
+    const editRoleTrigger = page.getByTestId('edit-role-trigger').first();
+
+    await expect(editRoleTrigger).toBeDisabled();
     await page.locator('descope-checkbox').last().click();
-    await page.getByTestId('edit-role-trigger').first().isEnabled();
+    await expect(editRoleTrigger).toBeEnabled();
 
     // open edit role modal
     const openEditRoleModalButton = page
@@ -220,29 +227,24 @@ test.describe('widget', () => {
       .getByTestId('delete-roles-modal-submit')
       .first();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // delete button initial state is disabled
-    expect(deleteRoleTrigger).toBeDisabled();
+    await expect(deleteRoleTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
 
     // delete button is enabled on selection
-    expect(deleteRoleTrigger).toBeEnabled();
+    await expect(deleteRoleTrigger).toBeEnabled();
 
     // delete roles
     await deleteRoleTrigger.click();
 
     // show delete roles modal
     const deleteRoleModal = page.locator('text=Delete Roles');
-    expect(deleteRoleModal).toBeVisible();
+    await expect(deleteRoleModal).toBeVisible();
 
     // click modal delete button
     await deleteRoleModalButton.click();
-
-    // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // delete modal closed
     await expect(page.locator('Delete Roles')).toBeHidden();
@@ -257,8 +259,6 @@ test.describe('widget', () => {
   });
 
   test('search roles', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
-
     // Handle all search requests (initial empty-text mount call AND the user-typed
     // call). Branch on `text` to filter — asserting inside the handler would race
     // with the initial mount call where text is "".
@@ -311,8 +311,6 @@ test.describe('widget', () => {
     page,
   }) => {
     const duplicateTrigger = page.getByTestId('duplicate-role-trigger').first();
-
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // initially disabled
     await expect(duplicateTrigger).toBeDisabled();
@@ -373,6 +371,17 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
+    // Uses an error notification on purpose: a success one self-dismisses
+    // after 3s, so clicking its close button races that timer and the
+    // "closed" assertion would pass on the timer alone. Error notifications
+    // have duration 0. Success is covered by the 'delete roles' test.
+    await page.route(apiPath('role', 'deleteBatch'), async (route) =>
+      route.fulfill({
+        status: 400,
+        json: { errorDescription: 'could not delete roles' },
+      }),
+    );
+
     const deleteRoleTrigger = page.getByTestId('delete-roles-trigger').first();
     const deleteRoleModalButton = page
       .getByTestId('delete-roles-modal-submit')
@@ -386,25 +395,21 @@ test.describe('widget', () => {
 
     // show delete roles modal
     const deleteRoleModal = page.locator('text=Delete Roles');
-    expect(deleteRoleModal).toBeVisible();
+    await expect(deleteRoleModal).toBeVisible();
 
     // click modal delete button
     await deleteRoleModalButton.click();
 
-    // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
-    // show notification
-    await expect(
-      page.locator(`text=${mockRoles.roles.length} roles deleted successfully`),
-    ).toBeVisible();
+    // Address the close icon by slot name, not a positional getByRole('img').
+    // It sits outside descope-notification and the vaadin card, because the
+    // component renders its content into a separate overlay.
+    const closeIcon = page.locator('[slot="close"]').last();
+    await expect(closeIcon).toBeVisible();
 
     // click close button
-    await page.getByRole('img').nth(1).click();
+    await closeIcon.click();
 
     // notification closed
-    await expect(
-      page.locator(`text=${mockRoles.roles.length} roles deleted successfully`),
-    ).toBeHidden();
+    await expect(closeIcon).toBeHidden();
   });
 });
