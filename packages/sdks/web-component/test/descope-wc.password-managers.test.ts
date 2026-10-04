@@ -139,6 +139,47 @@ describe('web-component', () => {
       expect(error).not.toHaveBeenCalled();
     });
 
+    it('should log a thrown PasswordCredential as warn', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      const credentialError = new TypeError("'id' must not be empty.");
+      Object.assign(navigator, { credentials: { store: jest.fn() } });
+      globalThis.PasswordCredential = class {
+        constructor() {
+          throw credentialError;
+        }
+      };
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="email" name="email" value="1@1.com"></input><input id="password" name="password" value="pass"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const error = jest.fn();
+      const warn = jest.fn();
+      document.querySelector('descope-wc').logger = {
+        error,
+        warn,
+        info: jest.fn(),
+        debug: jest.fn(),
+      };
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() =>
+        expect(warn).toHaveBeenCalledWith(
+          'Could not store credentials',
+          credentialError.message,
+        ),
+      );
+      expect(error).not.toHaveBeenCalled();
+      expect(navigator.credentials.store).not.toHaveBeenCalled();
+    });
+
     describe('username anchor injection', () => {
       const newPasswordPage =
         '<descope-new-password external-input="true" id="new-password"><input slot="password" type="password"/></descope-new-password><span>It works!</span>';

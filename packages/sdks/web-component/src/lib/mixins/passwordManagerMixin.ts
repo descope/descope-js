@@ -226,7 +226,7 @@ export const passwordManagerMixin = createSingletonMixin(
               this.logger.debug('Could not store credentials', e?.message);
             });
           } catch (e) {
-            this.logger.debug('Could not store credentials', e.message);
+            this.logger.warn('Could not store credentials', e.message);
           }
         }
       }
