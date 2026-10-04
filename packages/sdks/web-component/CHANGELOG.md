@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.7](https://github.com/descope/descope-js/compare/web-component-4.4.6...web-component-4.4.7) (2026-10-04)
+
+
+### Bug Fixes
+
+* **web-component:** log a rejected password save as debug, not error RELEASE ([#1504](https://github.com/descope/descope-js/issues/1504)) ([9436703](https://github.com/descope/descope-js/commit/9436703abdbe0dd3d83e7f1743f3cd2f3d509609)), closes [descope/etc#18883](https://github.com/descope/etc/issues/18883)
+
 ## [4.4.6](https://github.com/descope/descope-js/compare/web-component-4.4.5...web-component-4.4.6) (2026-10-04)
 
 
