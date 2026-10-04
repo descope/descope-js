@@ -95,7 +95,7 @@ describe('web-component', () => {
       );
     });
 
-    it('should log a rejected credentials.store instead of leaving it unhandled', async () => {
+    it('should log a rejected credentials.store as debug instead of leaving it unhandled', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
@@ -120,21 +120,23 @@ describe('web-component', () => {
       });
 
       const error = jest.fn();
+      const debug = jest.fn();
       document.querySelector('descope-wc').logger = {
         error,
         warn: jest.fn(),
         info: jest.fn(),
-        debug: jest.fn(),
+        debug,
       };
 
       fireEvent.click(screen.getByShadowText('click'));
 
       await waitFor(() =>
-        expect(error).toHaveBeenCalledWith(
+        expect(debug).toHaveBeenCalledWith(
           'Could not store credentials',
           storeError.message,
         ),
       );
+      expect(error).not.toHaveBeenCalled();
     });
 
     describe('username anchor injection', () => {

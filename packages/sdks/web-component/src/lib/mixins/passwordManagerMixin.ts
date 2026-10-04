@@ -223,10 +223,10 @@ export const passwordManagerMixin = createSingletonMixin(
             const cred = new globalThis.PasswordCredential({ id, password });
 
             navigator?.credentials?.store?.(cred)?.catch((e) => {
-              this.logger.error('Could not store credentials', e?.message);
+              this.logger.debug('Could not store credentials', e?.message);
             });
           } catch (e) {
-            this.logger.error('Could not store credentials', e.message);
+            this.logger.debug('Could not store credentials', e.message);
           }
         }
       }
