@@ -92,11 +92,12 @@ describe('web-component component data', () => {
         'step-1',
         'some-source',
         'comp-1',
+        'descope-data-input',
         { query: 'kar' },
       );
     });
 
-    it('sends the id of the component hosting the event, not the inner element', async () => {
+    it('sends the id and tag of the component hosting the event, not the inner element', async () => {
       componentDataMock.mockResolvedValue({ ok: true, data: { data: {} } });
       const ele = await renderScreen();
       // real components dispatch from inside their own shadow root
@@ -115,6 +116,7 @@ describe('web-component component data', () => {
           'step-1',
           'some-source',
           'host-1',
+          'div',
           { query: 'kar' },
         ),
       );
@@ -205,6 +207,7 @@ describe('web-component component data', () => {
         'step-2',
         'some-source',
         'comp-1',
+        'descope-data-input',
         { query: 'kar' },
       );
     });

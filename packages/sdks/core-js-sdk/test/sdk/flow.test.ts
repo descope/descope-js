@@ -227,7 +227,7 @@ describe('Flows', () => {
         status: 200,
       });
 
-      const resp = await sdk.flow.componentData('e1', 's1', 'src', 'c1', {
+      const resp = await sdk.flow.componentData('e1', 's1', 'src', 'c1', 'ct', {
         query: 'kar',
       });
 
@@ -238,6 +238,7 @@ describe('Flows', () => {
           stepId: 's1',
           source: 'src',
           componentId: 'c1',
+          componentType: 'ct',
           params: { query: 'kar' },
         },
         { disableRetry: true },
@@ -254,7 +255,7 @@ describe('Flows', () => {
         status: 200,
       });
 
-      await sdk.flow.componentData('e1', 's1', 'src', 'c1');
+      await sdk.flow.componentData('e1', 's1', 'src', 'c1', 'ct');
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         '/v1/flow/component/data',
@@ -263,6 +264,7 @@ describe('Flows', () => {
           stepId: 's1',
           source: 'src',
           componentId: 'c1',
+          componentType: 'ct',
           params: undefined,
         },
         { disableRetry: true },
@@ -278,20 +280,21 @@ describe('Flows', () => {
         status: 400,
       });
 
-      const resp = await sdk.flow.componentData('e1', 's1', 'src', 'c1');
+      const resp = await sdk.flow.componentData('e1', 's1', 'src', 'c1', 'ct');
 
       expect(resp.ok).toBe(false);
       expect(resp.error).toEqual(error);
     });
 
     it.each([
-      ['executionId', ['', 's1', 'src', 'c1']],
-      ['stepId', ['e1', '', 'src', 'c1']],
-      ['source', ['e1', 's1', '', 'c1']],
-      ['componentId', ['e1', 's1', 'src', '']],
+      ['executionId', ['', 's1', 'src', 'c1', 'ct']],
+      ['stepId', ['e1', '', 'src', 'c1', 'ct']],
+      ['source', ['e1', 's1', '', 'c1', 'ct']],
+      ['componentId', ['e1', 's1', 'src', '', 'ct']],
+      ['componentType', ['e1', 's1', 'src', 'c1', '']],
     ])(
       'should reject an empty %s',
-      (field, args: [string, string, string, string]) => {
+      (field, args: [string, string, string, string, string]) => {
         expect(() => sdk.flow.componentData(...args)).toThrow(
           `"${field}" must not be empty`,
         );

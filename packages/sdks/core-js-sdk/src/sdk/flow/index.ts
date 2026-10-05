@@ -17,6 +17,7 @@ const withComponentDataValidations = withValidations(
   stringNonEmpty('stepId'),
   stringNonEmpty('source'),
   stringNonEmpty('componentId'),
+  stringNonEmpty('componentType'),
 );
 
 const withFlow = (httpClient: HttpClient) => ({
@@ -107,12 +108,13 @@ const withFlow = (httpClient: HttpClient) => ({
       stepId: string,
       source: string,
       componentId: string,
+      componentType: string,
       params?: Record<string, string>,
     ): Promise<SdkResponse<{ data: unknown }>> =>
       transformResponse(
         httpClient.post(
           apiPaths.flow.componentData,
-          { executionId, stepId, source, componentId, params },
+          { executionId, stepId, source, componentId, componentType, params },
           { disableRetry: true },
         ),
       ),
