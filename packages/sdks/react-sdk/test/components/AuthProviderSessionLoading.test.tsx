@@ -48,7 +48,7 @@ describe('AuthProvider loading state on a rejected refresh / me', () => {
   });
 
   // Without a rejection handler the loading state stays `true` forever, since
-  // isSessionFetched/isUserFetched are set before the call so the fetch never re-runs.
+  // isSessionFetchStarted/isUserFetched are set before the call so the fetch never re-runs.
   it('clears isSessionLoading when the initial refresh rejects', async () => {
     (refresh as jest.Mock).mockRejectedValueOnce(new Error('network error'));
 

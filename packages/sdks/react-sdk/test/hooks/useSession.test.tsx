@@ -27,7 +27,7 @@ describe('useSession', () => {
       isSessionLoading: false,
       isOidcLoading: false,
       fetchSession,
-      isSessionFetched: false,
+      isSessionFetchStarted: false,
       isAuthenticated: true,
     } as any as IContext);
 
@@ -38,14 +38,14 @@ describe('useSession', () => {
   });
 
   // On a heavy page the isSessionLoading true/false updates can land in one render,
-  // so the context goes straight from "not fetched" to "settled" without ever showing loading
-  it('should stop loading when the session settles without ever reporting isSessionLoading', () => {
+  // so the context goes straight from "not started" to "completed" without ever showing loading
+  it('should stop loading when the session fetch completes without ever reporting isSessionLoading', () => {
     let contextValue = {
       isSessionLoading: false,
       isOidcLoading: false,
       fetchSession: jest.fn(),
-      isSessionFetched: false,
-      isSessionFetchDone: false,
+      isSessionFetchStarted: false,
+      isSessionFetchCompleted: false,
       isAuthenticated: false,
     } as any as IContext;
     const { result, rerender } = renderHook(() => useSession(), {
@@ -58,8 +58,8 @@ describe('useSession', () => {
 
     contextValue = {
       ...contextValue,
-      isSessionFetched: true,
-      isSessionFetchDone: true,
+      isSessionFetchStarted: true,
+      isSessionFetchCompleted: true,
     };
     rerender();
 

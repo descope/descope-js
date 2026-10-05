@@ -90,7 +90,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [isOidcLoading, setIsOidcLoading] = useState(!!oidcConfig);
   // flips once when the first session fetch settles - unlike isSessionLoading, this change
   // can't be lost if React batches the loading true/false updates into a single render
-  const [isSessionFetchDone, setIsSessionFetchDone] = useState(false);
+  const [isSessionFetchCompleted, setIsSessionFetchCompleted] = useState(false);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -127,7 +127,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     return undefined;
   }, [sdk]);
 
-  const isSessionFetched = useRef(false);
+  const isSessionFetchStarted = useRef(false);
   const isUserFetched = useRef(false);
 
   // if oidc config is enabled, and we have oidc params in the url
@@ -138,8 +138,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       sdk.oidc.finishLoginIfNeed().finally(() => {
         setIsOidcLoading(false);
         // We want that the session will fetched only once
-        isSessionFetched.current = true;
-        setIsSessionFetchDone(true);
+        isSessionFetchStarted.current = true;
+        setIsSessionFetchCompleted(true);
       });
     }
   }, []);
@@ -149,17 +149,17 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     if (isDescopeBridge()) return;
 
     // We want that the session will fetched only once
-    if (isSessionFetched.current) return;
-    isSessionFetched.current = true;
+    if (isSessionFetchStarted.current) return;
+    isSessionFetchStarted.current = true;
 
     setIsSessionLoading(true);
     const stopSessionLoading = () => {
       setIsSessionLoading(false);
-      setIsSessionFetchDone(true);
+      setIsSessionFetchCompleted(true);
     };
     // Clear the loading state on both fulfilment and rejection. A rejected
     // refresh (e.g. a transient network failure on the proactive refresh) must
-    // still clear `isSessionLoading` - `isSessionFetched` is already set so
+    // still clear `isSessionLoading` - `isSessionFetchStarted` is already set so
     // `fetchSession` never re-runs, and consumers (e.g. useSession) would
     // otherwise hang on "loading" forever despite a valid session.
     withValidation(sdk?.refresh)(undefined, true).then(
@@ -191,8 +191,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isAuthenticated,
       isSessionLoading,
       isOidcLoading,
-      isSessionFetched: isSessionFetched.current,
-      isSessionFetchDone,
+      isSessionFetchStarted: isSessionFetchStarted.current,
+      isSessionFetchCompleted,
       projectId,
       baseUrl,
       baseStaticUrl,
@@ -217,8 +217,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isAuthenticated,
       isSessionLoading,
       isOidcLoading,
-      isSessionFetched.current,
-      isSessionFetchDone,
+      isSessionFetchStarted.current,
+      isSessionFetchCompleted,
       projectId,
       baseUrl,
       baseStaticUrl,
