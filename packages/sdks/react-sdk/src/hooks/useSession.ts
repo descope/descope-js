@@ -10,7 +10,7 @@ const useSession = () => {
     isOidcLoading,
     fetchSession,
     isSessionFetched,
-    isSessionSettled,
+    isSessionFetchDone,
     isAuthenticated,
   } = useContext();
 
@@ -19,10 +19,10 @@ const useSession = () => {
   const isLoading = useRef(isSessionLoading || isOidcLoading);
 
   // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
-  // isSessionSettled guarantees a re-run when the fetch settles, even if isSessionLoading never visibly changed
+  // isSessionFetchDone guarantees a re-run when the fetch settles, even if isSessionLoading never visibly changed
   useMemo(() => {
     isLoading.current = isSessionLoading || isOidcLoading;
-  }, [isSessionLoading, isOidcLoading, isSessionSettled]);
+  }, [isSessionLoading, isOidcLoading, isSessionFetchDone]);
 
   // In case we're in a native flow, we won't refresh the session anyway, so no point in marking the state as loading
   const shouldFetchSession = !isAuthenticated && !isSessionLoading && !isDescopeBridge();

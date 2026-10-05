@@ -90,7 +90,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   const [isOidcLoading, setIsOidcLoading] = useState(!!oidcConfig);
   // flips once when the first session fetch settles - unlike isSessionLoading, this change
   // can't be lost if React batches the loading true/false updates into a single render
-  const [isSessionSettled, setIsSessionSettled] = useState(false);
+  const [isSessionFetchDone, setIsSessionFetchDone] = useState(false);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -139,7 +139,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
         setIsOidcLoading(false);
         // We want that the session will fetched only once
         isSessionFetched.current = true;
-        setIsSessionSettled(true);
+        setIsSessionFetchDone(true);
       });
     }
   }, []);
@@ -154,16 +154,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
     setIsSessionLoading(true);
     const stopSessionLoading = () => {
-      // Defer to a separate render pass so React doesn't batch this with
-      // the setIsSessionLoading(true) above when refresh() short-circuits
-      // synchronously - downstream consumers (e.g. useSession) need to
-      // observe the false→true→false loading transition (#1393)
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          setIsSessionLoading(false);
-          setIsSessionSettled(true);
-        }, 0);
-      });
+      setIsSessionLoading(false);
+      setIsSessionFetchDone(true);
     };
     // Clear the loading state on both fulfilment and rejection. A rejected
     // refresh (e.g. a transient network failure on the proactive refresh) must
@@ -200,7 +192,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isSessionLoading,
       isOidcLoading,
       isSessionFetched: isSessionFetched.current,
-      isSessionSettled,
+      isSessionFetchDone,
       projectId,
       baseUrl,
       baseStaticUrl,
@@ -226,7 +218,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isSessionLoading,
       isOidcLoading,
       isSessionFetched.current,
-      isSessionSettled,
+      isSessionFetchDone,
       projectId,
       baseUrl,
       baseStaticUrl,

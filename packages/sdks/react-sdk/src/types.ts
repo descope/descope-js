@@ -117,7 +117,7 @@ export interface IContext {
   isSessionLoading: boolean;
   isOidcLoading: boolean;
   isSessionFetched: boolean;
-  isSessionSettled: boolean;
+  isSessionFetchDone: boolean;
   projectId: string;
   baseUrl?: string;
   styleId?: string;

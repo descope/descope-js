@@ -45,7 +45,7 @@ describe('useSession', () => {
       isOidcLoading: false,
       fetchSession: jest.fn(),
       isSessionFetched: false,
-      isSessionSettled: false,
+      isSessionFetchDone: false,
       isAuthenticated: false,
     } as any as IContext;
     const { result, rerender } = renderHook(() => useSession(), {
@@ -59,7 +59,7 @@ describe('useSession', () => {
     contextValue = {
       ...contextValue,
       isSessionFetched: true,
-      isSessionSettled: true,
+      isSessionFetchDone: true,
     };
     rerender();
 
