@@ -7,7 +7,7 @@ import { ExtendedResponse } from '../src/httpClient/types';
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
-// Local runs only. CI sets REGIONS from the list devops generates:
+// Local runs. CI fetches the regions devops generates into REGIONS:
 // https://imgs.descope.com/regions/regions.json (descope/etc#18332).
 const FALLBACK_REGIONS = [
   'use1',
@@ -20,40 +20,10 @@ const FALLBACK_REGIONS = [
 ];
 
 const regionsUnderTest = (): string[] => {
-  const raw = process.env.REGIONS;
-  if (raw === undefined) return FALLBACK_REGIONS;
-
-  if (!raw.trim()) {
-    throw new Error(
-      'REGIONS is set but empty; expected a JSON array of symbols or region objects',
-    );
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    throw new Error(
-      `REGIONS must be a JSON array of symbols or region objects, got: ${raw}`,
-    );
-  }
-
-  if (!Array.isArray(parsed) || parsed.length === 0) {
-    throw new Error(`REGIONS must be a non-empty JSON array, got: ${raw}`);
-  }
-
-  return parsed.map((entry) => {
-    const symbol =
-      typeof entry === 'string'
-        ? entry
-        : (entry as { symbol?: string })?.symbol;
-    if (typeof symbol !== 'string' || !symbol) {
-      throw new Error(
-        `REGIONS entry is missing a region symbol: ${JSON.stringify(entry)}`,
-      );
-    }
-    return symbol;
-  });
+  if (!process.env.CI) return FALLBACK_REGIONS;
+  return JSON.parse(process.env.REGIONS ?? '').map(
+    (region: { symbol: string }) => region.symbol,
+  );
 };
 
 const afterRequestHook = jest.fn();
