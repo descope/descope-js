@@ -27,7 +27,7 @@ describe('useSession', () => {
       isSessionLoading: false,
       isOidcLoading: false,
       fetchSession,
-      isSessionFetched: false,
+      isSessionFetchStarted: false,
       isAuthenticated: true,
     } as any as IContext);
 
@@ -35,5 +35,34 @@ describe('useSession', () => {
     expect(result.current.sessionToken).toBe(session);
     expect(result.current.isAuthenticated).toBe(true);
     expect(fetchSession).not.toHaveBeenCalled();
+  });
+
+  // On a heavy page the isSessionLoading true/false updates can land in one render,
+  // so the context goes straight from "not started" to "completed" without ever showing loading
+  it('should stop loading when the session fetch completes without ever reporting isSessionLoading', () => {
+    let contextValue = {
+      isSessionLoading: false,
+      isOidcLoading: false,
+      fetchSession: jest.fn(),
+      isSessionFetchStarted: false,
+      isSessionFetchCompleted: false,
+      isAuthenticated: false,
+    } as any as IContext;
+    const { result, rerender } = renderHook(() => useSession(), {
+      wrapper: ({ children }: { children?: React.ReactNode }) => (
+        <Context.Provider value={contextValue}>{children}</Context.Provider>
+      ),
+    });
+
+    expect(result.current.isSessionLoading).toBe(true);
+
+    contextValue = {
+      ...contextValue,
+      isSessionFetchStarted: true,
+      isSessionFetchCompleted: true,
+    };
+    rerender();
+
+    expect(result.current.isSessionLoading).toBe(false);
   });
 });
