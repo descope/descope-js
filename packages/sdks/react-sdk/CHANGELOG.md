@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.13](https://github.com/descope/descope-js/compare/react-sdk-3.3.12...react-sdk-3.3.13) (2026-10-05)
+
+
+### Bug Fixes
+
+* **react-sdk:** clear useSession loading when true/false updates batch into one render ([#1500](https://github.com/descope/descope-js/issues/1500)) RELEASE ([bc387cb](https://github.com/descope/descope-js/commit/bc387cb1c7813a7b60effc30659480a237febbeb)), closes [#1433](https://github.com/descope/descope-js/issues/1433) [#1393](https://github.com/descope/descope-js/issues/1393) [#1395](https://github.com/descope/descope-js/issues/1395) [#1433](https://github.com/descope/descope-js/issues/1433) [#1395](https://github.com/descope/descope-js/issues/1395) [#1433](https://github.com/descope/descope-js/issues/1433)
+
 ## [3.3.12](https://github.com/descope/descope-js/compare/react-sdk-3.3.11...react-sdk-3.3.12) (2026-10-04)
 
 ### Dependency Updates
