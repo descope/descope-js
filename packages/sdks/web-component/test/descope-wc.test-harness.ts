@@ -75,6 +75,7 @@ export const sdk = {
     start: jest.fn().mockName('flow.start'),
     next: jest.fn().mockName('flow.next'),
     event: jest.fn().mockName('flow.event'),
+    componentData: jest.fn().mockName('flow.componentData'),
   },
   webauthn: {
     helpers: {
@@ -91,6 +92,7 @@ export const sdk = {
 export const nextMock = sdk.flow.next as jest.Mock;
 export const startMock = sdk.flow.start as jest.Mock;
 export const flowEventMock = sdk.flow.event as jest.Mock;
+export const componentDataMock = sdk.flow.componentData as jest.Mock;
 export const isWebauthnSupportedMock = sdk.webauthn.helpers
   .isSupported as jest.Mock;
 export const getLastUserLoginIdMock = sdk.getLastUserLoginId as jest.Mock;
@@ -234,6 +236,7 @@ export function teardownWebComponentTestEnv() {
   sdk.flow.start = startMock;
   sdk.flow.next = nextMock;
   sdk.flow.event = flowEventMock;
+  sdk.flow.componentData = componentDataMock;
   // Validation events are best-effort; default to accepted so no test has to
   // care unless it is specifically about tracking.
   flowEventMock.mockResolvedValue({ ok: true, code: 200 });

@@ -150,7 +150,38 @@ class DescopeWc extends BaseDescopeWc {
 
   #eventsCbRefs = {
     visibilitychange: this.#syncStateWithVisibility.bind(this),
+    componentData: this.#handleComponentData.bind(this),
   };
+
+  // A screen component asks the host for server data from a `source`.
+  // preventDefault tells it a host is answering; without it the component
+  // answers on its own. The SDK forwards source and params as is and knows
+  // nothing about the component or the shape of the data.
+  #handleComponentData(
+    e: CustomEvent<{
+      source: string;
+      params?: Record<string, string>;
+      respond: (res: { data?: unknown; error?: unknown }) => void;
+    }>,
+  ) {
+    const { source, params, respond } = e.detail || ({} as typeof e.detail);
+    if (typeof respond !== 'function' || typeof source !== 'string') return;
+    e.preventDefault();
+
+    const { executionId, stepId } = this.flowState.current;
+    Promise.resolve()
+      .then(() =>
+        this.sdk.flow.componentData(executionId, stepId, source, params),
+      )
+      .then((res) =>
+        respond(
+          res?.ok
+            ? { data: res.data?.data }
+            : { error: res?.error || 'Failed to fetch component data' },
+        ),
+      )
+      .catch((err) => respond({ error: err?.message || err }));
+  }
 
   #syncStateWithVisibility() {
     if (!document.hidden) {
@@ -529,6 +560,13 @@ class DescopeWc extends BaseDescopeWc {
         'visibilitychange',
         this.#eventsCbRefs.visibilitychange,
       );
+
+      // contentRootElement outlives screen changes, so one delegated listener
+      // serves every render; the stable ref makes a re-init a no-op
+      this.contentRootElement.addEventListener(
+        'descope-component-data',
+        this.#eventsCbRefs.componentData,
+      );
     }
     await super.init?.();
   }
@@ -554,6 +592,10 @@ class DescopeWc extends BaseDescopeWc {
     window.removeEventListener(
       'visibilitychange',
       this.#eventsCbRefs.visibilitychange,
+    );
+    this.contentRootElement.removeEventListener(
+      'descope-component-data',
+      this.#eventsCbRefs.componentData,
     );
   }
 
@@ -2022,6 +2064,24 @@ class DescopeWc extends BaseDescopeWc {
         value: input.value,
       })),
     );
+
+    // an input may carry more values besides its own, e.g. an id that goes
+    // with its selected option
+    inputs.forEach((input) => {
+      const { extraFormValues } = input as unknown as {
+        extraFormValues?: unknown;
+      };
+      if (
+        !extraFormValues ||
+        typeof extraFormValues !== 'object' ||
+        Array.isArray(extraFormValues)
+      ) {
+        return;
+      }
+      Object.entries(extraFormValues).forEach(([name, value]) => {
+        if (typeof value === 'string') values.push({ name, value });
+      });
+    });
 
     // reduce to object
     return values.reduce(

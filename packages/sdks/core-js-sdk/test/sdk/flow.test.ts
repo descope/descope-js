@@ -216,4 +216,75 @@ describe('Flows', () => {
       );
     });
   });
+
+  describe('componentData', () => {
+    it('should post the source and params for the current step without retry', async () => {
+      const data = { items: [{ id: '1' }] };
+      mockHttpClient.post.mockResolvedValue({
+        ok: true,
+        json: () => ({ data }),
+        clone: () => ({ json: () => Promise.resolve({ data }) }),
+        status: 200,
+      });
+
+      const resp = await sdk.flow.componentData('e1', 's1', 'src', {
+        query: 'kar',
+      });
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/v1/flow/component/data',
+        {
+          executionId: 'e1',
+          stepId: 's1',
+          source: 'src',
+          params: { query: 'kar' },
+        },
+        { disableRetry: true },
+      );
+      expect(resp.ok).toBe(true);
+      expect(resp.data).toEqual({ data });
+    });
+
+    it('should allow omitting params', async () => {
+      mockHttpClient.post.mockResolvedValue({
+        ok: true,
+        json: () => ({ data: {} }),
+        clone: () => ({ json: () => Promise.resolve({ data: {} }) }),
+        status: 200,
+      });
+
+      await sdk.flow.componentData('e1', 's1', 'src');
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        '/v1/flow/component/data',
+        { executionId: 'e1', stepId: 's1', source: 'src', params: undefined },
+        { disableRetry: true },
+      );
+    });
+
+    it('should return the error on a failed response', async () => {
+      const error = { errorCode: 'E000000', errorDescription: 'failed' };
+      mockHttpClient.post.mockResolvedValue({
+        ok: false,
+        json: () => error,
+        clone: () => ({ json: () => Promise.resolve(error) }),
+        status: 400,
+      });
+
+      const resp = await sdk.flow.componentData('e1', 's1', 'src');
+
+      expect(resp.ok).toBe(false);
+      expect(resp.error).toEqual(error);
+    });
+
+    it.each([
+      ['executionId', ['', 's1', 'src']],
+      ['stepId', ['e1', '', 'src']],
+      ['source', ['e1', 's1', '']],
+    ])('should reject an empty %s', (field, args: [string, string, string]) => {
+      expect(() => sdk.flow.componentData(...args)).toThrow(
+        `"${field}" must not be empty`,
+      );
+    });
+  });
 });
