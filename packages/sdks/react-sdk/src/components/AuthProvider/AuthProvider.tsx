@@ -137,7 +137,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isOidcFinishedLogin.current = true;
       sdk.oidc.finishLoginIfNeed().finally(() => {
         setIsOidcLoading(false);
-        // We want that the session will fetched only once
+        // finishing the OIDC login already fetched the session, so mark the fetch as both
+        // started (fetchSession won't run again) and completed, even though it never ran
         isSessionFetchStarted.current = true;
         setIsSessionFetchCompleted(true);
       });
