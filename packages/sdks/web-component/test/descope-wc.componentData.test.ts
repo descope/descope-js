@@ -35,6 +35,8 @@ const renderScreen = async () => {
   });
 
   const ele = screen.getByShadowTestId('input');
+  // the flow renderer gives every component an id; the SDK sends it as componentId
+  ele.id = 'comp-1';
   // real components are form-associated inputs
   ele.checkValidity = () => true;
   return ele;
@@ -89,7 +91,32 @@ describe('web-component component data', () => {
         'exec-1',
         'step-1',
         'some-source',
+        'comp-1',
         { query: 'kar' },
+      );
+    });
+
+    it('sends the id of the component hosting the event, not the inner element', async () => {
+      componentDataMock.mockResolvedValue({ ok: true, data: { data: {} } });
+      const ele = await renderScreen();
+      // real components dispatch from inside their own shadow root
+      const host = document.createElement('div');
+      host.id = 'host-1';
+      ele.parentElement.appendChild(host);
+      const inner = document.createElement('span');
+      inner.id = 'inner-1';
+      host.attachShadow({ mode: 'open' }).appendChild(inner);
+
+      requestData(inner);
+
+      await waitFor(() =>
+        expect(componentDataMock).toHaveBeenCalledWith(
+          'exec-1',
+          'step-1',
+          'some-source',
+          'host-1',
+          { query: 'kar' },
+        ),
       );
     });
 
@@ -139,6 +166,17 @@ describe('web-component component data', () => {
       expect(componentDataMock).not.toHaveBeenCalled();
     });
 
+    it('ignores an event from an element without an id', async () => {
+      const ele = await renderScreen();
+      ele.removeAttribute('id');
+
+      const { event, respond } = requestData(ele);
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(respond).not.toHaveBeenCalled();
+      expect(componentDataMock).not.toHaveBeenCalled();
+    });
+
     it('registers a single listener that survives screen changes', async () => {
       componentDataMock.mockResolvedValue({ ok: true, data: { data: {} } });
       nextMock.mockReturnValueOnce(
@@ -156,7 +194,9 @@ describe('web-component component data', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      const { respond } = requestData(screen.getByShadowTestId('input'));
+      const next = screen.getByShadowTestId('input');
+      next.id = 'comp-1';
+      const { respond } = requestData(next);
 
       await waitFor(() => expect(respond).toHaveBeenCalledWith({ data: {} }));
       expect(componentDataMock).toHaveBeenCalledTimes(1);
@@ -164,6 +204,7 @@ describe('web-component component data', () => {
         'exec-1',
         'step-2',
         'some-source',
+        'comp-1',
         { query: 'kar' },
       );
     });

@@ -155,7 +155,8 @@ class DescopeWc extends BaseDescopeWc {
 
   // A screen component asks the host for server data from a `source`.
   // preventDefault tells it a host is answering; without it the component
-  // answers on its own. The SDK forwards source and params as is and knows
+  // answers on its own. The SDK forwards source and params as is, identifies
+  // the component by the id of the element that raised the event, and knows
   // nothing about the component or the shape of the data.
   #handleComponentData(
     e: CustomEvent<{
@@ -165,13 +166,26 @@ class DescopeWc extends BaseDescopeWc {
     }>,
   ) {
     const { source, params, respond } = e.detail || ({} as typeof e.detail);
-    if (typeof respond !== 'function' || typeof source !== 'string') return;
+    // composed events are retargeted to the screen element (the shadow host)
+    const componentId = (e.target as Element | null)?.id;
+    if (
+      typeof respond !== 'function' ||
+      typeof source !== 'string' ||
+      !componentId
+    )
+      return;
     e.preventDefault();
 
     const { executionId, stepId } = this.flowState.current;
     Promise.resolve()
       .then(() =>
-        this.sdk.flow.componentData(executionId, stepId, source, params),
+        this.sdk.flow.componentData(
+          executionId,
+          stepId,
+          source,
+          componentId,
+          params,
+        ),
       )
       .then((res) =>
         respond(

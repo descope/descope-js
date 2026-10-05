@@ -2,6 +2,7 @@ import { CreateWebSdk } from '../../sdk';
 import { AfterRequestHook, BeforeRequestHook } from '../../types';
 import { addHooks } from '../helpers';
 import {
+  FLOW_COMPONENT_DATA_PATH,
   FLOW_NEXT_PATH,
   FLOW_NONCE_HEADER,
   FLOW_NONCE_PREFIX,
@@ -63,8 +64,14 @@ export const withFlowNonce =
       setFlowNonce(executionId, nonce, isStart, nonceStoragePrefix, nextSeq);
     };
 
+    // component/data carries the current nonce so the server can bind the
+    // request to the rendered screen, but only start/next responses rotate
+    // it (afterRequest ignores every other path).
     const beforeRequest: BeforeRequestHook = (req) => {
-      if (req.path === FLOW_NEXT_PATH) {
+      if (
+        req.path === FLOW_NEXT_PATH ||
+        req.path === FLOW_COMPONENT_DATA_PATH
+      ) {
         const executionId = getExecutionIdFromRequest(req);
 
         if (executionId) {

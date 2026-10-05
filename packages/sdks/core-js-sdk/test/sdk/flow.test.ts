@@ -218,7 +218,7 @@ describe('Flows', () => {
   });
 
   describe('componentData', () => {
-    it('should post the source and params for the current step without retry', async () => {
+    it('should post the source, component and params for the current step without retry', async () => {
       const data = { items: [{ id: '1' }] };
       mockHttpClient.post.mockResolvedValue({
         ok: true,
@@ -227,7 +227,7 @@ describe('Flows', () => {
         status: 200,
       });
 
-      const resp = await sdk.flow.componentData('e1', 's1', 'src', {
+      const resp = await sdk.flow.componentData('e1', 's1', 'src', 'c1', {
         query: 'kar',
       });
 
@@ -237,6 +237,7 @@ describe('Flows', () => {
           executionId: 'e1',
           stepId: 's1',
           source: 'src',
+          componentId: 'c1',
           params: { query: 'kar' },
         },
         { disableRetry: true },
@@ -253,11 +254,17 @@ describe('Flows', () => {
         status: 200,
       });
 
-      await sdk.flow.componentData('e1', 's1', 'src');
+      await sdk.flow.componentData('e1', 's1', 'src', 'c1');
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         '/v1/flow/component/data',
-        { executionId: 'e1', stepId: 's1', source: 'src', params: undefined },
+        {
+          executionId: 'e1',
+          stepId: 's1',
+          source: 'src',
+          componentId: 'c1',
+          params: undefined,
+        },
         { disableRetry: true },
       );
     });
@@ -271,20 +278,24 @@ describe('Flows', () => {
         status: 400,
       });
 
-      const resp = await sdk.flow.componentData('e1', 's1', 'src');
+      const resp = await sdk.flow.componentData('e1', 's1', 'src', 'c1');
 
       expect(resp.ok).toBe(false);
       expect(resp.error).toEqual(error);
     });
 
     it.each([
-      ['executionId', ['', 's1', 'src']],
-      ['stepId', ['e1', '', 'src']],
-      ['source', ['e1', 's1', '']],
-    ])('should reject an empty %s', (field, args: [string, string, string]) => {
-      expect(() => sdk.flow.componentData(...args)).toThrow(
-        `"${field}" must not be empty`,
-      );
-    });
+      ['executionId', ['', 's1', 'src', 'c1']],
+      ['stepId', ['e1', '', 'src', 'c1']],
+      ['source', ['e1', 's1', '', 'c1']],
+      ['componentId', ['e1', 's1', 'src', '']],
+    ])(
+      'should reject an empty %s',
+      (field, args: [string, string, string, string]) => {
+        expect(() => sdk.flow.componentData(...args)).toThrow(
+          `"${field}" must not be empty`,
+        );
+      },
+    );
   });
 });
