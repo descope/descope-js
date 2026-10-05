@@ -678,3 +678,44 @@ describe('routing matrix (mapping x operator)', () => {
     expect(channelOf(out)).toBe(expected);
   });
 });
+
+describe('lock reason filters', () => {
+  const LOCK_CATALOG: FilterableColumn[] = [
+    col('lockReasons', { kind: 'array', field: 'lockReasons' }, 'multiselect'),
+    col(
+      'tempLockReasons',
+      { kind: 'array', field: 'tempLockReasons' },
+      'multiselect',
+    ),
+  ];
+
+  it('maps both through the array handler with no value map', () => {
+    expect(
+      filterToSearchParams(
+        [
+          {
+            column: 'lockReasons',
+            operator: 'is-any-of',
+            value: ['password', 'totp'],
+          },
+          {
+            column: 'tempLockReasons',
+            operator: 'is-any-of',
+            value: ['recovery_codes'],
+          },
+        ],
+        LOCK_CATALOG,
+      ),
+    ).toMatchObject({
+      lockReasons: ['password', 'totp'],
+      tempLockReasons: ['recovery_codes'],
+    });
+  });
+
+  it('clears both when the filter is removed', () => {
+    expect(filterToSearchParams([], LOCK_CATALOG)).toMatchObject({
+      lockReasons: undefined,
+      tempLockReasons: undefined,
+    });
+  });
+});
