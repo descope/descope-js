@@ -154,6 +154,7 @@ describe('flowNonce', () => {
         'stepId',
         'source',
         'componentId',
+        'componentType',
       );
 
       const [url, options] = mockFetch.mock.calls[0];
@@ -171,6 +172,7 @@ describe('flowNonce', () => {
         'stepId',
         'source',
         'componentId',
+        'componentType',
       );
 
       const [, options] = mockFetch.mock.calls[0];
@@ -196,6 +198,7 @@ describe('flowNonce', () => {
         'stepId',
         'source',
         'componentId',
+        'componentType',
       );
 
       expect(localStorage.getItem(key)).toBe(before);
@@ -215,6 +218,7 @@ describe('flowNonce', () => {
         'stepId',
         'source',
         'componentId',
+        'componentType',
       );
 
       expect(
@@ -241,6 +245,7 @@ describe('flowNonce', () => {
         'stepId',
         'source',
         'componentId',
+        'componentType',
       );
 
       const [url, options] = mockFetch.mock.calls[1];
