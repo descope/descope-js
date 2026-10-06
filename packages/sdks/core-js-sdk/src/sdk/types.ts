@@ -79,6 +79,8 @@ export type UserResponse = User & {
   customAttributes?: Record<string, any>;
   status: string;
   test: boolean;
+  lockReason?: string;
+  tempLockExpiration?: number;
 };
 
 export type Tenant = {
