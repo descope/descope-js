@@ -126,7 +126,7 @@ export const withAutoRefresh =
         }
 
         const refreshTimeStr = new Date(
-          Date.now() + timeout,
+          scheduledRefreshTime,
         ).toLocaleTimeString('en-US', { hour12: false });
         logger.debug(
           `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
