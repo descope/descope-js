@@ -49,8 +49,20 @@ export const withAutoRefresh =
 
     // we need to hold the expiration time and the refresh token in order to refresh the session
     // when the user comes back to the tab or from background/lock screen/etc.
-    let sessionExpirationDate: Date;
-    let refreshToken: string;
+    let sessionExpirationDate: Date | undefined;
+    let refreshToken: string | undefined;
+
+    // the time the refresh timer is aiming for - either nextRefreshSeconds from the server
+    // or REFRESH_THRESHOLD before the session expiration (see getAutoRefreshTimeout)
+    let scheduledRefreshTime: number | undefined;
+
+    // forget the session state when it is logged out or invalidated, so the
+    // tab-return catch-up cannot revive the canceled session
+    const clearSessionState = () => {
+      sessionExpirationDate = undefined;
+      refreshToken = undefined;
+      scheduledRefreshTime = undefined;
+    };
 
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
     let hasInactivityTimeout = false;
@@ -64,13 +76,17 @@ export const withAutoRefresh =
 
     if (IS_BROWSER) {
       document.addEventListener('visibilitychange', () => {
-        // tab becomes visible and the session is expired, do a refresh
+        // tab becomes visible and the scheduled refresh time already passed, do a refresh
+        // the refresh timer is skipped while the document is hidden, so the session may be
+        // past its scheduled refresh time or already expired (the expiration check covers a
+        // scheduled time that lands after the expiration, e.g. a too-large nextRefreshSeconds)
         if (
           document.visibilityState === 'visible' &&
           sessionExpirationDate &&
-          new Date() > sessionExpirationDate
+          ((scheduledRefreshTime && Date.now() >= scheduledRefreshTime) ||
+            Date.now() > sessionExpirationDate.getTime())
         ) {
-          logger.debug('Expiration time passed, refreshing session');
+          logger.debug('Session refresh is overdue, refreshing session');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
           // when the project uses token rotation
@@ -87,6 +103,7 @@ export const withAutoRefresh =
       if (isInvalidSessionResponse(req, res)) {
         logger.debug('Session invalidated, canceling all timers');
         clearAllTimers();
+        clearSessionState();
       } else if (sessionJwt || sessionExpiration) {
         sessionExpirationDate = getTokenExpiration(
           sessionJwt,
@@ -103,6 +120,7 @@ export const withAutoRefresh =
           sessionExpirationDate,
           nextRefreshSeconds,
         );
+        scheduledRefreshTime = Date.now() + timeout;
         clearAllTimers();
 
         if (timeout <= REFRESH_THRESHOLD) {
@@ -118,7 +136,7 @@ export const withAutoRefresh =
         }
 
         const refreshTimeStr = new Date(
-          Date.now() + timeout,
+          scheduledRefreshTime,
         ).toLocaleTimeString('en-US', { hour12: false });
         logger.debug(
           `Setting refresh timer for ${refreshTimeStr}. (${timeout}ms)`,
@@ -165,6 +183,7 @@ export const withAutoRefresh =
         const resp = await fn(...args);
         logger.debug('Clearing all timers');
         clearAllTimers();
+        clearSessionState();
 
         return resp;
       };
