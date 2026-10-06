@@ -7,6 +7,25 @@ import { ExtendedResponse } from '../src/httpClient/types';
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
+// Local runs. CI fetches the regions devops generates into REGIONS:
+// https://imgs.descope.com/regions/regions.json (descope/etc#18332).
+const FALLBACK_REGIONS = [
+  'use1',
+  'euc1',
+  'euw2',
+  'aps1',
+  'aps2',
+  'cac1',
+  'sae1',
+];
+
+const regionsUnderTest = (): string[] => {
+  if (!process.env.CI) return FALLBACK_REGIONS;
+  return JSON.parse(process.env.REGIONS ?? '').map(
+    (region: { symbol: string }) => region.symbol,
+  );
+};
+
 const afterRequestHook = jest.fn();
 
 const projectId = '456';
@@ -464,6 +483,36 @@ describe('httpClient', () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       'https://api.descope.com/1/2/3',
+      expect.anything(),
+    );
+  });
+  it.each(regionsUnderTest())(
+    'should resolve the %s region from the project id',
+    (region) => {
+      const httpClient = createHttpClient({
+        baseUrl: DEFAULT_BASE_API_URL,
+        projectId: `P${region}2aAc4T2V93bddihGEx2Ryhc8e5Z`,
+      });
+
+      httpClient.get('1/2/3', { token: null });
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `https://api.${region}.descope.com/1/2/3`,
+        expect.anything(),
+      );
+    },
+  );
+
+  it('should resolve a region that does not exist', () => {
+    const httpClient = createHttpClient({
+      baseUrl: DEFAULT_BASE_API_URL,
+      projectId: 'Pzz992aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+
+    httpClient.get('1/2/3', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.zz99.descope.com/1/2/3',
       expect.anything(),
     );
   });
