@@ -1112,4 +1112,81 @@ describe('autoRefresh', () => {
       jest.useRealTimers();
     }
   });
+
+  it('should refresh on visibilitychange when the session expired before the scheduled refresh time', async () => {
+    // a too-large nextRefreshSeconds puts the scheduled refresh after the expiration -
+    // an expired session must still be caught up on tab return
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 25; // 25 seconds from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        nextRefreshSeconds: 300,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    jest.useFakeTimers();
+    try {
+      jest.setSystemTime(Date.now() + 30 * 1000); // past expiration, before the scheduled refresh
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        writable: true,
+        configurable: true,
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('should not refresh on visibilitychange after logout', async () => {
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 45; // 45 seconds from now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    // the logout response carries no session info, and clears the catch-up state
+    mockFetch.mockReturnValue(createMockReturnValue({}));
+    await sdk.logout();
+
+    await new Promise(process.nextTick);
+
+    jest.useFakeTimers();
+    try {
+      jest.setSystemTime(Date.now() + 50 * 1000); // past the old deadline (exp - 20s) and the expiration
+      Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        writable: true,
+        configurable: true,
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(refreshSpy).not.toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
 });
