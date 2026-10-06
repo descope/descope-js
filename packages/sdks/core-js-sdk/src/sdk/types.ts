@@ -79,15 +79,7 @@ export type UserResponse = User & {
   customAttributes?: Record<string, any>;
   status: string;
   test: boolean;
-  /**
-   * Auth method that triggered brute-force protection:
-   * 'password' | 'totp' | 'recovery_codes' | 'security_questions', empty when none
-   */
   lockReason?: string;
-  /**
-   * When a temporary lock ends, in unix seconds (0 when none).
-   * The user is temporarily locked while this is greater than now
-   */
   tempLockExpiration?: number;
 };
 
