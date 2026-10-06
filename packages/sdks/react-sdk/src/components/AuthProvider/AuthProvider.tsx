@@ -91,6 +91,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   // flips once when the first session fetch settles - unlike isSessionLoading, this change
   // can't be lost if React batches the loading true/false updates into a single render
   const [isSessionFetchCompleted, setIsSessionFetchCompleted] = useState(false);
+  // same as isSessionFetchCompleted, for the user fetch
+  const [isUserFetchCompleted, setIsUserFetchCompleted] = useState(false);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -128,7 +130,7 @@ const AuthProvider: FC<IAuthProviderProps> = ({
   }, [sdk]);
 
   const isSessionFetchStarted = useRef(false);
-  const isUserFetched = useRef(false);
+  const isUserFetchStarted = useRef(false);
 
   // if oidc config is enabled, and we have oidc params in the url
   // we will finish the login (this should run only once)
@@ -171,13 +173,16 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
   const fetchUser = useCallback(() => {
     // We want that the user will fetched only once
-    if (isUserFetched.current) return;
-    isUserFetched.current = true;
+    if (isUserFetchStarted.current) return;
+    isUserFetchStarted.current = true;
 
     setIsUserLoading(true);
     // Clear the loading state on both fulfilment and rejection so a failed
     // `me()` doesn't leave `isUserLoading` stuck `true` (see fetchSession).
-    const stopUserLoading = () => setIsUserLoading(false);
+    const stopUserLoading = () => {
+      setIsUserLoading(false);
+      setIsUserFetchCompleted(true);
+    };
     withValidation(sdk.me)().then(stopUserLoading, stopUserLoading);
   }, [sdk]);
 
@@ -186,7 +191,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
-      isUserFetched: isUserFetched.current,
+      isUserFetchStarted: isUserFetchStarted.current,
+      isUserFetchCompleted,
       fetchSession,
       session,
       isAuthenticated,
@@ -212,7 +218,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
-      isUserFetched.current,
+      isUserFetchStarted.current,
+      isUserFetchCompleted,
       fetchSession,
       session,
       isAuthenticated,
