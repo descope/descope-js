@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.0](https://github.com/descope/descope-js/compare/user-management-widget-0.20.8...user-management-widget-0.21.0) (2026-10-06)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.1`
+* `web-component` updated to version `4.4.8`
+
+### Features
+
+* **user-management-widget:** show why a user was locked ([#1505](https://github.com/descope/descope-js/issues/1505)) ([e203ab5](https://github.com/descope/descope-js/commit/e203ab5efda207073a4972090c2764c5ff5ef938))
+
 ## [0.20.8](https://github.com/descope/descope-js/compare/user-management-widget-0.20.7...user-management-widget-0.20.8) (2026-10-04)
 
 ### Dependency Updates
