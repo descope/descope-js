@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>App (OIDC) - a different site from the auth domain</title>
+
+    <!-- Both are plain browser bundles that register themselves, copied next
+         to this file by the setup in README.md:
+           widget.js       packages/widgets/user-profile-widget/dist/index.js
+           descope-sdk.js  packages/sdks/web-js-sdk/dist/index.umd.js
+         The widget defines <descope-user-profile-widget>; the sdk defines the
+         global `Descope`, which is createSdk. -->
+    <script src="./widget.js"></script>
+    <script src="./descope-sdk.js"></script>
+
+    <style>
+      body {
+        font:
+          14px system-ui,
+          sans-serif;
+        margin: 0;
+        padding: 24px;
+        background: #f6f6f6;
+      }
+      .container {
+        max-width: 760px;
+        margin: auto;
+        background: #fff;
+        padding: 16px;
+      }
+      h1 {
+        font-size: 18px;
+      }
+      .note {
+        color: #666;
+        font-size: 12px;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>The app - a different site from the auth domain</h1>
+    <p class="note" id="status">Loading...</p>
+    <div class="container"></div>
+
+    <script>
+      // Edit for your local stack. Deliberately not query parameters: this
+      // page decides where it sends credentials, nobody else does.
+      const PROJECT_ID = 'P3HmRBOz7fQNZ6Fr4KtdxGeH1Quu';
+      const AUTH = 'https://descope.internal:3100';
+      const STATIC = 'https://static.local.descope.org/pages';
+
+      const REDIRECT_URI = window.location.origin + window.location.pathname;
+      const statusEl = document.getElementById('status');
+      const say = (m) => {
+        statusEl.textContent = m;
+      };
+
+      const sdk = Descope({
+        projectId: PROJECT_ID,
+        baseUrl: AUTH,
+        persistTokens: true,
+      });
+
+      const b64url = (bytes) =>
+        btoa(String.fromCharCode(...new Uint8Array(bytes)))
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+
+      // This app has no login form of its own. It sends the user to the auth
+      // domain, and that is the whole point: the session the passkey popup
+      // later reuses is created there, by this redirect.
+      const goToLogin = async () => {
+        const verifier = b64url(crypto.getRandomValues(new Uint8Array(32)));
+        // localStorage, not sessionStorage: a magic link is clicked in the
+        // mail client, which opens a NEW tab, and sessionStorage does not
+        // cross tabs. Without the verifier the token endpoint falls back to
+        // demanding a client secret. Removed as soon as it is used.
+        localStorage.setItem('pkce_verifier', verifier);
+
+        const challenge = b64url(
+          await crypto.subtle.digest(
+            'SHA-256',
+            new TextEncoder().encode(verifier),
+          ),
+        );
+        const params = new URLSearchParams({
+          client_id: PROJECT_ID,
+          redirect_uri: REDIRECT_URI,
+          response_type: 'code',
+          scope: 'openid profile email',
+          state: b64url(crypto.getRandomValues(new Uint8Array(16))),
+          code_challenge: challenge,
+          code_challenge_method: 'S256',
+        });
+        window.location.assign(
+          `${AUTH}/oauth2/v1/${PROJECT_ID}/authorize?${params}`,
+        );
+      };
+
+      const exchange = async (code) => {
+        const verifier = localStorage.getItem('pkce_verifier') || '';
+        localStorage.removeItem('pkce_verifier');
+        if (!verifier)
+          throw new Error('no pkce verifier stored for this login');
+
+        const res = await fetch(`${AUTH}/oauth2/v1/${PROJECT_ID}/token`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: REDIRECT_URI,
+            client_id: PROJECT_ID,
+            code_verifier: verifier,
+          }),
+        });
+        if (!res.ok) {
+          throw new Error(
+            `token exchange failed: ${res.status} ${(await res.text()).slice(
+              0,
+              300,
+            )}`,
+          );
+        }
+        return res.json();
+      };
+
+      const showWidget = () => {
+        statusEl.hidden = true;
+        const el = document.createElement('descope-user-profile-widget');
+        el.setAttribute('project-id', PROJECT_ID);
+        el.setAttribute('widget-id', 'user-profile-widget');
+        el.setAttribute('base-url', AUTH);
+        el.setAttribute('base-static-url', STATIC);
+        // the two POC attributes - leave them off and flows open in a modal
+        el.setAttribute('flow-target', 'popup');
+        el.setAttribute('flow-popup-url', `${AUTH}/popup-flow.html`);
+        el.addEventListener('logout', () =>
+          window.location.assign(REDIRECT_URI),
+        );
+        document.querySelector('.container').append(el);
+      };
+
+      (async () => {
+        const code = new URLSearchParams(window.location.search).get('code');
+
+        if (code) {
+          say('Finishing sign in...');
+          try {
+            const tokens = await exchange(code);
+            // The tokens came from our own call to the token endpoint, not
+            // through the sdk's http client, so the sdk has not seen them.
+            // This is the sdk's own way of being handed tokens fetched out of
+            // band - it is what its OIDC support does. Note refresh(token)
+            // would NOT work: it uses the token for that one request and
+            // stores nothing. The body is normalized, so the raw OIDC names
+            // (access_token / refresh_token) are understood as is.
+            await sdk.httpClient.hooks.afterRequest(
+              {},
+              new Response(JSON.stringify(tokens)),
+            );
+            window.history.replaceState({}, '', REDIRECT_URI);
+          } catch (e) {
+            say('Sign in failed: ' + e.message);
+            return;
+          }
+        }
+
+        const me = await sdk.me();
+        if (me.ok) showWidget();
+        else await goToLogin();
+      })();
+    </script>
+  </body>
+</html>

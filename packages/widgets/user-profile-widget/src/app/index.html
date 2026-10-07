@@ -72,6 +72,15 @@
         if (DESCOPE_LOCALE) {
           widgetEle.setAttribute('locale', DESCOPE_LOCALE);
         }
+        // Unset by default, so the widget keeps opening flows in a modal.
+        // Set both to run them in a popup on another domain instead, which is
+        // how a passkey ends up bound to the auth domain rather than this app's.
+        if (DESCOPE_FLOW_TARGET) {
+          widgetEle.setAttribute('flow-target', DESCOPE_FLOW_TARGET);
+        }
+        if (DESCOPE_FLOW_POPUP_URL) {
+          widgetEle.setAttribute('flow-popup-url', DESCOPE_FLOW_POPUP_URL);
+        }
         widgetEle.addEventListener('logout', () => {
           window.location.reload();
         });

@@ -29,6 +29,12 @@ export default {
         ),
         DESCOPE_WIDGET_ID: JSON.stringify(process.env.DESCOPE_WIDGET_ID || ''),
         DESCOPE_LOCALE: JSON.stringify(process.env.DESCOPE_LOCALE || ''),
+        DESCOPE_FLOW_TARGET: JSON.stringify(
+          process.env.DESCOPE_FLOW_TARGET || '',
+        ),
+        DESCOPE_FLOW_POPUP_URL: JSON.stringify(
+          process.env.DESCOPE_FLOW_POPUP_URL || '',
+        ),
       },
     }),
     del({ targets: 'build' }),

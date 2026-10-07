@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Descope flow</title>
+    <script src="https://descopecdn.com/npm/@descope/web-component@4.4.3/dist/index.js"></script>
+    <style>
+      /* so the page behind the flow is not white under a dark theme */
+      body[data-theme='dark'] {
+        background: #16181d;
+        color: #fff;
+      }
+      body {
+        box-sizing: border-box;
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      /* the flow fills the window rather than sitting in a narrow column */
+      #flow-host {
+        width: 100%;
+        max-width: 420px;
+      }
+      #status {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="flow-host"></div>
+    <p id="status">Loading…</p>
+
+    <script>
+      // POC scaffolding. Phase 2 replaces this page with auth-hosting, which
+      // already reads the same query parameters. The contract is kept
+      // deliberately identical so that swap is a change of base url, not of
+      // protocol.
+
+      // Deliberately NOT taken from query parameters. The opener must not get
+      // to say where this page sends credentials; auth-hosting resolves these
+      // from its own environment for the same reason. Edit for your local
+      // stack.
+      const BASE_URL = 'https://descope.internal:3100';
+      // Without this the component falls back to Descope's production static
+      // host and fetches someone else's config.json. Note it is a different
+      // host from the API locally; on a real custom domain both sit on the
+      // customer's domain.
+      const BASE_STATIC_URL = 'https://static.local.descope.org/pages';
+
+      const POPUP_NAME_PREFIX = 'descope-widget-flow';
+      const DONE_ACTION = 'widget-flow-done';
+      // used only when this window has no usable session of its own
+      const SIGN_IN_FLOW_ID = 'sign-up-or-in';
+
+      const params = new URLSearchParams(window.location.search);
+      const statusEl = document.getElementById('status');
+
+      document.body.dataset.theme = params.get('theme') || 'light';
+
+      const fail = (msg) => {
+        statusEl.textContent = msg;
+      };
+
+      // mirrors auth-hosting's getClientParams: `client.foo=bar` becomes
+      // { foo: 'bar' }
+      const collectPrefixed = (prefix) => {
+        const out = {};
+        params.forEach((value, key) => {
+          if (key.startsWith(`${prefix}.`)) {
+            out[key.slice(prefix.length + 1)] = value;
+          }
+        });
+        return Object.keys(out).length ? out : undefined;
+      };
+
+      // `?project=` when the widget opens this as a popup; `/login/<projectId>`
+      // when the OIDC authorize endpoint sends the browser here to sign in.
+      // The second shape is auth-hosting's, kept identical on purpose.
+      const projectFromPath = /\/login\/(P[A-Za-z0-9]{26,30})$/.exec(
+        window.location.pathname,
+      )?.[1];
+
+      const projectId = params.get('project') || projectFromPath;
+      const flowId = params.get('flow');
+      const host = document.getElementById('flow-host');
+
+      // A flow can finish in a DIFFERENT window from the one that started it.
+      // Reset password, set phone and the two recovery flows all send a link;
+      // the user clicks it in their mail client, which opens a new tab, and the
+      // flow completes there. The popup is left on "you can now close this
+      // window" and never fires success, so on its own the app is never told.
+      //
+      // Both windows are running this page on the same origin, so the one that
+      // finishes can tell the one holding the opener - which is the only one
+      // that can reach the app. Keyed on project and flow so two popups for
+      // different flows do not cross-talk.
+      let channel;
+      const openChannel = (projectId, flowId) => {
+        try {
+          channel = new BroadcastChannel(
+            `${POPUP_NAME_PREFIX}|${projectId}|${flowId}`,
+          );
+          channel.onmessage = (e) => {
+            if (e.data?.action === DONE_ACTION) reportDone();
+          };
+        } catch (e) {
+          // No BroadcastChannel: the opener's closed-poll is still the
+          // backstop, the user just has to close the window themselves.
+        }
+      };
+
+      let settled = false;
+      function reportDone() {
+        if (settled) return;
+        settled = true;
+
+        // The opener stamped window.name as `descope-widget-flow|<origin>`.
+        // That is self-declared, which is fine here because the only thing
+        // sent is "finished" - never a token. The opener re-establishes its
+        // own session with its own refresh token.
+        const [prefix, openerOrigin] = (window.name || '').split('|');
+
+        if (prefix === POPUP_NAME_PREFIX && openerOrigin) {
+          try {
+            window.opener?.postMessage({ action: DONE_ACTION }, openerOrigin);
+          } catch (e) {
+            // COOP can sever window.opener. The opener's popup.closed poll
+            // is the backstop, so closing is still the right move.
+          }
+          window.close();
+          return;
+        }
+
+        // No opener. Either this is the tab the emailed link opened, or this
+        // page is serving as the OIDC login page. Telling the channel is right
+        // in the first case and harmless in the second, since nobody listens.
+        try {
+          channel?.postMessage({ action: DONE_ACTION });
+        } catch (e) {
+          // nothing else to try
+        }
+      }
+
+      // Built and fully configured before it joins the document. A
+      // <descope-wc> declared empty in markup upgrades immediately and errors
+      // on the missing project-id and flow-id before any attribute arrives.
+      const createFlow = (id, { withInputs, onSuccess, onError }) => {
+        const el = document.createElement('descope-wc');
+        el.setAttribute('project-id', projectId);
+        el.setAttribute('flow-id', id);
+        el.setAttribute('base-url', BASE_URL);
+        el.setAttribute('base-static-url', BASE_STATIC_URL);
+
+        ['theme', 'locale', 'tenant'].forEach((name) => {
+          const value = params.get(name);
+          if (value) el.setAttribute(name, value);
+        });
+
+        // Where an emailed or texted link should come back to. Without this the
+        // server falls back to this page's own url, so a link-based flow would
+        // resume HERE, on the auth domain, leaving the user stranded away from
+        // the app. Pointing it at the opener's page means the backend appends
+        // `&widget-flow=<flowId>` and the widget picks the flow back up in the
+        // app, which is what happens today without a popup.
+        // The server validates it against Approved Domains, so the opener does
+        // not get to redirect the link anywhere it likes.
+        const redirect = params.get('redirect');
+        if (redirect) el.setAttribute('redirect-url', redirect);
+        const styleId = params.get('style');
+        if (styleId) el.setAttribute('style-id', styleId);
+
+        if (withInputs) {
+          ['client', 'form'].forEach((prefix) => {
+            const value = collectPrefixed(prefix);
+            if (value) el.setAttribute(prefix, JSON.stringify(value));
+          });
+        }
+
+        el.addEventListener('ready', () => {
+          statusEl.hidden = true;
+        });
+        el.addEventListener('success', onSuccess);
+        if (onError) el.addEventListener('error', onError);
+
+        host.replaceChildren(el);
+      };
+
+      const runTargetFlow = () =>
+        createFlow(flowId, { withInputs: true, onSuccess: reportDone });
+
+      if (!projectId || !flowId) {
+        fail('Missing project or flow.');
+      } else {
+        openChannel(projectId, flowId);
+        // The flow needs a user, and this window has its own origin with its
+        // own session - the app's session does not reach here. Normally there
+        // already is one, because in production the app got its session from
+        // this domain in the first place. When there is not, or when the stored
+        // one belongs to another project, the flow cannot start: sign in here
+        // once and then carry on to the flow that was actually asked for.
+        let signInTried = false;
+
+        createFlow(flowId, {
+          withInputs: true,
+          onSuccess: reportDone,
+          onError: () => {
+            if (signInTried) {
+              fail('Could not start the flow.');
+              return;
+            }
+            signInTried = true;
+            statusEl.hidden = false;
+            statusEl.textContent = 'Sign in to continue…';
+            createFlow(SIGN_IN_FLOW_ID, {
+              withInputs: false,
+              onSuccess: runTargetFlow,
+            });
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -7,3 +7,4 @@ export * from './state';
 export * from './jwt';
 export * from './csv';
 export * from './locale';
+export * from './openCenteredPopup';

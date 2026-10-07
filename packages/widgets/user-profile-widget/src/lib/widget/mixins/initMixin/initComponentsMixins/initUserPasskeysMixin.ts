@@ -1,8 +1,4 @@
-import {
-  FlowDriver,
-  ModalDriver,
-  UserPasskeysDriver,
-} from '@descope/sdk-component-drivers';
+import { UserPasskeysDriver } from '@descope/sdk-component-drivers';
 import {
   compose,
   createSingletonMixin,
@@ -12,91 +8,31 @@ import {
   localeMixin,
   cookieConfigMixin,
   loggerMixin,
-  flowModalMixin,
-  flowInputMixin,
 } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getUserId, getUserPasskeys } from '../../../state/selectors';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initUserPasskeysMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PasskeyUserAuthMethodMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
       cookieConfigMixin,
-      flowModalMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
       userPasskeys: UserPasskeysDriver;
 
-      #addModal: ModalDriver;
+      #addRunner: FlowRunner | undefined;
 
-      #addFlow: FlowDriver;
+      #removeRunner: FlowRunner | undefined;
 
-      #removeModal: ModalDriver;
-
-      #removeFlow: FlowDriver;
-
-      #initAddModal() {
-        if (!this.userPasskeys.addPasskeyFlowId) return;
-
-        this.#addModal = this.createFlowModal({
-          'data-id': 'add-user-passkey',
-          'close-on-outside-click': 'true',
-        });
-        this.#addFlow = new FlowDriver(
-          () => this.#addModal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#addModal.afterClose = this.#initAddModalContent.bind(this);
-        this.#initAddModalContent();
-        this.syncFlowTheme(this.#addFlow);
-      }
-
-      #initAddModalContent() {
-        this.#addModal.setContent(
-          this.createFlowTemplate({
-            flowId: this.userPasskeys.addPasskeyFlowId,
-          }),
-        );
-        this.#addFlow.onSuccess(() => {
-          this.#addModal.close();
-          this.actions.getMe();
-          this.actions.listPasskeys({ userId: getUserId(this.state) });
-        });
-      }
-
-      #initRemoveModal() {
-        if (!this.userPasskeys.removePasskeyFlowId) return;
-
-        this.#removeModal = this.createFlowModal({
-          'data-id': 'remove-user-passkey',
-          'close-on-outside-click': 'true',
-        });
-        this.#removeFlow = new FlowDriver(
-          () => this.#removeModal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.syncFlowTheme(this.#removeFlow);
-      }
-
-      #initRemoveModalContent({ externalId, credentialId }) {
-        this.#removeModal.setContent(
-          this.createFlowTemplate({
-            flowId: this.userPasskeys.removePasskeyFlowId,
-            form: { externalId, credentialId },
-          }),
-        );
-        this.#removeFlow.onSuccess(() => {
-          this.#removeModal.close();
-          this.actions.getMe();
-          this.actions.listPasskeys({ userId: getUserId(this.state) });
-        });
+      #refreshUser() {
+        this.actions.getMe();
+        this.actions.listPasskeys({ userId: getUserId(this.state) });
       }
 
       #fetchPasskeys = withMemCache((userId: string) => {
@@ -111,13 +47,15 @@ export const initUserPasskeysMixin = createSingletonMixin(
         this.updatePasskeyList(passkeysList);
 
         this.userPasskeys.onAddPasskeyClick(() => {
-          this.#addModal?.open();
+          this.#addRunner?.open();
         });
 
         this.userPasskeys.onRemovePasskeyClick(({ id: credentialId }) => {
-          const externalId = getUserId(this.state);
-          this.#initRemoveModalContent({ externalId, credentialId });
-          this.#removeModal?.open();
+          // the flow needs to know which credential to remove, so its content
+          // cannot be built until the user picks one
+          this.#removeRunner?.open({
+            form: { externalId: getUserId(this.state), credentialId },
+          });
         });
       }
 
@@ -131,8 +69,20 @@ export const initUserPasskeysMixin = createSingletonMixin(
 
         if (this.userPasskeys.isExists) {
           this.#initUserPasskeys(getUserPasskeys(this.state));
-          this.#initAddModal();
-          this.#initRemoveModal();
+
+          this.#addRunner = this.createFlowRunner({
+            dataId: 'add-user-passkey',
+            flowId: this.userPasskeys.addPasskeyFlowId,
+            onSuccess: () => this.#refreshUser(),
+          });
+
+          this.#removeRunner = this.createFlowRunner({
+            dataId: 'remove-user-passkey',
+            flowId: this.userPasskeys.removePasskeyFlowId,
+            presetContent: false,
+            onSuccess: () => this.#refreshUser(),
+          });
+
           this.subscribe(this.#fetchPasskeys.bind(this), getUserId);
           this.subscribe(this.updatePasskeyList.bind(this), getUserPasskeys);
         }
