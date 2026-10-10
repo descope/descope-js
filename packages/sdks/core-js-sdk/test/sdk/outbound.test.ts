@@ -105,4 +105,30 @@ describe('outbound', () => {
       );
     });
   });
+
+  describe('connectFinish', () => {
+    it('should send the code, tenant and token', () => {
+      sdk.outbound.connectFinish('connect-code', 't1', 'token');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.outbound.connectFinish,
+        { code: 'connect-code', tenantId: 't1' },
+        { token: 'token' },
+      );
+    });
+
+    it('should send only the code when nothing else is provided', () => {
+      sdk.outbound.connectFinish('connect-code');
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.outbound.connectFinish,
+        { code: 'connect-code', tenantId: undefined },
+        { token: undefined },
+      );
+    });
+
+    it('should fail without a code', () => {
+      expect(() => sdk.outbound.connectFinish('')).toThrow(
+        '"code" must not be empty',
+      );
+    });
+  });
 });
