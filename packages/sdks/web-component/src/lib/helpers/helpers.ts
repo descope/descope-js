@@ -27,6 +27,7 @@ import {
   APPLICATION_SCOPES_PARAM_NAME,
   SDK_SCRIPT_RESULTS_KEY,
   URL_REDIRECT_MODE_PARAM_NAME,
+  URL_POPUP_OPENER_ORIGIN_PARAM_NAME,
 } from '../constants';
 import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
 import {
@@ -224,6 +225,36 @@ export function getIsPopupFromUrl() {
 
 export function getExchangeErrorFromUrl() {
   return getUrlParam(URL_ERR_PARAM_NAME) || undefined;
+}
+
+// the opener origin Descope attests for this popup, written only on the redirect it builds for a flow popup.
+// more than one value means the URL was tampered with, so none of them is used
+function getPopupOpenerOriginFromUrl() {
+  const values = new URLSearchParams(window.location.search).getAll(
+    URL_POPUP_OPENER_ORIGIN_PARAM_NAME,
+  );
+  return values.length === 1 ? values[0] : undefined;
+}
+
+function toOrigin(value?: string) {
+  try {
+    const { origin } = new URL(value);
+    return origin === 'null' ? undefined : origin;
+  } catch {
+    return undefined;
+  }
+}
+
+// window.name is set by whoever opened this popup, so the opener origin it carries is only a claim.
+// Returns the origin to post to only when it is this page's own origin, or the opener origin
+// Descope attested for this popup after checking it against the project's approved domains.
+export function getTrustedPopupOpenerOrigin(openerOrigin: string) {
+  const origin = toOrigin(openerOrigin);
+  if (!origin) return undefined;
+  if (origin === window.location.origin) return origin;
+  return toOrigin(getPopupOpenerOriginFromUrl()) === origin
+    ? origin
+    : undefined;
 }
 
 export function clearCodeFromUrl() {
