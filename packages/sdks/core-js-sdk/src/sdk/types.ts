@@ -421,6 +421,7 @@ export type SdkResponse<T extends ResponseData> = {
     errorDescription: string;
     errorMessage?: string;
     retryAfter?: string;
+    traceId?: string;
   };
   data?: T;
 };
