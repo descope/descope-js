@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.76.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.75.0...core-js-sdk-2.76.0) (2026-10-12)
+
+
+### Features
+
+* **core-js-sdk:** expose cf-ray as traceId on response errors RELEASE ([#1512](https://github.com/descope/descope-js/issues/1512)) ([8c09ede](https://github.com/descope/descope-js/commit/8c09ede7e09ea552a6090a7296a4f2e633b31508))
+
 ## [2.75.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.74.0...core-js-sdk-2.75.0) (2026-10-06)
 
 
