@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.9](https://github.com/descope/descope-js/compare/web-component-4.4.8...web-component-4.4.9) (2026-10-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.2`
+
+### Bug Fixes
+
+* **web-component:** do not block submit on named elements without checkValidity ([#1511](https://github.com/descope/descope-js/issues/1511)) ([7675dd3](https://github.com/descope/descope-js/commit/7675dd30e73fc49f0e0bafff393dd25544f8027f))
+
 ## [4.4.8](https://github.com/descope/descope-js/compare/web-component-4.4.7...web-component-4.4.8) (2026-10-06)
 
 ### Dependency Updates
