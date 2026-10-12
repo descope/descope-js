@@ -54,6 +54,31 @@ describe('web-component', () => {
     WAIT_TIMEOUT,
   );
 
+  it(
+    'should submit when a named element has no checkValidity',
+    async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      // e.g. the reCAPTCHA disclosure text, which carries name="recaptcha"
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><descope-enriched-text name="recaptcha">protected</descope-enriched-text><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+    },
+    WAIT_TIMEOUT,
+  );
+
   it('should call report validity on blur when validate-on-blur is set to true', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 

@@ -346,7 +346,7 @@ class DescopeWc extends BaseDescopeWc {
         if (!globalThis.descope?.[script.id]) {
           await this.injectNpmLib(
             '@descope/flow-scripts',
-            '1.0.19', // currently using a fixed version when loading scripts
+            '1.0.20', // currently using a fixed version when loading scripts
             `dist/${script.id}.js`,
           );
         }
@@ -394,14 +394,18 @@ class DescopeWc extends BaseDescopeWc {
       }),
     );
 
+    let timeoutId: ReturnType<typeof setTimeout>;
     const toPromise = new Promise((resolve) => {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         this.loggerWrapper.warn('SDK scripts loading timeout');
         resolve(true);
       }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
 
-    return Promise.race([promises, toPromise]);
+    // clear the timer once scripts load, otherwise the timeout warning is logged even on success
+    return Promise.race([promises, toPromise]).finally(() =>
+      clearTimeout(timeoutId),
+    );
   }
 
   get isDismissScreenErrorOnInput() {
@@ -1991,8 +1995,10 @@ class DescopeWc extends BaseDescopeWc {
         if (input.validity && !input.validity.valid) {
           invalidInputs.push(input);
         }
+        // Elements that carry a `name` but cannot validate (e.g. descope-enriched-text)
+        // must not block the submit
         if (isValid) {
-          isValid = input.checkValidity?.();
+          isValid = input.checkValidity?.() ?? true;
         }
       });
 
