@@ -100,6 +100,11 @@ export async function transformResponse<
         retryAfter: Number.parseInt(resp.headers?.get('retry-after')) || 0,
       });
     }
+
+    const traceId = resp.headers?.get('cf-ray');
+    if (traceId && ret.error) {
+      Object.assign(ret.error, { traceId });
+    }
   } else if (transform) {
     ret.data = transform(data);
   } else {
