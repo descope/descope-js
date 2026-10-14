@@ -44,6 +44,7 @@ import {
   hasAnySsoQueryParam,
   restoreSsoQueryParams,
   storeSsoQueryParams,
+  takeReloadCredit,
 } from './oidcSession';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
@@ -547,11 +548,17 @@ export const handleUrlParams = (
   // empty-URL refresh this is for. It is read above, before the run ids are
   // cleared from the URL, which is why this has to live here and not at the
   // call site.
+  // Taken on EVERY init, including the one that stores, so that a first load
+  // carrying the params cannot leave a credit behind for a later remount.
+  const firstInitForScope = takeReloadCredit(projectId, flowId);
+
   let effectiveSsoQueryParams: Partial<SSOQueryParams> = ssoQueryParams;
   if (hasAnySsoQueryParam(ssoQueryParams)) {
     storeSsoQueryParams(ssoQueryParams, projectId, flowId);
   } else if (!executionFlowId) {
-    const restored = restoreSsoQueryParams(projectId, flowId);
+    const restored = firstInitForScope
+      ? restoreSsoQueryParams(projectId, flowId)
+      : null;
     if (restored) {
       logger.debug('Restored SSO query params after a page reload');
       effectiveSsoQueryParams = restored;

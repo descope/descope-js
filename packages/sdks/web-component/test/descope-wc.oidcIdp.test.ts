@@ -19,6 +19,7 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 import { screen } from 'shadow-dom-testing-library';
 
 import '../src/lib/descope-wc';
+import { resetSsoReloadCredit } from '../src/lib/helpers/oidcSession';
 
 import {
   ASSETS_FOLDER,
@@ -927,6 +928,9 @@ describe('web-component', () => {
 
       // the refresh: same page, empty url, navigation type reload
       document.body.innerHTML = '';
+      // a real refresh builds a new document, which resets the per-document
+      // reload credit. the SPA remount test below deliberately omits this.
+      resetSsoReloadCredit();
       setNavigationType('reload');
       mount();
 
@@ -1011,6 +1015,9 @@ describe('web-component', () => {
       });
 
       document.body.innerHTML = '';
+      // a real refresh builds a new document, which resets the per-document
+      // reload credit. the SPA remount test below deliberately omits this.
+      resetSsoReloadCredit();
       setNavigationType('reload');
       mount();
 
@@ -1054,12 +1061,41 @@ describe('web-component', () => {
 
       // 3. the victim refreshes that clean page
       document.body.innerHTML = '';
+      // a real refresh builds a new document, which resets the per-document
+      // reload credit. the SPA remount test below deliberately omits this.
+      resetSsoReloadCredit();
       setNavigationType('reload');
       mount();
       await waitFor(() => expect(startMock).toHaveBeenCalledTimes(3), {
         timeout: WAIT_TIMEOUT,
       });
       expect(startOptions(2).oidcIdpStateId).toBeNull();
+    });
+
+    // Shuni, PR #1514 round 2. navigation type belongs to the document and stays
+    // 'reload' for its whole life, so a single page app remounting the same flow
+    // at the same URL used to look like a refresh and restore the old context.
+    it('does not restore when the component remounts in the same document', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh`;
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      // same document throughout: no resetSsoReloadCredit() here on purpose.
+      // the app routed away and mounted the same flow again at the same url
+      document.body.innerHTML = '';
+      window.location.search = '';
+      setNavigationType('reload');
+      mount();
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(1).oidcIdpStateId).toBeNull();
     });
 
     it('stores nothing for a plain flow with no sso params', async () => {

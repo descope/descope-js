@@ -36,6 +36,15 @@ type StoredEntry = {
   ts: number;
 };
 
+// A document is loaded once, so only the FIRST init of a given flow after that
+// load can be the refresh. `PerformanceNavigationTiming.type` belongs to the
+// document and stays 'reload' for its whole life, so without this one reload
+// would license every later remount of the component in a single page app.
+// Comparing URLs cannot fix that, because the remount can be at the very same
+// URL. Cleared naturally: a real second refresh builds a new document, and this
+// module starts over with it.
+const spentReloadCredit = new Set<string>();
+
 const buildScope = (projectId: string, flowId: string): ScopeKey => ({
   origin: window.location.origin,
   pathname: window.location.pathname,
@@ -43,6 +52,36 @@ const buildScope = (projectId: string, flowId: string): ScopeKey => ({
   projectId,
   flowId,
 });
+
+const scopeId = (s: ScopeKey): string =>
+  [s.origin, s.pathname, s.hash, s.projectId, s.flowId].join('|');
+
+// True once per flow per document, on the first init. Must be called on every
+// init, not only on the branch that restores, otherwise a first load carrying
+// the params leaves the credit unspent for a later remount to use.
+export const takeReloadCredit = (
+  projectId: string,
+  flowId: string,
+): boolean => {
+  const id = scopeId(buildScope(projectId, flowId));
+  if (spentReloadCredit.has(id)) {
+    return false;
+  }
+  spentReloadCredit.add(id);
+  return true;
+};
+
+/**
+ * Forget which flows have already initialized (for testing).
+ *
+ * In a browser this happens by itself, because a refresh builds a new document
+ * and a new module instance. Tests share one document, so they call this to
+ * model a fresh page load. A test that is modelling a remount inside the SAME
+ * document deliberately does not call it.
+ */
+export const resetSsoReloadCredit = () => {
+  spentReloadCredit.clear();
+};
 
 // `descopeIdpInitiated` is a boolean and is always present on the object, so an
 // "is there anything here" check has to look at values, not at keys.
@@ -79,7 +118,7 @@ const isPageReload = (): boolean => {
 };
 
 // `a` comes from a parsed storage entry and may be missing, `b` is always built
-// by getSsoQueryParamsScope.
+// by buildScope.
 const isSameScope = (a: ScopeKey, b: ScopeKey): boolean =>
   a?.origin === b.origin &&
   a?.pathname === b.pathname &&
@@ -139,18 +178,7 @@ export const restoreSsoQueryParams = (
   }
 };
 
-// A fresh visit to this page that carries no OIDC params means any stored
-// context belongs to an earlier, abandoned visit. Drop it here, otherwise a
-// later refresh of this same page would resurrect it. Without this, one crafted
-// link is enough to plant a state_id that a legitimate login refresh then
-// completes, which is exactly what the reload check exists to prevent.
-export const dropStaleSsoQueryParams = (
-  projectId: string,
-  flowId: string,
-): void => {
-  if (isPageReload()) {
-    return;
-  }
+const removeIfScopeMatches = (projectId: string, flowId: string): void => {
   try {
     const raw = window.sessionStorage?.getItem(
       DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
@@ -169,12 +197,26 @@ export const dropStaleSsoQueryParams = (
   }
 };
 
-export const clearSsoQueryParams = (): void => {
-  try {
-    window.sessionStorage?.removeItem(
-      DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
-    );
-  } catch (e) {
-    // nothing to do
+// A fresh visit to this page that carries no OIDC params means any stored
+// context belongs to an earlier, abandoned visit. Drop it here, otherwise a
+// later refresh of this same page would resurrect it. Without this, one crafted
+// link is enough to plant a state_id that a legitimate login refresh then
+// completes, which is exactly what the reload check exists to prevent.
+export const dropStaleSsoQueryParams = (
+  projectId: string,
+  flowId: string,
+): void => {
+  // A remount inside a reloaded document is not a fresh visit, so the entry is
+  // left alone for a genuine later refresh to use.
+  if (isPageReload()) {
+    return;
   }
+  removeIfScopeMatches(projectId, flowId);
 };
+
+// Scope aware on purpose. One page can host several <descope-wc> flows and they
+// share a single storage entry, so an unrelated flow completing must not delete
+// an OIDC flow's context. Finishing a sign-up in the same tab used to wipe a
+// parallel sign-in's entry, and the sign-in then lost its redirect on refresh.
+export const clearSsoQueryParams = (projectId: string, flowId: string): void =>
+  removeIfScopeMatches(projectId, flowId);

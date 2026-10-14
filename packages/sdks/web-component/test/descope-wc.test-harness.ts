@@ -9,6 +9,7 @@ import {
 import '@testing-library/jest-dom';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
 import { resetCustomStorage } from '../src/lib/helpers/storage';
+import { resetSsoReloadCredit } from '../src/lib/helpers/oidcSession';
 import { generateSdkResponse, invokeScriptOnload } from './testUtils';
 
 global.CSSStyleSheet.prototype.replaceSync = jest.fn();
@@ -251,6 +252,7 @@ export function teardownWebComponentTestEnv() {
   localStorage.clear();
   sessionStorage.clear();
   resetCustomStorage();
+  resetSsoReloadCredit();
 }
 
 export function resetHarnessFixtureContent() {

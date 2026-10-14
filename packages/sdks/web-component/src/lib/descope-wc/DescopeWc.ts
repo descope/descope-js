@@ -1601,7 +1601,7 @@ class DescopeWc extends BaseDescopeWc {
       // against the local stack, not assumed. That is safe because the backend
       // deletes the state_id on success, so a later restore of it cannot
       // authorize anything, it only errors.
-      clearSsoQueryParams();
+      clearSsoQueryParams(this.projectId, this.flowId);
       this.#dispatch('success', payload);
       return;
     }

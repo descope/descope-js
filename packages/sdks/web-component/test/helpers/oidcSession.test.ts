@@ -8,6 +8,7 @@ import {
   hasAnySsoQueryParam,
   restoreSsoQueryParams,
   storeSsoQueryParams,
+  takeReloadCredit,
 } from '../../src/lib/helpers/oidcSession';
 
 const PARAMS = {
@@ -292,10 +293,63 @@ describe('oidcSession', () => {
     });
   });
 
+  // Shuni, PR #1514 round 2. The credit is what stops one reload from licensing
+  // every later remount in a single page app, which URL comparisons cannot do
+  // because the remount can be at the very same URL.
+  describe('takeReloadCredit', () => {
+    it('is true once per flow and false after that', () => {
+      expect(takeReloadCredit('Pc', 'flow-a')).toBe(true);
+      expect(takeReloadCredit('Pc', 'flow-a')).toBe(false);
+      expect(takeReloadCredit('Pc', 'flow-a')).toBe(false);
+    });
+
+    it('is tracked per flow, so a second component on the page still gets one', () => {
+      expect(takeReloadCredit('Pd', 'flow-b')).toBe(true);
+      expect(takeReloadCredit('Pd', 'flow-c')).toBe(true);
+      expect(takeReloadCredit('Pd', 'flow-b')).toBe(false);
+    });
+
+    it('is tracked per url, so the same flow on another route gets its own', () => {
+      setLocation('http://localhost:3000/one');
+      expect(takeReloadCredit('Pe', 'flow-d')).toBe(true);
+      setLocation('http://localhost:3000/two');
+      expect(takeReloadCredit('Pe', 'flow-d')).toBe(true);
+    });
+  });
+
+  // Shuni, PR #1514 round 2. One page can host several flows sharing a single
+  // storage entry, so an unrelated flow completing must not wipe this one.
+  describe('clearSsoQueryParams is scope aware', () => {
+    it('leaves another flow entry alone', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      clearSsoQueryParams('P1', 'sign-up');
+      expect(
+        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
+      ).not.toBeNull();
+    });
+
+    it('leaves another project entry alone', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      clearSsoQueryParams('P2', 'sign-in');
+      expect(
+        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
+      ).not.toBeNull();
+    });
+
+    // the reported case: finish an ordinary sign-up in the same tab and the
+    // parallel OIDC sign-in must still be able to recover on refresh
+    it('an unrelated flow completing does not break a later refresh', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      clearSsoQueryParams('P1', 'sign-up');
+      setNavigationType('reload');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(PARAMS);
+    });
+  });
+
   describe('clearSsoQueryParams', () => {
     it('removes the entry', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
-      clearSsoQueryParams();
+      clearSsoQueryParams('P1', 'sign-in');
       expect(
         sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
       ).toBeNull();
@@ -305,7 +359,7 @@ describe('oidcSession', () => {
       jest.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
         throw new Error('nope');
       });
-      expect(() => clearSsoQueryParams()).not.toThrow();
+      expect(() => clearSsoQueryParams('P1', 'sign-in')).not.toThrow();
     });
   });
 });
