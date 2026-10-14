@@ -23,6 +23,9 @@ import type { SSOQueryParams } from '../types';
 type ScopeKey = {
   origin: string;
   pathname: string;
+  // a hash-routed app keeps every route on the same pathname, so without this
+  // /#/login and /#/other would look like the same page
+  hash: string;
   projectId: string;
   flowId: string;
 };
@@ -36,6 +39,7 @@ type StoredEntry = {
 const buildScope = (projectId: string, flowId: string): ScopeKey => ({
   origin: window.location.origin,
   pathname: window.location.pathname,
+  hash: window.location.hash,
   projectId,
   flowId,
 });
@@ -60,11 +64,14 @@ const isPageReload = (): boolean => {
     // `nav.name` is the URL the DOCUMENT was loaded from, and the type stays
     // 'reload' for that document's whole life. In a single page app the router
     // can move to another route afterwards, so reloading /home and then routing
-    // to /login would otherwise look like a reload of /login.
+    // to /login would otherwise look like a reload of /login. The hash is part
+    // of that comparison because a hash-routed app keeps every route on one
+    // pathname.
     const loadedFrom = new URL(nav.name, window.location.href);
     return (
       loadedFrom.origin === window.location.origin &&
-      loadedFrom.pathname === window.location.pathname
+      loadedFrom.pathname === window.location.pathname &&
+      loadedFrom.hash === window.location.hash
     );
   } catch (e) {
     return false;
@@ -76,6 +83,7 @@ const isPageReload = (): boolean => {
 const isSameScope = (a: ScopeKey, b: ScopeKey): boolean =>
   a?.origin === b.origin &&
   a?.pathname === b.pathname &&
+  a?.hash === b.hash &&
   a?.projectId === b.projectId &&
   a?.flowId === b.flowId;
 

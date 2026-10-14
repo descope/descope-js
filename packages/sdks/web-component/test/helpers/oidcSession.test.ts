@@ -213,6 +213,31 @@ describe('oidcSession', () => {
       expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
     });
 
+    // hash routers keep every route on the same pathname, so without comparing
+    // the hash /#/home and /#/login look like the same page
+    it('does not restore when a hash route was reloaded and then changed', () => {
+      setLocation('http://localhost:3000/#/login');
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('reload', 'http://localhost:3000/#/home');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+
+    it('restores on a reload of the same hash route', () => {
+      setLocation('http://localhost:3000/#/login');
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('reload', 'http://localhost:3000/#/login');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(PARAMS);
+    });
+
+    it('does not restore an entry stored on another hash route', () => {
+      setLocation('http://localhost:3000/#/login');
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      // same document reload, but the app is now on a different hash route
+      setLocation('http://localhost:3000/#/other');
+      setNavigationType('reload', 'http://localhost:3000/#/other');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+
     it('does not restore when the navigation entry has no name', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
       Object.defineProperty(window.performance, 'getEntriesByType', {
