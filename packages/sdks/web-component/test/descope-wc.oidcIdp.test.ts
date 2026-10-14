@@ -31,6 +31,9 @@ import {
   OIDC_RESOURCE_PARAM_NAME,
   THIRD_PARTY_APP_STATE_ID_PARAM_NAME,
   APPLICATION_SCOPES_PARAM_NAME,
+  SSO_APP_ID_PARAM_NAME,
+  URL_RUN_IDS_PARAM_NAME,
+  DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../src/lib/constants';
 
@@ -874,5 +877,172 @@ describe('web-component', () => {
       () => expect(inputEle).toHaveAttribute('testAttr', 'varValue'),
       { timeout: WAIT_TIMEOUT },
     );
+  });
+
+  describe('oidc params surviving a page refresh', () => {
+    // jsdom has no navigation timing, so it has to be defined rather than spied.
+    // Leaving it undefined is the fail-closed case every other test in this file
+    // runs under, which is why none of them change behaviour.
+    const setNavigationType = (type: string | null) => {
+      Object.defineProperty(window.performance, 'getEntriesByType', {
+        configurable: true,
+        writable: true,
+        value: jest.fn().mockReturnValue(type ? [{ type }] : []),
+      });
+    };
+
+    const mount = (flowId = 'sign-in') => {
+      document.body.innerHTML = `<descope-wc flow-id="${flowId}" project-id="1"></descope-wc>`;
+    };
+
+    const startOptions = (callIdx: number) => startMock.mock.calls[callIdx][1];
+
+    afterEach(() => {
+      delete (window.performance as any).getEntriesByType;
+    });
+
+    it('restores the params on a reload, and never writes them back to the url', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh&${SSO_APP_ID_PARAM_NAME}=app1`;
+      mount();
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(0)).toEqual(
+        expect.objectContaining({
+          oidcIdpStateId: 'abcdefgh',
+          ssoAppId: 'app1',
+        }),
+      );
+      await waitFor(() => expect(window.location.search).toBe(''));
+
+      // the refresh: same page, empty url, navigation type reload
+      document.body.innerHTML = '';
+      setNavigationType('reload');
+      mount();
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(1)).toEqual(
+        expect.objectContaining({
+          oidcIdpStateId: 'abcdefgh',
+          ssoAppId: 'app1',
+        }),
+      );
+      // restoring must not put state_id back into the address bar
+      expect(window.location.search).toBe('');
+    });
+
+    it('does not restore on a normal navigation', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh`;
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      document.body.innerHTML = '';
+      setNavigationType('navigate');
+      mount();
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(1).oidcIdpStateId).toBeNull();
+    });
+
+    // the guard from the second review: another flow's run ids in the url means
+    // a flow already in progress, not the empty-url refresh this is for
+    it('does not restore when the url carries another flow run id', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh`;
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      document.body.innerHTML = '';
+      setNavigationType('reload');
+      // has to be a well formed value, otherwise executionFlowId comes out empty
+      // and the guard would pass for the wrong reason
+      window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=${encodeURIComponent(
+        'other-flow|#|exec1',
+      )}_1`;
+      mount();
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      // handleUrlParams returns an empty object on its flow-mismatch early
+      // return, so the key is absent rather than null. What matters is that the
+      // stored value did not come back.
+      expect(startOptions(1).oidcIdpStateId).not.toBe('abcdefgh');
+      expect(startOptions(1).oidcIdpStateId ?? null).toBeNull();
+    });
+
+    // with sso params present the component calls start instead of painting the
+    // configured first screen, so a restored refresh has to behave like the
+    // original load and not like a plain one
+    it('calls start on a reload even when a start screen is configured', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.configContent = {
+        flows: { 'sign-in': { startScreenId: 'screen-0' } },
+      };
+      fixtures.pageContent = '<span>It works!</span>';
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh`;
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      document.body.innerHTML = '';
+      setNavigationType('reload');
+      mount();
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(1).oidcIdpStateId).toBe('abcdefgh');
+    });
+
+    it('stores nothing for a plain flow with no sso params', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(
+        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
+      ).toBeNull();
+    });
+
+    it('clears the stored params once the flow completes', async () => {
+      startMock.mockReturnValue(generateSdkResponse({ status: 'completed' }));
+      fixtures.pageContent = '<span>It works!</span>';
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh`;
+      mount();
+
+      await waitFor(
+        () =>
+          expect(
+            sessionStorage.getItem(
+              DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+            ),
+          ).toBeNull(),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
   });
 });

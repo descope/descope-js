@@ -39,6 +39,11 @@ import {
   SSOQueryParams,
   StepState,
 } from '../types';
+import {
+  hasAnySsoQueryParam,
+  restoreSsoQueryParams,
+  storeSsoQueryParams,
+} from './oidcSession';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
 
@@ -395,6 +400,7 @@ export const getFlowConfig = (config: Record<string, any>, flowId: string) =>
 
 export const handleUrlParams = (
   flowId: string,
+  projectId: string,
   logger: { debug: (...data: any[]) => void },
 ) => {
   const { executionId, stepId, executionFlowId } = getRunIdsFromUrl(flowId);
@@ -514,6 +520,43 @@ export const handleUrlParams = (
 
   const idpInitiatedVal = descopeIdpInitiated === 'true';
 
+  const ssoQueryParams = {
+    oidcIdpStateId,
+    samlIdpStateId,
+    wsfedIdpStateId,
+    samlIdpUsername,
+    descopeIdpInitiated: idpInitiatedVal,
+    ssoAppId,
+    customAppId,
+    oidcLoginHint,
+    oidcPrompt,
+    oidcErrorRedirectUri,
+    oidcResource,
+    thirdPartyAppId,
+    thirdPartyAppStateId,
+    applicationScopes,
+  };
+
+  // The params above have just been stripped from the URL, so a refresh would
+  // lose the OIDC context and the user would never be redirected back to the
+  // app that sent them here. Keep a tab-scoped copy and hand it back, but only
+  // on a genuine reload. See oidcSession.ts for why that guard is the whole
+  // security argument.
+  // `executionFlowId` means a flow is already in progress, which is not the
+  // empty-URL refresh this is for. It is read above, before the run ids are
+  // cleared from the URL, which is why this has to live here and not at the
+  // call site.
+  let effectiveSsoQueryParams: Partial<SSOQueryParams> = ssoQueryParams;
+  if (hasAnySsoQueryParam(ssoQueryParams)) {
+    storeSsoQueryParams(ssoQueryParams, projectId, flowId);
+  } else if (!executionFlowId) {
+    const restored = restoreSsoQueryParams(projectId, flowId);
+    if (restored) {
+      logger.debug('Restored SSO query params after a page reload');
+      effectiveSsoQueryParams = restored;
+    }
+  }
+
   return {
     executionId,
     stepId,
@@ -525,22 +568,7 @@ export const handleUrlParams = (
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
-    ssoQueryParams: {
-      oidcIdpStateId,
-      samlIdpStateId,
-      wsfedIdpStateId,
-      samlIdpUsername,
-      descopeIdpInitiated: idpInitiatedVal,
-      ssoAppId,
-      customAppId,
-      oidcLoginHint,
-      oidcPrompt,
-      oidcErrorRedirectUri,
-      oidcResource,
-      thirdPartyAppId,
-      thirdPartyAppStateId,
-      applicationScopes,
-    },
+    ssoQueryParams: effectiveSsoQueryParams,
   };
 };
 
