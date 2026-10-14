@@ -4,6 +4,7 @@ import {
 } from '../../src/lib/constants';
 import {
   clearSsoQueryParams,
+  dropStaleSsoQueryParams,
   hasAnySsoQueryParam,
   restoreSsoQueryParams,
   storeSsoQueryParams,
@@ -26,11 +27,18 @@ const setLocation = (url: string) => {
 // jsdom's performance has no getEntriesByType at all, so it cannot be spied on,
 // it has to be defined. Its absence is also the real fail-closed case, covered
 // by removeNavigationTiming below.
-const setNavigationType = (type: string | null) => {
+// `name` is the URL the document was loaded from. It defaults to the current
+// location, which is the ordinary case; pass it explicitly to model a single
+// page app that reloaded one route and then routed to another.
+const setNavigationType = (type: string | null, name?: string) => {
   Object.defineProperty(window.performance, 'getEntriesByType', {
     configurable: true,
     writable: true,
-    value: jest.fn().mockReturnValue(type ? [{ type }] : []),
+    value: jest
+      .fn()
+      .mockReturnValue(
+        type ? [{ type, name: name ?? window.location.href }] : [],
+      ),
   });
 };
 
@@ -193,6 +201,68 @@ describe('oidcSession', () => {
       jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
         throw new Error('nope');
       });
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+
+    it('does not restore when the document was loaded from another route', () => {
+      // single page app: /home was reloaded, then the router moved to /login.
+      // navigation type stays 'reload' for the whole document, so without the
+      // name check this would look like a reload of /login
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('reload', 'http://localhost:3000/home');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+
+    it('does not restore when the navigation entry has no name', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      Object.defineProperty(window.performance, 'getEntriesByType', {
+        configurable: true,
+        writable: true,
+        value: jest.fn().mockReturnValue([{ type: 'reload' }]),
+      });
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+  });
+
+  // the hole Shuni found on PR #1514: the entry used to survive a fresh visit,
+  // so one crafted link could plant a state_id that a later refresh of a
+  // legitimate login on the same page would then complete
+  describe('dropStaleSsoQueryParams', () => {
+    it('drops a matching entry on a fresh navigation', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('navigate');
+      dropStaleSsoQueryParams('P1', 'sign-in');
+      expect(
+        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
+      ).toBeNull();
+    });
+
+    it('keeps the entry on a reload, so refreshing still works', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('reload');
+      dropStaleSsoQueryParams('P1', 'sign-in');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(PARAMS);
+    });
+
+    it('leaves another page entry alone', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('navigate');
+      dropStaleSsoQueryParams('P2', 'other-flow');
+      expect(
+        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
+      ).not.toBeNull();
+    });
+
+    // the full attack path, end to end in one test
+    it('a crafted link then a refresh of a clean visit restores nothing', () => {
+      // 1. victim opens the crafted link, params get stored
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      // 2. victim later opens the same login page with no params
+      setNavigationType('navigate');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+      dropStaleSsoQueryParams('P1', 'sign-in');
+      // 3. victim refreshes that clean page
+      setNavigationType('reload');
       expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
     });
   });

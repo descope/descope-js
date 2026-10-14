@@ -40,6 +40,7 @@ import {
   StepState,
 } from '../types';
 import {
+  dropStaleSsoQueryParams,
   hasAnySsoQueryParam,
   restoreSsoQueryParams,
   storeSsoQueryParams,
@@ -554,6 +555,9 @@ export const handleUrlParams = (
     if (restored) {
       logger.debug('Restored SSO query params after a page reload');
       effectiveSsoQueryParams = restored;
+    } else {
+      // not a reload of this page, so anything stored for it is abandoned
+      dropStaleSsoQueryParams(projectId, flowId);
     }
   }
 

@@ -883,11 +883,17 @@ describe('web-component', () => {
     // jsdom has no navigation timing, so it has to be defined rather than spied.
     // Leaving it undefined is the fail-closed case every other test in this file
     // runs under, which is why none of them change behaviour.
-    const setNavigationType = (type: string | null) => {
+    // `name` is the URL the document was loaded from. A reload entry without it
+    // is treated as not-a-reload, so it has to be set for these to be realistic.
+    const setNavigationType = (type: string | null, name?: string) => {
       Object.defineProperty(window.performance, 'getEntriesByType', {
         configurable: true,
         writable: true,
-        value: jest.fn().mockReturnValue(type ? [{ type }] : []),
+        value: jest
+          .fn()
+          .mockReturnValue(
+            type ? [{ type, name: name ?? window.location.href }] : [],
+          ),
       });
     };
 
@@ -1012,6 +1018,48 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
       expect(startOptions(1).oidcIdpStateId).toBe('abcdefgh');
+    });
+
+    // the hole Shuni found on PR #1514. One crafted link used to plant a
+    // state_id that survived a clean visit, so a later refresh of a legitimate
+    // login on the same page completed the attacker's authorize request.
+    it('a crafted link then a refresh of a clean visit restores nothing', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+
+      // 1. the victim opens the crafted link once
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=attacker-state`;
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(0).oidcIdpStateId).toBe('attacker-state');
+      expect(
+        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
+      ).not.toBeNull();
+
+      // 2. the victim later opens the same login page cleanly
+      document.body.innerHTML = '';
+      window.location.search = '';
+      setNavigationType('navigate');
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(1).oidcIdpStateId).toBeNull();
+      // the stale entry must be gone, which is what closes the hole
+      expect(
+        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
+      ).toBeNull();
+
+      // 3. the victim refreshes that clean page
+      document.body.innerHTML = '';
+      setNavigationType('reload');
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(3), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(2).oidcIdpStateId).toBeNull();
     });
 
     it('stores nothing for a plain flow with no sso params', async () => {

@@ -46,14 +46,26 @@ const buildScope = (projectId: string, flowId: string): ScopeKey => ({
 export const hasAnySsoQueryParam = (params: Partial<SSOQueryParams>): boolean =>
   Object.values(params ?? {}).some(Boolean);
 
-// Only a genuine reload counts. No navigation entry means we cannot tell, and
-// in that case we restore nothing rather than guess.
+// Only a genuine reload of THIS page counts. Anything we cannot confirm is
+// treated as not a reload, so the check fails closed.
 const isPageReload = (): boolean => {
   // try/catch kept on purpose. This runs on every flow init in every customer
   // browser, and an exception here would break login, not just the restore.
   try {
     const [entry] = window.performance?.getEntriesByType?.('navigation') ?? [];
-    return (entry as PerformanceNavigationTiming)?.type === 'reload';
+    const nav = entry as PerformanceNavigationTiming;
+    if (nav?.type !== 'reload' || !nav.name) {
+      return false;
+    }
+    // `nav.name` is the URL the DOCUMENT was loaded from, and the type stays
+    // 'reload' for that document's whole life. In a single page app the router
+    // can move to another route afterwards, so reloading /home and then routing
+    // to /login would otherwise look like a reload of /login.
+    const loadedFrom = new URL(nav.name, window.location.href);
+    return (
+      loadedFrom.origin === window.location.origin &&
+      loadedFrom.pathname === window.location.pathname
+    );
   } catch (e) {
     return false;
   }
@@ -116,6 +128,36 @@ export const restoreSsoQueryParams = (
     return entry.params;
   } catch (e) {
     return null;
+  }
+};
+
+// A fresh visit to this page that carries no OIDC params means any stored
+// context belongs to an earlier, abandoned visit. Drop it here, otherwise a
+// later refresh of this same page would resurrect it. Without this, one crafted
+// link is enough to plant a state_id that a legitimate login refresh then
+// completes, which is exactly what the reload check exists to prevent.
+export const dropStaleSsoQueryParams = (
+  projectId: string,
+  flowId: string,
+): void => {
+  if (isPageReload()) {
+    return;
+  }
+  try {
+    const raw = window.sessionStorage?.getItem(
+      DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+    );
+    if (!raw) {
+      return;
+    }
+    const entry: StoredEntry = JSON.parse(raw);
+    if (isSameScope(entry?.scope, buildScope(projectId, flowId))) {
+      window.sessionStorage?.removeItem(
+        DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+      );
+    }
+  } catch (e) {
+    // nothing to do
   }
 };
 
