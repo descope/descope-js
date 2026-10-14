@@ -10,6 +10,11 @@ export const MAX_TIMEOUT = Math.pow(2, 31) - 1;
 // The amount of time (ms) to trigger the refresh before session expires
 export const REFRESH_THRESHOLD = 20 * 1000; // 20 sec
 
+/** Hidden escape hatch: set this key to any non-empty value in localStorage to
+ * refresh on tab visibility even when the refresh token expiration has passed.
+ * Not documented intentionally. */
+export const REFRESH_EXPIRATION_CHECK_DISABLED_KEY = 'DSRE_DISABLED';
+
 export const OIDC_CLIENT_TS_DESCOPE_CDN_URL = `https://descopecdn.com/npm/oidc-client-ts@${OIDC_CLIENT_TS_VERSION}/dist/browser/oidc-client-ts.min.js`;
 export const OIDC_CLIENT_TS_JSDELIVR_CDN_URL = `https://cdn.jsdelivr.net/npm/oidc-client-ts@${OIDC_CLIENT_TS_VERSION}/dist/browser/oidc-client-ts.min.js`;
 

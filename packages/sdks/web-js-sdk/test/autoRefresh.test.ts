@@ -494,10 +494,12 @@ describe('autoRefresh', () => {
     const loggerDebugMock = logger.debug as jest.Mock;
 
     const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
+    const cookieExpiration = Math.floor(Date.now() / 1000) + 60 * 60; // in 1 hour
     const mockFetch = jest.fn().mockReturnValue(
       createMockReturnValue({
         ...authInfo,
         sessionExpiration,
+        cookieExpiration,
       }),
     );
     global.fetch = mockFetch;
@@ -519,6 +521,125 @@ describe('autoRefresh', () => {
       'Expiration time passed, refreshing session',
     );
     loggerDebugMock.mockClear();
+  });
+
+  it('should not refresh token on visibilitychange after refresh failed', async () => {
+    const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
+    const cookieExpiration = Math.floor(Date.now() / 1000) + 60 * 60; // in 1 hour
+    const unauthMock = {
+      clone: () => unauthMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(JSON.stringify({})),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+          cookieExpiration,
+        }),
+      )
+      .mockReturnValue(unauthMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+    // refresh token was revoked, refresh fails
+    await sdk.httpClient.get('/v1/auth/refresh');
+
+    await new Promise(process.nextTick);
+
+    document.dispatchEvent(new Event('visibilitychange'));
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(refreshSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not refresh token on visibilitychange when refresh token expired', async () => {
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
+    const cookieExpiration = Math.floor(Date.now() / 1000) - 60; // 1 minute ago now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        cookieExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(refreshSpy).not.toHaveBeenCalled();
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Refresh token expired, skipping refresh',
+    );
+  });
+
+  it('should refresh token on visibilitychange when refresh token expired and check is disabled', async () => {
+    const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
+    const cookieExpiration = Math.floor(Date.now() / 1000) - 60; // 1 minute ago now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        cookieExpiration,
+      }),
+    );
+    global.fetch = mockFetch;
+    localStorage.setItem('DSRE_DISABLED', 'true');
+
+    try {
+      const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+      const refreshSpy = jest
+        .spyOn(sdk, 'refresh')
+        .mockReturnValue(new Promise(() => {}));
+      await sdk.httpClient.get('1/2/3');
+
+      await new Promise(process.nextTick);
+
+      document.dispatchEvent(new Event('visibilitychange'));
+      expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+    } finally {
+      localStorage.removeItem('DSRE_DISABLED');
+    }
+  });
+
+  it('should refresh token on visibilitychange when refresh expiration is missing', async () => {
+    const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
+    const mockFetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionExpiration,
+        cookieExpiration: undefined,
+      }),
+    );
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+
+    await new Promise(process.nextTick);
+
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
   });
 
   it('should handle a case where jwt decoding fail', async () => {
