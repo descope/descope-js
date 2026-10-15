@@ -105,6 +105,61 @@ describe('web-component', () => {
     });
   });
 
+  // Regression for descope/etc#19151. Hiding a focused field is itself what
+  // fires blur, so without a guard the user gets a validation error on a
+  // field that is no longer on screen.
+  //
+  // The visible field is a control, not decoration: it proves the blur
+  // listener is actually attached at the moment we assert. Without it the
+  // test passes whether or not the fix is present, because a blur fired
+  // before the listener attaches does nothing.
+  it('should not report validity on blur for a field inside a hidden container', async () => {
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        screenState: {
+          componentsState: {
+            'zip-box': 'hide',
+          },
+        },
+      }),
+    );
+
+    fixtures.pageContent =
+      '<div id="zip-box"><input name="zip" id="zip" placeholder="zip" required /></div>' +
+      '<input name="city" id="city" placeholder="city" required />';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" validate-on-blur="true"></descope-wc>`;
+
+    const zipInput = await waitFor(
+      () => screen.getByShadowPlaceholderText('zip'),
+      {
+        timeout: WAIT_TIMEOUT,
+      },
+    );
+    const cityInput = screen.getByShadowPlaceholderText('city');
+
+    const descopeWc = document.querySelector('descope-wc');
+    expect(descopeWc.shadowRoot.querySelector('#zip-box')).toHaveClass(
+      'hidden',
+    );
+
+    // The handler only reaches reportValidity when the field has a value or is
+    // already flagged invalid, so give both a value.
+    (<HTMLInputElement>zipInput).value = '90210';
+    (<HTMLInputElement>cityInput).value = 'Tel Aviv';
+    (<HTMLInputElement>zipInput).reportValidity = jest.fn();
+    (<HTMLInputElement>cityInput).reportValidity = jest.fn();
+
+    // Retry until the listener is attached, proven by the visible field.
+    await waitFor(() => {
+      fireEvent.blur(cityInput);
+      expect((<HTMLInputElement>cityInput).reportValidity).toHaveBeenCalled();
+    });
+
+    fireEvent.blur(zipInput);
+    expect((<HTMLInputElement>zipInput).reportValidity).not.toHaveBeenCalled();
+  });
+
   it('should not call report validity on blur by default', async () => {
     startMock.mockReturnValue(generateSdkResponse());
 

@@ -3,11 +3,27 @@
 export const COMPONENT_ACTIONS = ['hide', 'disable', 'read-only'] as const;
 export type ComponentAction = (typeof COMPONENT_ACTIONS)[number];
 
+// The class the `hide` action puts on a component. BaseDescopeWc defines the
+// style and also puts the same class on the slot and the content root for
+// custom screens, which is why the check below ignores `root` itself.
+export const HIDDEN_CLASS = 'hidden';
+
+/**
+ * True when a `hide` condition has hidden this element or a container around
+ * it. Takes the nearest `.hidden` on the element or an ancestor, ignoring
+ * `root` itself: the content root carries the same class while a custom screen
+ * shows, and that must not count as hiding the whole form.
+ */
+export function isHiddenByCondition(el: Element, root: Element): boolean {
+  const hidden = el.closest(`.${HIDDEN_CLASS}`);
+  return !!hidden && hidden !== root;
+}
+
 /** Applies a single component state to a DOM element. */
 export function applyAction(el: Element, action: string): void {
   switch (action) {
     case 'hide':
-      el.classList.add('hidden');
+      el.classList.add(HIDDEN_CLASS);
       break;
     case 'disable':
       el.setAttribute('disabled', 'true');
@@ -25,7 +41,7 @@ export function applyAction(el: Element, action: string): void {
 export function clearAction(el: Element, action: string): void {
   switch (action) {
     case 'hide':
-      el.classList.remove('hidden');
+      el.classList.remove(HIDDEN_CLASS);
       break;
     case 'disable':
       el.removeAttribute('disabled');
