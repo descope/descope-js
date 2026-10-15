@@ -2,6 +2,43 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.15](https://github.com/descope/descope-js/compare/react-sdk-3.3.14...react-sdk-3.3.15) (2026-10-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.10`
+* `applications-portal-widget` updated to version `0.9.10`
+* `audit-management-widget` updated to version `0.9.10`
+* `core-js-sdk` updated to version `2.76.0`
+* `outbound-applications-widget` updated to version `0.7.10`
+* `role-management-widget` updated to version `0.10.10`
+* `tenant-profile-widget` updated to version `0.11.4`
+* `user-management-widget` updated to version `0.21.1`
+* `user-profile-widget` updated to version `0.19.10`
+* `web-component` updated to version `4.4.9`
+* `web-js-sdk` updated to version `1.54.2`
+## [3.3.14](https://github.com/descope/descope-js/compare/react-sdk-3.3.13...react-sdk-3.3.14) (2026-10-06)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.9`
+* `applications-portal-widget` updated to version `0.9.9`
+* `audit-management-widget` updated to version `0.9.9`
+* `core-js-sdk` updated to version `2.75.0`
+* `outbound-applications-widget` updated to version `0.7.9`
+* `role-management-widget` updated to version `0.10.9`
+* `tenant-profile-widget` updated to version `0.11.3`
+* `user-management-widget` updated to version `0.21.0`
+* `user-profile-widget` updated to version `0.19.9`
+* `web-component` updated to version `4.4.8`
+* `web-js-sdk` updated to version `1.54.1`
+## [3.3.13](https://github.com/descope/descope-js/compare/react-sdk-3.3.12...react-sdk-3.3.13) (2026-10-05)
+
+
+### Bug Fixes
+
+* **react-sdk:** clear useSession loading when true/false updates batch into one render ([#1500](https://github.com/descope/descope-js/issues/1500)) RELEASE ([bc387cb](https://github.com/descope/descope-js/commit/bc387cb1c7813a7b60effc30659480a237febbeb)), closes [#1433](https://github.com/descope/descope-js/issues/1433) [#1393](https://github.com/descope/descope-js/issues/1393) [#1395](https://github.com/descope/descope-js/issues/1395) [#1433](https://github.com/descope/descope-js/issues/1433) [#1395](https://github.com/descope/descope-js/issues/1395) [#1433](https://github.com/descope/descope-js/issues/1433)
+
 ## [3.3.12](https://github.com/descope/descope-js/compare/react-sdk-3.3.11...react-sdk-3.3.12) (2026-10-04)
 
 ### Dependency Updates

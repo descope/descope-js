@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.76.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.75.0...core-js-sdk-2.76.0) (2026-10-12)
+
+
+### Features
+
+* **core-js-sdk:** expose cf-ray as traceId on response errors RELEASE ([#1512](https://github.com/descope/descope-js/issues/1512)) ([8c09ede](https://github.com/descope/descope-js/commit/8c09ede7e09ea552a6090a7296a4f2e633b31508))
+
+## [2.75.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.74.0...core-js-sdk-2.75.0) (2026-10-06)
+
+
+### Features
+
+* **core-js-sdk:** add lock fields to UserResponse ([#1507](https://github.com/descope/descope-js/issues/1507)) ([e3b90e1](https://github.com/descope/descope-js/commit/e3b90e15786e55eaf6c2252fcad1dcc1882df446)), closes [descope/node-sdk#813](https://github.com/descope/node-sdk/issues/813) [#1505](https://github.com/descope/descope-js/issues/1505)
+
 ## [2.74.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.73.0...core-js-sdk-2.74.0) (2026-09-27)
 
 

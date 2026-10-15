@@ -19,6 +19,16 @@
           "tools/scripts/licenseValidation/thirdPartyLicenseCollector_linux_amd64 -npm-project {projectRoot}"
         ]
       }
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        {
+          "env": "REGIONS"
+        }
+      ]
     }
   },
   "tags": []

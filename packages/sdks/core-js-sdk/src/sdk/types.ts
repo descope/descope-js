@@ -79,6 +79,8 @@ export type UserResponse = User & {
   customAttributes?: Record<string, any>;
   status: string;
   test: boolean;
+  lockReason?: string;
+  tempLockExpiration?: number;
 };
 
 export type Tenant = {
@@ -419,6 +421,7 @@ export type SdkResponse<T extends ResponseData> = {
     errorDescription: string;
     errorMessage?: string;
     retryAfter?: string;
+    traceId?: string;
   };
   data?: T;
 };
