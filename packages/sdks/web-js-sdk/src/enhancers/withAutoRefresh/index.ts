@@ -4,7 +4,6 @@ import { AfterRequestHook } from '../../types';
 import {
   addHooks,
   getAuthInfoFromResponse,
-  getInternalStorage,
   isDescopeBridge,
   isInvalidSessionResponse,
 } from '../helpers';
@@ -16,11 +15,7 @@ import {
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
-import {
-  IS_BROWSER,
-  REFRESH_EXPIRATION_CHECK_DISABLED_KEY,
-  REFRESH_THRESHOLD,
-} from '../../constants';
+import { IS_BROWSER, REFRESH_THRESHOLD } from '../../constants';
 import { getRefreshToken } from '../withPersistTokens/helpers';
 
 /**
@@ -55,7 +50,6 @@ export const withAutoRefresh =
     // we need to hold the expiration time and the refresh token in order to refresh the session
     // when the user comes back to the tab or from background/lock screen/etc.
     let sessionExpirationDate: Date;
-    let refreshExpirationDate: Date;
     let refreshToken: string;
 
     let activityTracker: ReturnType<typeof createActivityTracker> | null = null;
@@ -76,15 +70,6 @@ export const withAutoRefresh =
           sessionExpirationDate &&
           new Date() > sessionExpirationDate
         ) {
-          // refreshing with an expired refresh token is going to fail anyway
-          if (
-            refreshExpirationDate &&
-            new Date() > refreshExpirationDate &&
-            !getInternalStorage(REFRESH_EXPIRATION_CHECK_DISABLED_KEY)
-          ) {
-            logger.debug('Refresh token expired, skipping refresh');
-            return;
-          }
           logger.debug('Expiration time passed, refreshing session');
           // We prefer the persisted refresh token over the one from the response
           // for a case that the token was refreshed from another tab, this mostly relevant
@@ -95,13 +80,8 @@ export const withAutoRefresh =
     }
 
     const afterRequest: AfterRequestHook = async (req, res) => {
-      const {
-        sessionJwt,
-        refreshJwt,
-        sessionExpiration,
-        cookieExpiration,
-        nextRefreshSeconds,
-      } = await getAuthInfoFromResponse(res);
+      const { sessionJwt, refreshJwt, sessionExpiration, nextRefreshSeconds } =
+        await getAuthInfoFromResponse(res);
 
       // if we got a failed response on a session validation route we want to cancel all timers
       if (isInvalidSessionResponse(req, res)) {
@@ -110,9 +90,6 @@ export const withAutoRefresh =
         // so the visibilitychange handler will not keep refreshing an invalid session
         sessionExpirationDate = undefined;
       } else if (sessionJwt || sessionExpiration) {
-        refreshExpirationDate = cookieExpiration
-          ? new Date(cookieExpiration * 1000) // we are getting response from the server in seconds instead of ms
-          : undefined;
         sessionExpirationDate = getTokenExpiration(
           sessionJwt,
           sessionExpiration,
