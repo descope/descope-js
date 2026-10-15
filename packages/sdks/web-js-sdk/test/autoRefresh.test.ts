@@ -521,6 +521,42 @@ describe('autoRefresh', () => {
     loggerDebugMock.mockClear();
   });
 
+  it('should not refresh token on visibilitychange after refresh failed', async () => {
+    const sessionExpiration = Math.floor(Date.now() / 1000) - 10 * 60; // 10 minutes ago now
+    const unauthMock = {
+      clone: () => unauthMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(JSON.stringify({})),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    const mockFetch = jest
+      .fn()
+      .mockReturnValueOnce(
+        createMockReturnValue({
+          ...authInfo,
+          sessionExpiration,
+        }),
+      )
+      .mockReturnValue(unauthMock);
+    global.fetch = mockFetch;
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const refreshSpy = jest
+      .spyOn(sdk, 'refresh')
+      .mockReturnValue(new Promise(() => {}));
+    await sdk.httpClient.get('1/2/3');
+    // refresh token is no longer valid, refresh fails
+    await sdk.httpClient.get('/v1/auth/refresh');
+
+    await new Promise(process.nextTick);
+
+    document.dispatchEvent(new Event('visibilitychange'));
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(refreshSpy).not.toHaveBeenCalled();
+  });
+
   it('should handle a case where jwt decoding fail', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;

@@ -87,6 +87,8 @@ export const withAutoRefresh =
       if (isInvalidSessionResponse(req, res)) {
         logger.debug('Session invalidated, canceling all timers');
         clearAllTimers();
+        // so the visibilitychange handler will not keep refreshing an invalid session
+        sessionExpirationDate = undefined;
       } else if (sessionJwt || sessionExpiration) {
         sessionExpirationDate = getTokenExpiration(
           sessionJwt,
