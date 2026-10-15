@@ -71,10 +71,7 @@ export const withAutoRefresh =
           new Date() > sessionExpirationDate
         ) {
           logger.debug('Expiration time passed, refreshing session');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshToken);
+          refreshSession();
         }
       });
     }
@@ -149,15 +146,20 @@ export const withAutoRefresh =
           }
 
           logger.debug('Refreshing session due to timer');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshJwt);
+          refreshSession();
         }, timeout);
       }
     };
 
     const sdk = createSdk(addHooks(config, { afterRequest }));
+
+    // Background refreshes are fire-and-forget, catch so a transport failure (e.g. offline)
+    // does not escape as an unhandled rejection
+    // We prefer the persisted refresh token, in case it was rotated from another tab
+    const refreshSession = () =>
+      sdk.refresh(getRefreshToken() || refreshToken).catch((err: unknown) => {
+        logger.warn('Automatic session refresh failed', err);
+      });
 
     const wrapper: SdkFnWrapper<{}> =
       (fn) =>
@@ -187,7 +189,7 @@ export const withAutoRefresh =
                 );
                 refreshWasSkipped = false;
                 clearAllTimers(); // Prevent race condition with pending timer
-                sdk.refresh(getRefreshToken() || refreshToken);
+                refreshSession();
               }
             }
           : () => {
