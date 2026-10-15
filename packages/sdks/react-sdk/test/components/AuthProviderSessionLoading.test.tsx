@@ -35,6 +35,19 @@ const SlowMountEffect = () => {
   return null;
 };
 
+// Same, but on every render: it reads the auth context, so it re-renders with the provider
+// and slows the effects flush that runs fetchUser, not only the first one
+const SlowEffectOnEveryRender = () => {
+  useSession();
+  React.useEffect(() => {
+    const end = performance.now() + 20;
+    while (performance.now() < end) {
+      // busy wait
+    }
+  });
+  return null;
+};
+
 const UserProbe = () => {
   const { isUserLoading } = useUser();
   return <div data-testid="user-loading">{String(isUserLoading)}</div>;
@@ -48,7 +61,7 @@ describe('AuthProvider loading state on a rejected refresh / me', () => {
   });
 
   // Without a rejection handler the loading state stays `true` forever, since
-  // isSessionFetchStarted/isUserFetched are set before the call so the fetch never re-runs.
+  // isSessionFetchStarted/isUserFetchStarted are set before the call so the fetch never re-runs.
   it('clears isSessionLoading when the initial refresh rejects', async () => {
     (refresh as jest.Mock).mockRejectedValueOnce(new Error('network error'));
 
@@ -83,6 +96,33 @@ describe('AuthProvider loading state on a rejected refresh / me', () => {
       );
 
       await waitFor(() => expect(refresh).toHaveBeenCalled());
+      await waitFor(() => expect(container.textContent).toBe('false'));
+    } finally {
+      root.unmount();
+      (globalThis as any).IS_REACT_ACT_ENVIRONMENT = actEnvironment;
+    }
+  });
+
+  // Same as the session case above, for useUser: me() settling before React renders the
+  // isUserLoading=true update (e.g. a cached response) batches both updates into one render
+  it('clears isUserLoading when me resolves immediately', async () => {
+    (onIsAuthenticatedChange as jest.Mock).mockImplementation((cb) => {
+      cb(true);
+      return () => {};
+    });
+    const actEnvironment = (globalThis as any).IS_REACT_ACT_ENVIRONMENT;
+    (globalThis as any).IS_REACT_ACT_ENVIRONMENT = false;
+    const container = document.createElement('div');
+    const root = createRoot(container);
+    try {
+      root.render(
+        <AuthProvider projectId="p1">
+          <SlowEffectOnEveryRender />
+          <UserProbe />
+        </AuthProvider>,
+      );
+
+      await waitFor(() => expect(me).toHaveBeenCalled());
       await waitFor(() => expect(container.textContent).toBe('false'));
     } finally {
       root.unmount();
