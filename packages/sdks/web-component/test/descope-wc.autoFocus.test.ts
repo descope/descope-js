@@ -62,6 +62,61 @@ describe('web-component auto-focus', () => {
 
     expect(selectedElement).toBe(emailInput);
     expect(selectedElement).not.toBe(hiddenInput);
+
+    // The harness teardown calls jest.resetAllMocks(), which strips this
+    // spy's implementation instead of removing it. Without restoring here,
+    // handleAutoFocus stays a no-op for every later test in this file.
+    handleAutoFocusSpy.mockRestore();
+  });
+
+  // Regression for descope/etc#19151, autofocus half. A condition can hide the
+  // CONTAINER holding the first input, which the selector cannot see.
+  //
+  // Spies on the prototype BEFORE render and records which element was
+  // focused. Spying on the two elements after render is order-dependent: the
+  // autofocus setTimeout has usually already fired by then, so the test passes
+  // alone and fails in a full run.
+  it('Auto focus skips an input inside a container hidden by a condition', async () => {
+    const focused: string[] = [];
+    const focusSpy = jest
+      .spyOn(HTMLElement.prototype, 'focus')
+      .mockImplementation(function focusMock(this: HTMLElement) {
+        focused.push(this.id);
+      });
+
+    try {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'zip-box': 'hide',
+            },
+          },
+        }),
+      );
+
+      fixtures.pageContent =
+        '<div id="zip-box"><input id="zip" name="zip"></input></div><input id="city" name="city"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const wc = document.querySelector('descope-wc');
+
+      // The shape of the bug: the container is hidden, the input is not.
+      expect(wc.shadowRoot.querySelector('#zip-box')).toHaveClass('hidden');
+      expect(wc.shadowRoot.querySelector('#zip')).not.toHaveClass('hidden');
+
+      jest.advanceTimersByTime(100);
+
+      expect(focused).toContain('city');
+      expect(focused).not.toContain('zip');
+    } finally {
+      focusSpy.mockRestore();
+    }
   });
 
   // test is skipped due to test runner problems, but describes a real use case for the sdk's input selector, which covers `auto-focus="false"` as well.

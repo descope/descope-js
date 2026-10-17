@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.10](https://github.com/descope/descope-js/compare/web-component-4.4.9...web-component-4.4.10) (2026-10-15)
+
+
+### Bug Fixes
+
+* **web-component:** skip hidden components when validating and focusing RELEASE ([#1515](https://github.com/descope/descope-js/issues/1515)) ([cc6c90b](https://github.com/descope/descope-js/commit/cc6c90b2ebcc001954ba6f0bda8e2135997a877a))
+
 ## [4.4.9](https://github.com/descope/descope-js/compare/web-component-4.4.8...web-component-4.4.9) (2026-10-12)
 
 ### Dependency Updates

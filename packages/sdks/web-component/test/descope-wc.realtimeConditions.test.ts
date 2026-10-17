@@ -97,6 +97,81 @@ describe('web-component real-time conditions integration', () => {
     expect(chk).toHaveClass('hidden');
   });
 
+  // Regression for descope/etc#19151, real-time half. The rule hides a
+  // CONTAINER, so the required input inside it never gets the class itself.
+  // Before the fix the submit was silently blocked with nothing shown.
+  it('does not validate a required input inside a container hidden by a rule', async () => {
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        screenState: {
+          form: { phone: '+1' },
+          componentsState: {},
+          realtimeComponentsConditions: [
+            {
+              id: 'cc1',
+              componentIds: ['zip-box'],
+              action: 'hide',
+              rules: [
+                {
+                  atomicConditions: [
+                    {
+                      operator: 'empty',
+                      target: { kind: 'form', form: 'form.phone' },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      }),
+    );
+
+    fixtures.pageContent = `
+      <input name="phone" id="phone" />
+      <div id="zip-box"><input name="zip" id="zip" required /></div>
+      <descope-button id="submit-button">Submit</descope-button>
+    `;
+
+    document.body.innerHTML = `<descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Submit'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    jest.advanceTimersByTime(0);
+
+    const wc = document.querySelector('descope-wc') as any;
+    const zipBox = wc.shadowRoot.querySelector('[id="zip-box"]');
+    const zipInput = wc.shadowRoot.querySelector('[id="zip"]');
+    const phone = wc.shadowRoot.querySelector(
+      '[id="phone"]',
+    ) as HTMLInputElement;
+
+    // phone starts filled, so the rule does not fire and the container is open.
+    expect(zipBox).not.toHaveClass('hidden');
+
+    // Clearing it makes the rule fire. Going through a real value change is
+    // the point: this covers the real-time path, not just the state the
+    // server painted on first render.
+    phone.value = '';
+    phone.dispatchEvent(new Event('input', { bubbles: true }));
+    jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 5);
+
+    expect(zipBox).toHaveClass('hidden');
+    expect(zipInput).not.toHaveClass('hidden');
+
+    zipInput.checkValidity = jest.fn().mockReturnValue(false);
+    zipInput.reportValidity = jest.fn();
+
+    wc.shadowRoot.querySelector('[id="submit-button"]').click();
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(zipInput.checkValidity).not.toHaveBeenCalled();
+    expect(zipInput.reportValidity).not.toHaveBeenCalled();
+  });
+
   it('re-evaluates on a `change` event, not just `input`', async () => {
     // descope-radio-group and the button selection-groups re-emit `change`
     // (not `input`) from the host on selection. This pins that `change` is a

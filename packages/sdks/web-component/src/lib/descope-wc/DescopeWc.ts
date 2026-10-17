@@ -56,6 +56,7 @@ import {
   setLastAuth,
   updateLastUsedPerScreen,
 } from '../helpers/lastAuth';
+import { isHiddenByCondition } from '../helpers/realtime-conditions/applier';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
@@ -1985,8 +1986,13 @@ class DescopeWc extends BaseDescopeWc {
     Array.from(this.shadowRoot.querySelectorAll('*[name]'))
       .reverse()
       .forEach((input: HTMLInputElement) => {
-        // We are hiding conditional components so we don't want to validate them
-        if (input.localName === 'slot' || input.classList.contains('hidden')) {
+        // We are hiding conditional components so we don't want to validate
+        // them. The condition can target the input itself or a container
+        // around it, so this looks up the tree as well as at the element.
+        if (
+          input.localName === 'slot' ||
+          isHiddenByCondition(input, this.contentRootElement)
+        ) {
           return;
         }
         input.reportValidity?.();

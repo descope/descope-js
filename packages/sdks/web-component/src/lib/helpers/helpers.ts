@@ -29,6 +29,7 @@ import {
   URL_REDIRECT_MODE_PARAM_NAME,
 } from '../constants';
 import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
+import { isHiddenByCondition } from './realtime-conditions/applier';
 import {
   AutoFocusOptions,
   ComponentsConfig,
@@ -590,10 +591,14 @@ export const handleAutoFocus = (
     autoFocus === true ||
     (autoFocus === 'skipFirstScreen' && !isFirstScreen)
   ) {
-    // focus the first visible input
-    const firstVisibleInput: HTMLInputElement = ele.querySelector(
-      FOCUSABLE_INPUTS_SELECTOR,
-    );
+    // Focus the first visible input. A condition can hide the container
+    // holding the first match, and the selector cannot see that, so skip
+    // those here rather than focusing something the user cannot see. In a
+    // real browser focusing a display:none element silently does nothing,
+    // which left the screen with no focus at all.
+    const firstVisibleInput = Array.from(
+      ele.querySelectorAll<HTMLInputElement>(FOCUSABLE_INPUTS_SELECTOR),
+    ).find((input) => !isHiddenByCondition(input, ele));
     setTimeout(() => {
       firstVisibleInput?.focus();
     });
@@ -609,6 +614,13 @@ export const handleReportValidityOnBlur = (
 ) => {
   rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
     ele.addEventListener('blur', () => {
+      // Checked here and not when the listener is attached: a real-time rule
+      // can hide the field later, and hiding a focused field is exactly what
+      // fires this blur. Reporting then puts an error on something the user
+      // cannot see.
+      if (isHiddenByCondition(ele, rootEle)) {
+        return;
+      }
       const onBlur = () => {
         // reportValidity also focus the element if it's invalid
         // in order to prevent this we need to override the focus method
@@ -750,8 +762,9 @@ export const showFirstScreenOnExecutionInit = (
   !thirdPartyAppStateId &&
   !applicationScopes;
 
-// Use DOM APIs to set values safely - these are server-provided values (raw XML,
-// base64, opaque relay state) that would break innerHTML interpolation
+// DOM APIs only, never innerHTML: these values are attacker-controllable
+// (SAML RelayState), so interpolating them into markup is HTML injection.
+// Do not escape either - they must round-trip byte for byte.
 const createHiddenInput = (name: string, value: string, role?: string) => {
   const input = document.createElement('input');
   input.type = 'hidden';
@@ -780,13 +793,6 @@ export const injectSamlIdpForm = (
     createHiddenInput('RelayState', relayState, 'saml-relay-state'),
   );
 
-  const submitBtn = document.createElement('input');
-  submitBtn.type = 'submit';
-  submitBtn.id = 'SAMLSubmitButton';
-  submitBtn.value = 'Continue';
-  submitBtn.style.display = 'none';
-  formEle.appendChild(submitBtn);
-
   document.body.appendChild(formEle);
 
   submitCallback(formEle);
@@ -805,13 +811,6 @@ export const injectWsFedIdpForm = (
   formEle.appendChild(createHiddenInput('wa', 'wsignin1.0'));
   formEle.appendChild(createHiddenInput('wresult', wresult));
   formEle.appendChild(createHiddenInput('wctx', wctx));
-
-  const submitBtn = document.createElement('input');
-  submitBtn.type = 'submit';
-  submitBtn.id = 'WSFedSubmitButton';
-  submitBtn.value = 'Continue';
-  submitBtn.style.display = 'none';
-  formEle.appendChild(submitBtn);
 
   document.body.appendChild(formEle);
 
