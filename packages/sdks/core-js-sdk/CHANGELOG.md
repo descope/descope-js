@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.77.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.76.0...core-js-sdk-2.77.0) (2026-10-17)
+
+
+### Features
+
+* **core-js-sdk:** add provisioning tenant fields to UserResponse ([#1516](https://github.com/descope/descope-js/issues/1516)) ([d477da5](https://github.com/descope/descope-js/commit/d477da5c529aef352634af6ea93e3f6e5465b7e6))
+
 ## [2.76.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.75.0...core-js-sdk-2.76.0) (2026-10-12)
 
 
