@@ -288,6 +288,7 @@ export type CustomScreenData = {
     strength?: string;
     disallowedChars?: string;
     email?: string;
+    reuse?: string;
     activePolicies?: string;
     availablePolicies?: string;
   };
