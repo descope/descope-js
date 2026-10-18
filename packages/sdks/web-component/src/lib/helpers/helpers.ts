@@ -866,6 +866,7 @@ const PASSWORD_POLICY_KEYS: Record<string, string> = {
   strength: 'data-password-policy-value-passwordstrength',
   disallowedChars: 'data-password-policy-value-disallowedchars',
   email: 'data-password-policy-value-email',
+  reuse: 'data-password-policy-value-reuse',
   activePolicies: 'active-policies',
   availablePolicies: 'available-policies',
 };
