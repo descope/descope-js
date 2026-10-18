@@ -1,5 +1,5 @@
 import {
-  DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+  DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX,
   SSO_QUERY_PARAMS_MAX_AGE_MS,
 } from '../../src/lib/constants';
 import {
@@ -8,8 +8,12 @@ import {
   hasAnySsoQueryParam,
   restoreSsoQueryParams,
   storeSsoQueryParams,
-  takeReloadCredit,
+  markScopeFirstInit,
 } from '../../src/lib/helpers/oidcSession';
+
+// the storage key carries the project and flow, so two flows never collide
+const keyFor = (projectId = 'P1', flowId = 'sign-in') =>
+  `${DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX}_${projectId}_${flowId}`;
 
 const PARAMS = {
   oidcIdpStateId: 's-abc123',
@@ -87,17 +91,13 @@ describe('oidcSession', () => {
   describe('storeSsoQueryParams', () => {
     it('stores when there is something to store', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
-      const raw = sessionStorage.getItem(
-        DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
-      );
+      const raw = sessionStorage.getItem(keyFor());
       expect(JSON.parse(raw).params).toEqual(PARAMS);
     });
 
     it('stores nothing when there are no params', () => {
       storeSsoQueryParams({ descopeIdpInitiated: false }, 'P1', 'sign-in');
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).toBeNull();
+      expect(sessionStorage.getItem(keyFor())).toBeNull();
     });
 
     it('does not throw when sessionStorage throws', () => {
@@ -189,10 +189,7 @@ describe('oidcSession', () => {
     });
 
     it('returns null on a broken entry', () => {
-      sessionStorage.setItem(
-        DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
-        'not json',
-      );
+      sessionStorage.setItem(keyFor(), 'not json');
       setNavigationType('reload');
       expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
     });
@@ -258,9 +255,7 @@ describe('oidcSession', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
       setNavigationType('navigate');
       dropStaleSsoQueryParams('P1', 'sign-in');
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).toBeNull();
+      expect(sessionStorage.getItem(keyFor())).toBeNull();
     });
 
     it('keeps the entry on a reload, so refreshing still works', () => {
@@ -274,9 +269,7 @@ describe('oidcSession', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
       setNavigationType('navigate');
       dropStaleSsoQueryParams('P2', 'other-flow');
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).not.toBeNull();
+      expect(sessionStorage.getItem(keyFor())).not.toBeNull();
     });
 
     // the full attack path, end to end in one test
@@ -296,24 +289,24 @@ describe('oidcSession', () => {
   // Shuni, PR #1514 round 2. The credit is what stops one reload from licensing
   // every later remount in a single page app, which URL comparisons cannot do
   // because the remount can be at the very same URL.
-  describe('takeReloadCredit', () => {
+  describe('markScopeFirstInit', () => {
     it('is true once per flow and false after that', () => {
-      expect(takeReloadCredit('Pc', 'flow-a')).toBe(true);
-      expect(takeReloadCredit('Pc', 'flow-a')).toBe(false);
-      expect(takeReloadCredit('Pc', 'flow-a')).toBe(false);
+      expect(markScopeFirstInit('Pc', 'flow-a')).toBe(true);
+      expect(markScopeFirstInit('Pc', 'flow-a')).toBe(false);
+      expect(markScopeFirstInit('Pc', 'flow-a')).toBe(false);
     });
 
     it('is tracked per flow, so a second component on the page still gets one', () => {
-      expect(takeReloadCredit('Pd', 'flow-b')).toBe(true);
-      expect(takeReloadCredit('Pd', 'flow-c')).toBe(true);
-      expect(takeReloadCredit('Pd', 'flow-b')).toBe(false);
+      expect(markScopeFirstInit('Pd', 'flow-b')).toBe(true);
+      expect(markScopeFirstInit('Pd', 'flow-c')).toBe(true);
+      expect(markScopeFirstInit('Pd', 'flow-b')).toBe(false);
     });
 
     it('is tracked per url, so the same flow on another route gets its own', () => {
       setLocation('http://localhost:3000/one');
-      expect(takeReloadCredit('Pe', 'flow-d')).toBe(true);
+      expect(markScopeFirstInit('Pe', 'flow-d')).toBe(true);
       setLocation('http://localhost:3000/two');
-      expect(takeReloadCredit('Pe', 'flow-d')).toBe(true);
+      expect(markScopeFirstInit('Pe', 'flow-d')).toBe(true);
     });
   });
 
@@ -323,17 +316,13 @@ describe('oidcSession', () => {
     it('leaves another flow entry alone', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
       clearSsoQueryParams('P1', 'sign-up');
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).not.toBeNull();
+      expect(sessionStorage.getItem(keyFor())).not.toBeNull();
     });
 
     it('leaves another project entry alone', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
       clearSsoQueryParams('P2', 'sign-in');
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).not.toBeNull();
+      expect(sessionStorage.getItem(keyFor())).not.toBeNull();
     });
 
     // the reported case: finish an ordinary sign-up in the same tab and the
@@ -346,13 +335,42 @@ describe('oidcSession', () => {
     });
   });
 
+  // asafshen on PR #1514: a single shared key meant the last flow to store won,
+  // so two flows on one page clobbered each other and the loser lost its redirect
+  describe('one entry per flow', () => {
+    it('two flows on the same page both keep their own params', () => {
+      const other = { oidcIdpStateId: 's-other', ssoAppId: 'app-b' };
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      storeSsoQueryParams(other, 'P1', 'sign-up');
+      setNavigationType('reload');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(PARAMS);
+      expect(restoreSsoQueryParams('P1', 'sign-up')).toEqual(other);
+    });
+
+    it('the same flow in two projects does not collide', () => {
+      const other = { oidcIdpStateId: 's-p2' };
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      storeSsoQueryParams(other, 'P2', 'sign-in');
+      setNavigationType('reload');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(PARAMS);
+      expect(restoreSsoQueryParams('P2', 'sign-in')).toEqual(other);
+    });
+
+    it('clearing one flow leaves the other untouched', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      storeSsoQueryParams({ oidcIdpStateId: 's-other' }, 'P1', 'sign-up');
+      clearSsoQueryParams('P1', 'sign-up');
+      setNavigationType('reload');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(PARAMS);
+      expect(restoreSsoQueryParams('P1', 'sign-up')).toBeNull();
+    });
+  });
+
   describe('clearSsoQueryParams', () => {
     it('removes the entry', () => {
       storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
       clearSsoQueryParams('P1', 'sign-in');
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).toBeNull();
+      expect(sessionStorage.getItem(keyFor())).toBeNull();
     });
 
     it('does not throw when sessionStorage throws', () => {

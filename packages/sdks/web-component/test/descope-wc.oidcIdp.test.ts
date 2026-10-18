@@ -19,7 +19,7 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 import { screen } from 'shadow-dom-testing-library';
 
 import '../src/lib/descope-wc';
-import { resetSsoReloadCredit } from '../src/lib/helpers/oidcSession';
+import { resetInitializedScopes } from '../src/lib/helpers/oidcSession';
 
 import {
   ASSETS_FOLDER,
@@ -34,9 +34,13 @@ import {
   APPLICATION_SCOPES_PARAM_NAME,
   SSO_APP_ID_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
-  DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+  DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
 } from '../src/lib/constants';
+
+// the storage key carries the project and flow
+const ssoKey = (projectId = '1', flowId = 'sign-in') =>
+  `${DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX}_${projectId}_${flowId}`;
 
 describe('web-component', () => {
   beforeEach(() => {
@@ -930,7 +934,7 @@ describe('web-component', () => {
       document.body.innerHTML = '';
       // a real refresh builds a new document, which resets the per-document
       // reload credit. the SPA remount test below deliberately omits this.
-      resetSsoReloadCredit();
+      resetInitializedScopes();
       setNavigationType('reload');
       mount();
 
@@ -1017,7 +1021,7 @@ describe('web-component', () => {
       document.body.innerHTML = '';
       // a real refresh builds a new document, which resets the per-document
       // reload credit. the SPA remount test below deliberately omits this.
-      resetSsoReloadCredit();
+      resetInitializedScopes();
       setNavigationType('reload');
       mount();
 
@@ -1041,9 +1045,7 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
       expect(startOptions(0).oidcIdpStateId).toBe('attacker-state');
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).not.toBeNull();
+      expect(sessionStorage.getItem(ssoKey())).not.toBeNull();
 
       // 2. the victim later opens the same login page cleanly
       document.body.innerHTML = '';
@@ -1055,15 +1057,13 @@ describe('web-component', () => {
       });
       expect(startOptions(1).oidcIdpStateId).toBeNull();
       // the stale entry must be gone, which is what closes the hole
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).toBeNull();
+      expect(sessionStorage.getItem(ssoKey())).toBeNull();
 
       // 3. the victim refreshes that clean page
       document.body.innerHTML = '';
       // a real refresh builds a new document, which resets the per-document
       // reload credit. the SPA remount test below deliberately omits this.
-      resetSsoReloadCredit();
+      resetInitializedScopes();
       setNavigationType('reload');
       mount();
       await waitFor(() => expect(startMock).toHaveBeenCalledTimes(3), {
@@ -1085,7 +1085,7 @@ describe('web-component', () => {
         timeout: WAIT_TIMEOUT,
       });
 
-      // same document throughout: no resetSsoReloadCredit() here on purpose.
+      // same document throughout: no resetInitializedScopes() here on purpose.
       // the app routed away and mounted the same flow again at the same url
       document.body.innerHTML = '';
       window.location.search = '';
@@ -1106,9 +1106,7 @@ describe('web-component', () => {
       await waitFor(() => expect(startMock).toHaveBeenCalled(), {
         timeout: WAIT_TIMEOUT,
       });
-      expect(
-        sessionStorage.getItem(DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY),
-      ).toBeNull();
+      expect(sessionStorage.getItem(ssoKey())).toBeNull();
     });
 
     it('clears the stored params once the flow completes', async () => {
@@ -1122,7 +1120,7 @@ describe('web-component', () => {
         () =>
           expect(
             sessionStorage.getItem(
-              DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+              DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX,
             ),
           ).toBeNull(),
         { timeout: WAIT_TIMEOUT },

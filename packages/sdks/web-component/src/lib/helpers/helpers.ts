@@ -44,7 +44,7 @@ import {
   hasAnySsoQueryParam,
   restoreSsoQueryParams,
   storeSsoQueryParams,
-  takeReloadCredit,
+  markScopeFirstInit,
 } from './oidcSession';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
@@ -550,7 +550,7 @@ export const handleUrlParams = (
   // call site.
   // Taken on EVERY init, including the one that stores, so that a first load
   // carrying the params cannot leave a credit behind for a later remount.
-  const firstInitForScope = takeReloadCredit(projectId, flowId);
+  const firstInitForScope = markScopeFirstInit(projectId, flowId);
 
   let effectiveSsoQueryParams: Partial<SSOQueryParams> = ssoQueryParams;
   if (hasAnySsoQueryParam(ssoQueryParams)) {

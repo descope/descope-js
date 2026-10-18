@@ -1,5 +1,5 @@
 import {
-  DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+  DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX,
   SSO_QUERY_PARAMS_MAX_AGE_MS,
 } from '../constants';
 import type { SSOQueryParams } from '../types';
@@ -36,14 +36,15 @@ type StoredEntry = {
   ts: number;
 };
 
-// A document is loaded once, so only the FIRST init of a given flow after that
+// Which flows have already initialized in THIS document.
+// A document is loaded once, so only the first init of a given flow after that
 // load can be the refresh. `PerformanceNavigationTiming.type` belongs to the
 // document and stays 'reload' for its whole life, so without this one reload
-// would license every later remount of the component in a single page app.
-// Comparing URLs cannot fix that, because the remount can be at the very same
-// URL. Cleared naturally: a real second refresh builds a new document, and this
-// module starts over with it.
-const spentReloadCredit = new Set<string>();
+// would make every later remount of the component in a single page app look
+// like a refresh too. Comparing URLs cannot fix that, because the remount can
+// be at the very same URL. This empties itself: a real refresh builds a new
+// document, and the module starts over with it.
+const initializedScopes = new Set<string>();
 
 const buildScope = (projectId: string, flowId: string): ScopeKey => ({
   origin: window.location.origin,
@@ -56,18 +57,24 @@ const buildScope = (projectId: string, flowId: string): ScopeKey => ({
 const scopeId = (s: ScopeKey): string =>
   [s.origin, s.pathname, s.hash, s.projectId, s.flowId].join('|');
 
-// True once per flow per document, on the first init. Must be called on every
-// init, not only on the branch that restores, otherwise a first load carrying
-// the params leaves the credit unspent for a later remount to use.
-export const takeReloadCredit = (
+// One entry per project and flow. A single shared key meant the last flow to
+// store won, so two flows on the same page would clobber each other and the
+// loser lost its redirect.
+const storageKey = (projectId: string, flowId: string): string =>
+  `${DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX}_${projectId}_${flowId}`;
+
+// True only on the first init of this flow in this document. Must be called on
+// every init, not only on the branch that restores, otherwise a first load
+// carrying the params would leave the flow unmarked for a later remount.
+export const markScopeFirstInit = (
   projectId: string,
   flowId: string,
 ): boolean => {
   const id = scopeId(buildScope(projectId, flowId));
-  if (spentReloadCredit.has(id)) {
+  if (initializedScopes.has(id)) {
     return false;
   }
-  spentReloadCredit.add(id);
+  initializedScopes.add(id);
   return true;
 };
 
@@ -79,8 +86,8 @@ export const takeReloadCredit = (
  * model a fresh page load. A test that is modelling a remount inside the SAME
  * document deliberately does not call it.
  */
-export const resetSsoReloadCredit = () => {
-  spentReloadCredit.clear();
+export const resetInitializedScopes = () => {
+  initializedScopes.clear();
 };
 
 // `descopeIdpInitiated` is a boolean and is always present on the object, so an
@@ -141,7 +148,7 @@ export const storeSsoQueryParams = (
       ts: Date.now(),
     };
     window.sessionStorage?.setItem(
-      DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
+      storageKey(projectId, flowId),
       JSON.stringify(entry),
     );
   } catch (e) {
@@ -159,9 +166,7 @@ export const restoreSsoQueryParams = (
     return null;
   }
   try {
-    const raw = window.sessionStorage?.getItem(
-      DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
-    );
+    const raw = window.sessionStorage?.getItem(storageKey(projectId, flowId));
     if (!raw) {
       return null;
     }
@@ -180,17 +185,13 @@ export const restoreSsoQueryParams = (
 
 const removeIfScopeMatches = (projectId: string, flowId: string): void => {
   try {
-    const raw = window.sessionStorage?.getItem(
-      DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
-    );
+    const raw = window.sessionStorage?.getItem(storageKey(projectId, flowId));
     if (!raw) {
       return;
     }
     const entry: StoredEntry = JSON.parse(raw);
     if (isSameScope(entry?.scope, buildScope(projectId, flowId))) {
-      window.sessionStorage?.removeItem(
-        DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY,
-      );
+      window.sessionStorage?.removeItem(storageKey(projectId, flowId));
     }
   } catch (e) {
     // nothing to do
