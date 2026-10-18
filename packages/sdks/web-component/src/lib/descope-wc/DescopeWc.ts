@@ -26,6 +26,7 @@ import {
 } from '../constants';
 import {
   clearPreviousExternalInputs,
+  clearSsoQueryParams,
   getAnimationDirection,
   getElementDescopeAttributes,
   getScriptResultPath,
@@ -1593,6 +1594,15 @@ class DescopeWc extends BaseDescopeWc {
       // runs. Do it here, or validation errors held from the start screen are
       // dropped when the component tears down.
       this.setValidationTrackingExecution(sdkResp.data.executionId);
+      // the flow is done, so a stored OIDC context has served its purpose and
+      // must not leak into an unrelated visit later in this tab.
+      // Note: an OIDC flow does NOT reach here. It ends on the RESPONSE_ACTIONS
+      // .redirect branch in onFlowChange with a non-completed status, so
+      // its entry is left to expire on the 10 minute cap instead. Measured
+      // against the local stack, not assumed. That is safe because the backend
+      // deletes the state_id on success, so a later restore of it cannot
+      // authorize anything, it only errors.
+      clearSsoQueryParams(this.projectId, this.flowId);
       this.#dispatch('success', payload);
       return;
     }
