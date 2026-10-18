@@ -18,6 +18,12 @@ export const DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON = 'data-exclude-next';
 export const DESCOPE_LAST_AUTH_LOCAL_STORAGE_KEY = 'dls_last_auth';
 export const DESCOPE_LAST_SUBMITTED_LOGIN_ID_SESSION_STORAGE_KEY =
   'dls_last_submitted_login_id';
+// prefix only, the project and flow are appended so two flows on one page do
+// not overwrite each other
+export const DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX =
+  'dls_sso_query_params';
+// matches the server side state lifetime
+export const SSO_QUERY_PARAMS_MAX_AGE_MS = 10 * 60 * 1000;
 export const DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED = 'data-opt-in-last-used-auth';
 
 // SSO query params

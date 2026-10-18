@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.54.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.3...web-js-sdk-1.54.4) (2026-10-18)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** catch background refresh rejections ([#1490](https://github.com/descope/descope-js/issues/1490)) ([3ed5b28](https://github.com/descope/descope-js/commit/3ed5b285e88fadbf984e125cf489c76dd1b6af8e)), closes [#1479](https://github.com/descope/descope-js/issues/1479)
+* **web-js-sdk:** stop refreshing on tab return after refresh failed ([#1513](https://github.com/descope/descope-js/issues/1513)) ([ca77ee7](https://github.com/descope/descope-js/commit/ca77ee77266fd5aee8a266e30da5a36ffbeebad7))
+
 ## [1.54.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.2...web-js-sdk-1.54.3) (2026-10-17)
 
 ### Dependency Updates

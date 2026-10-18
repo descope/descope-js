@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.4.12](https://github.com/descope/descope-js/compare/web-component-4.4.11...web-component-4.4.12) (2026-10-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.4`
+
+### Bug Fixes
+
+* **web-component:** keep OIDC context across a login page refresh RELEASE ([#1514](https://github.com/descope/descope-js/issues/1514)) ([20ffa18](https://github.com/descope/descope-js/commit/20ffa189cbc760e4489ba116187751b8a9f10860)), closes [#460](https://github.com/descope/descope-js/issues/460)
+
 ## [4.4.11](https://github.com/descope/descope-js/compare/web-component-4.4.10...web-component-4.4.11) (2026-10-17)
 
 ### Dependency Updates
