@@ -292,8 +292,22 @@ export const flowRunnerMixin = createSingletonMixin(
         return {
           // no awaiting before open() - the browser blocks a popup that is not
           // opened straight from the user gesture
-          open: (inputs?: FlowRunnerInputs) =>
-            popup.open(this.#buildPopupUrl(flowId, inputs)),
+          open: (inputs?: FlowRunnerInputs) => {
+            if (popup.open(this.#buildPopupUrl(flowId, inputs))) return;
+            // The button did nothing and the user has no idea why. Falling back
+            // to a modal is not an option here - the passkey would bind to the
+            // app's own domain, which is the thing popup mode exists to avoid.
+            // So hand it to the app on the same error event the session
+            // refresh failure already uses.
+            this.logger?.error(
+              'The browser blocked the flow popup, so the flow did not start',
+            );
+            this.dispatchEvent(
+              new CustomEvent('error', {
+                detail: { message: 'flow-popup-blocked' },
+              }),
+            );
+          },
           close: () => popup.close(),
           remove: () => popup.remove(),
           // the url carries the inputs and is rebuilt on every open, so there
