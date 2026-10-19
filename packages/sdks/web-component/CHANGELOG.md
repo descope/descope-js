@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.5.0](https://github.com/descope/descope-js/compare/web-component-4.4.12...web-component-4.5.0) (2026-10-19)
+
+
+### Features
+
+* **web-component:** expose password reuse amount in context.data.passwordPolicy ([#1517](https://github.com/descope/descope-js/issues/1517)) ([2810c91](https://github.com/descope/descope-js/commit/2810c91c1d409168be715e52a9035643b6139ab1)), closes [descope/etc#18963](https://github.com/descope/etc/issues/18963)
+
 ## [4.4.12](https://github.com/descope/descope-js/compare/web-component-4.4.11...web-component-4.4.12) (2026-10-18)
 
 ### Dependency Updates
