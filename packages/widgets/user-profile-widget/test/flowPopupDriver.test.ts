@@ -250,6 +250,50 @@ describe('FlowPopupDriver', () => {
     });
   });
 
+  describe('two flows sharing one popup window', () => {
+    it('the first driver stops hearing the window once a second takes it', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const first = new FlowPopupDriver({ logger });
+      const onDoneFirst = jest.fn();
+      const onClosedFirst = jest.fn();
+      first.onDone(onDoneFirst);
+      first.onClosed(onClosedFirst);
+      first.open(FLOW_URL);
+
+      const second = new FlowPopupDriver({ logger });
+      const onDoneSecond = jest.fn();
+      second.onDone(onDoneSecond);
+      second.open(FLOW_URL);
+
+      postFromPopup({ action: 'widget-flow-done' });
+
+      // only the flow the user is actually running should report
+      expect(onDoneSecond).toHaveBeenCalledTimes(1);
+      expect(onDoneFirst).not.toHaveBeenCalled();
+      // and standing down is not the same as the user closing the window
+      expect(onClosedFirst).not.toHaveBeenCalled();
+    });
+
+    it('a message from a window this driver did not open is ignored', () => {
+      const popup = createFakePopup();
+      openMock.mockReturnValue(popup);
+      const driver = new FlowPopupDriver({ logger });
+      const onDone = jest.fn();
+      driver.onDone(onDone);
+      driver.open(FLOW_URL);
+
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          data: { action: 'widget-flow-done' },
+          origin: POPUP_ORIGIN,
+          source: { closed: false } as any,
+        }),
+      );
+
+      expect(onDone).not.toHaveBeenCalled();
+    });
+  });
+
   describe('closing', () => {
     it('fires onClosed when the user closes the window without finishing', () => {
       const popup = createFakePopup();

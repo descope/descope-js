@@ -11,6 +11,18 @@ const DONE_ACTION = 'widget-flow-done';
 // session on the auth domain too.
 const UNAUTHENTICATED_ACTION = 'widget-flow-unauthenticated';
 const CLOSED_POLL_MS = 1000;
+
+/**
+ * Every driver opens its popup under the same window name, and `window.open`
+ * reuses a window that already has it. So a second flow takes over the window
+ * the first one is still listening to, and a single `widget-flow-done` would
+ * settle both: the first runner's onSuccess fires for a flow it never ran, and
+ * the session is refreshed twice at once.
+ *
+ * Only one driver can own that window, so the previous owner is stood down
+ * when a new one opens.
+ */
+let activeDriver: { standDown: () => void } | null = null;
 const POPUP_WIDTH = 480;
 const POPUP_HEIGHT = 650;
 
@@ -122,6 +134,8 @@ export class FlowPopupDriver {
    * something useful instead of waiting for a result that never arrives.
    */
   open(url: string): boolean {
+    // the window is about to be reused, so whoever held it stops listening
+    if (activeDriver && activeDriver !== this) activeDriver.standDown();
     this.#cleanup();
     this.#settled = false;
     this.#focusReported = false;
@@ -148,6 +162,9 @@ export class FlowPopupDriver {
     }
 
     this.#onMessage = (event: MessageEvent) => {
+      // the window as well as the origin: another driver may now own a window
+      // with the same name, and its messages are not ours
+      if (this.#popup && event.source && event.source !== this.#popup) return;
       if (event.origin !== this.#expectedOrigin) {
         this.logger?.debug(
           `Ignoring popup message from unexpected origin "${event.origin}"`,
@@ -181,6 +198,7 @@ export class FlowPopupDriver {
     window.addEventListener('focus', this.#onParentFocus);
     document.addEventListener('visibilitychange', this.#onParentFocus);
 
+    activeDriver = this;
     return true;
   }
 
@@ -195,13 +213,29 @@ export class FlowPopupDriver {
   }
 
   remove() {
+    this.#release();
+  }
+
+  /**
+   * Give up the shared window without reporting anything. The flow this driver
+   * opened is not finished, it is just no longer ours to hear about, so firing
+   * onClosed here would be a lie.
+   */
+  standDown() {
+    this.#settled = true;
     this.#cleanup();
+    this.#popup = null;
+  }
+
+  #release() {
+    this.#cleanup();
+    if (activeDriver === this) activeDriver = null;
   }
 
   #settle(callbacks: (() => void)[]) {
     if (this.#settled) return;
     this.#settled = true;
-    this.#cleanup();
+    this.#release();
     callbacks.forEach((cb) => cb());
   }
 
