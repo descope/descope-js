@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.19](https://github.com/descope/descope-js/compare/react-sdk-3.3.18...react-sdk-3.3.19) (2026-10-19)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.7.14`
+* `tenant-profile-widget` updated to version `0.11.8`
+* `user-management-widget` updated to version `0.21.5`
+* `user-profile-widget` updated to version `0.19.14`
+* `web-component` updated to version `4.5.0`
+
+### Bug Fixes
+
+* **react-sdk:** clear useUser loading when true/false updates batch into one render ([#1509](https://github.com/descope/descope-js/issues/1509)) ([7e5a863](https://github.com/descope/descope-js/commit/7e5a863bc9e6a665f8101aa579b86ed8da58a530)), closes [#1508](https://github.com/descope/descope-js/issues/1508) [#1500](https://github.com/descope/descope-js/issues/1500) [#1500](https://github.com/descope/descope-js/issues/1500)
+
 ## [3.3.18](https://github.com/descope/descope-js/compare/react-sdk-3.3.17...react-sdk-3.3.18) (2026-10-18)
 
 ### Dependency Updates
