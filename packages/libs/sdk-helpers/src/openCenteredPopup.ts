@@ -25,8 +25,9 @@ function isIphoneSafari() {
  * this, used by the OAuth redirect step. The two are intentionally not merged
  * yet - two existing test files spy on that module's export
  * (`jest.spyOn(helpers, 'openCenteredPopup')`), so consolidating means editing
- * tests on a production auth path. That is worth doing when this ships, not for
- * a POC.
+ * tests on a production auth path. Worth doing as a follow-up: that copy also
+ * still dereferences a blocked popup instead of returning null, which this one
+ * fixes.
  */
 export const openCenteredPopup = (
   url: string,

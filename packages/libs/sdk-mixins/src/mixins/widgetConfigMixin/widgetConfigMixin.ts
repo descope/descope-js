@@ -20,6 +20,20 @@ export const widgetConfigMixin = createSingletonMixin(
         const config = await this.config;
         return config?.projectConfig?.widgets?.[this.widgetId];
       }
+
+      /**
+       * Base url of the project's hosted auth page, or undefined.
+       *
+       * Project-level rather than per-widget, because the auth domain belongs to
+       * the project. Undefined when the project has no custom domain of its own:
+       * the backend omits it rather than publishing the shared Descope host,
+       * since that would make a passkey's relying party a host shared across
+       * customers. So undefined means popup mode is not available.
+       */
+      async getHostedPageBaseUrl(): Promise<string | undefined> {
+        const config = await this.config;
+        return config?.projectConfig?.hostedPageBaseUrl;
+      }
     };
   },
 );

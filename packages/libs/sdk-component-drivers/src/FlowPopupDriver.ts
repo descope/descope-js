@@ -5,6 +5,11 @@ import { openCenteredPopup } from '@descope/sdk-helpers';
 // messages
 const POPUP_NAME_PREFIX = 'descope-widget-flow';
 const DONE_ACTION = 'widget-flow-done';
+// The popup does not sign anyone in: it cannot choose how, since it runs the
+// project's own sign-in flow, which may send a link and strand the user in
+// another tab. Login belongs to the app, whose OIDC redirect re-establishes the
+// session on the auth domain too.
+const UNAUTHENTICATED_ACTION = 'widget-flow-unauthenticated';
 const CLOSED_POLL_MS = 1000;
 const POPUP_WIDTH = 480;
 const POPUP_HEIGHT = 650;
@@ -49,6 +54,16 @@ export class FlowPopupDriver {
 
   #closedCallbacks: (() => void)[] = [];
 
+  #unauthenticatedCallbacks: (() => void)[] = [];
+
+  #parentFocusCallbacks: (() => void)[] = [];
+
+  #onParentFocus: (() => void) | undefined;
+
+  // fires at most once per open, so coming back to the app costs one re-check
+  // rather than one on every alt-tab
+  #focusReported = false;
+
   constructor(config: { logger?: Logger } = {}) {
     this.logger = config.logger;
   }
@@ -67,6 +82,34 @@ export class FlowPopupDriver {
     };
   }
 
+  /**
+   * The person came back to the app while this popup was open.
+   *
+   * A flow can finish somewhere this popup cannot hear - the tab an emailed
+   * link opens, or the same link opened on a phone. Nothing can report from
+   * there, so the app re-checks when the user returns to it. Fires once per
+   * open; the popup is left alone in case the user is only glancing over and
+   * goes back to finish.
+   */
+  onParentFocus(cb: () => void) {
+    this.#parentFocusCallbacks.push(cb);
+    return () => {
+      this.#parentFocusCallbacks = this.#parentFocusCallbacks.filter(
+        (c) => c !== cb,
+      );
+    };
+  }
+
+  /** The popup does not know who the user is; the app should sign them in. */
+  onUnauthenticated(cb: () => void) {
+    this.#unauthenticatedCallbacks.push(cb);
+    return () => {
+      this.#unauthenticatedCallbacks = this.#unauthenticatedCallbacks.filter(
+        (c) => c !== cb,
+      );
+    };
+  }
+
   get isOpen() {
     return !!this.#popup && !this.#popup.closed;
   }
@@ -81,6 +124,7 @@ export class FlowPopupDriver {
   open(url: string): boolean {
     this.#cleanup();
     this.#settled = false;
+    this.#focusReported = false;
 
     try {
       this.#expectedOrigin = new URL(url).origin;
@@ -110,6 +154,10 @@ export class FlowPopupDriver {
         );
         return;
       }
+      if (event.data?.action === UNAUTHENTICATED_ACTION) {
+        this.#settle(this.#unauthenticatedCallbacks);
+        return;
+      }
       if (event.data?.action !== DONE_ACTION) return;
       this.#settle(this.#doneCallbacks);
     };
@@ -119,6 +167,19 @@ export class FlowPopupDriver {
     this.#pollId = setInterval(() => {
       if (this.#popup?.closed) this.#settle(this.#closedCallbacks);
     }, CLOSED_POLL_MS);
+
+    // Opening the popup takes focus away; getting it back means the person is
+    // looking at the app again, and whatever they went off to do may be done.
+    // visibilitychange covers the case where the popup is a tab rather than a
+    // window, which is what iOS Safari gives us.
+    this.#onParentFocus = () => {
+      if (document.visibilityState === 'hidden') return;
+      if (this.#focusReported || this.#settled) return;
+      this.#focusReported = true;
+      this.#parentFocusCallbacks.forEach((cb) => cb());
+    };
+    window.addEventListener('focus', this.#onParentFocus);
+    document.addEventListener('visibilitychange', this.#onParentFocus);
 
     return true;
   }
@@ -152,6 +213,11 @@ export class FlowPopupDriver {
     if (this.#onMessage) {
       window.removeEventListener('message', this.#onMessage);
       this.#onMessage = undefined;
+    }
+    if (this.#onParentFocus) {
+      window.removeEventListener('focus', this.#onParentFocus);
+      document.removeEventListener('visibilitychange', this.#onParentFocus);
+      this.#onParentFocus = undefined;
     }
   }
 }

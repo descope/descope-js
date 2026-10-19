@@ -109,6 +109,147 @@ describe('FlowPopupDriver', () => {
     });
   });
 
+  describe('unauthenticated message', () => {
+    it('fires onUnauthenticated so the app can sign the user in again', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onUnauthenticated = jest.fn();
+      driver.onUnauthenticated(onUnauthenticated);
+
+      driver.open(FLOW_URL);
+      postFromPopup({ action: 'widget-flow-unauthenticated' });
+
+      expect(onUnauthenticated).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not report done - the flow never ran', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onDone = jest.fn();
+      driver.onDone(onDone);
+      driver.onUnauthenticated(jest.fn());
+
+      driver.open(FLOW_URL);
+      postFromPopup({ action: 'widget-flow-unauthenticated' });
+
+      expect(onDone).not.toHaveBeenCalled();
+    });
+
+    it('ignores it from a different origin', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onUnauthenticated = jest.fn();
+      driver.onUnauthenticated(onUnauthenticated);
+
+      driver.open(FLOW_URL);
+      postFromPopup(
+        { action: 'widget-flow-unauthenticated' },
+        'https://evil.example.com',
+      );
+
+      expect(onUnauthenticated).not.toHaveBeenCalled();
+    });
+
+    it('settles once, so the window closing afterwards is not also reported', () => {
+      const popup = createFakePopup();
+      openMock.mockReturnValue(popup);
+      const driver = new FlowPopupDriver({ logger });
+      const onUnauthenticated = jest.fn();
+      const onClosed = jest.fn();
+      driver.onUnauthenticated(onUnauthenticated);
+      driver.onClosed(onClosed);
+
+      driver.open(FLOW_URL);
+      postFromPopup({ action: 'widget-flow-unauthenticated' });
+      popup.closed = true;
+      jest.advanceTimersByTime(2000);
+
+      expect(onUnauthenticated).toHaveBeenCalledTimes(1);
+      expect(onClosed).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('the person coming back to the app', () => {
+    it('re-checks once, because the flow may have finished out of reach', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onFocus = jest.fn();
+      driver.onParentFocus(onFocus);
+
+      driver.open(FLOW_URL);
+      window.dispatchEvent(new Event('focus'));
+
+      expect(onFocus).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not fire again on every alt-tab', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onFocus = jest.fn();
+      driver.onParentFocus(onFocus);
+
+      driver.open(FLOW_URL);
+      window.dispatchEvent(new Event('focus'));
+      window.dispatchEvent(new Event('focus'));
+      window.dispatchEvent(new Event('focus'));
+
+      expect(onFocus).toHaveBeenCalledTimes(1);
+    });
+
+    it('leaves the popup open - the user may be coming back to finish', () => {
+      const popup = createFakePopup();
+      openMock.mockReturnValue(popup);
+      const driver = new FlowPopupDriver({ logger });
+      driver.onParentFocus(jest.fn());
+
+      driver.open(FLOW_URL);
+      window.dispatchEvent(new Event('focus'));
+
+      expect(popup.close).not.toHaveBeenCalled();
+      expect(driver.isOpen).toBe(true);
+    });
+
+    it('says nothing once the flow already reported done', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onFocus = jest.fn();
+      driver.onParentFocus(onFocus);
+
+      driver.open(FLOW_URL);
+      postFromPopup({ action: 'widget-flow-done' });
+      window.dispatchEvent(new Event('focus'));
+
+      expect(onFocus).not.toHaveBeenCalled();
+    });
+
+    it('a second open listens again', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onFocus = jest.fn();
+      driver.onParentFocus(onFocus);
+
+      driver.open(FLOW_URL);
+      window.dispatchEvent(new Event('focus'));
+      driver.open(FLOW_URL);
+      window.dispatchEvent(new Event('focus'));
+
+      expect(onFocus).toHaveBeenCalledTimes(2);
+    });
+
+    it('stops listening once the popup is gone', () => {
+      openMock.mockReturnValue(createFakePopup());
+      const driver = new FlowPopupDriver({ logger });
+      const onFocus = jest.fn();
+      driver.onParentFocus(onFocus);
+
+      driver.open(FLOW_URL);
+      driver.remove();
+      window.dispatchEvent(new Event('focus'));
+
+      expect(onFocus).not.toHaveBeenCalled();
+    });
+  });
+
   describe('closing', () => {
     it('fires onClosed when the user closes the window without finishing', () => {
       const popup = createFakePopup();

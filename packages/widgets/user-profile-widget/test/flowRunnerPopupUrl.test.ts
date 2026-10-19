@@ -1,6 +1,12 @@
-import { buildFlowPopupUrl } from '../src/lib/widget/mixins/flowRunnerMixin';
+import {
+  POPUP_URL_MAX_CHARS,
+  buildFlowPopupUrl,
+  resolveFlowTarget,
+} from '../src/lib/widget/mixins/flowRunnerMixin';
 
-const POPUP_URL = 'https://auth.example.com/popup-flow.html';
+// what the backend publishes as hostedPageBaseUrl for a project with its own
+// custom domain; auth-hosting serves the flow at <base>/<projectId>
+const HOSTED_BASE = 'https://auth.example.com/login';
 
 // stands in for the <descope-wc> inside the flow template
 const flowEle = (attrs: Record<string, string>) => {
@@ -10,25 +16,40 @@ const flowEle = (attrs: Record<string, string>) => {
 };
 
 const paramsOf = (ele: Element | null, onParseError?: any) =>
-  new URL(buildFlowPopupUrl(POPUP_URL, ele, onParseError)).searchParams;
+  new URL(buildFlowPopupUrl(HOSTED_BASE, ele, onParseError)).searchParams;
 
 describe('buildFlowPopupUrl', () => {
-  it('carries the flow and project so the page knows what to run', () => {
+  it('carries the flow so the page knows what to run', () => {
     const params = paramsOf(
       flowEle({ 'flow-id': 'add-passkey', 'project-id': 'P2Test' }),
     );
 
     expect(params.get('flow')).toBe('add-passkey');
-    expect(params.get('project')).toBe('P2Test');
   });
 
-  it('keeps the configured path rather than replacing it', () => {
+  it('puts the project in the path, which is where auth-hosting reads it', () => {
     const url = new URL(
-      buildFlowPopupUrl(POPUP_URL, flowEle({ 'flow-id': 'f' })),
+      buildFlowPopupUrl(
+        HOSTED_BASE,
+        flowEle({ 'flow-id': 'f', 'project-id': 'P2Test' }),
+      ),
     );
 
     expect(url.origin).toBe('https://auth.example.com');
-    expect(url.pathname).toBe('/popup-flow.html');
+    expect(url.pathname).toBe('/login/P2Test');
+    // not duplicated as a query param
+    expect(url.searchParams.get('project')).toBeNull();
+  });
+
+  it('tolerates a base url with a trailing slash', () => {
+    const url = new URL(
+      buildFlowPopupUrl(
+        'https://auth.example.com/login/',
+        flowEle({ 'flow-id': 'f', 'project-id': 'P2Test' }),
+      ),
+    );
+
+    expect(url.pathname).toBe('/login/P2Test');
   });
 
   it('forwards presentation attributes the page can honour', () => {
@@ -107,6 +128,88 @@ describe('buildFlowPopupUrl', () => {
   });
 
   it('tolerates a missing flow element', () => {
-    expect(() => buildFlowPopupUrl(POPUP_URL, null)).not.toThrow();
+    expect(() => buildFlowPopupUrl(HOSTED_BASE, null)).not.toThrow();
+  });
+});
+
+describe('url length', () => {
+  const build = (attrs: Record<string, string>, onTooLong?: any) =>
+    buildFlowPopupUrl(HOSTED_BASE, flowEle(attrs), undefined, onTooLong);
+
+  it('says nothing about the flows we actually send', () => {
+    const onTooLong = jest.fn();
+    // the biggest real one: removing a specific passkey
+    const url = build(
+      {
+        'flow-id': 'remove-passkey',
+        'project-id': 'P3HmRBOz7fQNZ6Fr4KtdxGeH1Quu',
+        theme: 'dark',
+        form: JSON.stringify({
+          externalId: 'U3KdUAoMYI8ZVCUGjBTYmHHh7OND',
+          credentialId: 'A'.repeat(88),
+        }),
+      },
+      onTooLong,
+    );
+
+    expect(onTooLong).not.toHaveBeenCalled();
+    expect(url.length).toBeLessThan(POPUP_URL_MAX_CHARS);
+  });
+
+  it('reports a url that would be refused before the flow could start', () => {
+    const onTooLong = jest.fn();
+    build(
+      {
+        'flow-id': 'f',
+        'project-id': 'P2Test',
+        // what passing data instead of an identifier looks like
+        form: JSON.stringify({ profile: 'x'.repeat(POPUP_URL_MAX_CHARS) }),
+      },
+      onTooLong,
+    );
+
+    expect(onTooLong).toHaveBeenCalledTimes(1);
+    expect(onTooLong.mock.calls[0][0]).toBeGreaterThan(POPUP_URL_MAX_CHARS);
+  });
+
+  it('still returns the url, because truncating would break the flow silently', () => {
+    const url = build({
+      'flow-id': 'f',
+      'project-id': 'P2Test',
+      form: JSON.stringify({ profile: 'x'.repeat(POPUP_URL_MAX_CHARS) }),
+    });
+
+    expect(new URL(url).searchParams.get('form.profile')).toHaveLength(
+      POPUP_URL_MAX_CHARS,
+    );
+  });
+});
+
+describe('resolveFlowTarget', () => {
+  it('opens a popup when the project asked for one and has somewhere to open it', () => {
+    expect(resolveFlowTarget('popup', HOSTED_BASE)).toBe('popup');
+  });
+
+  it('keeps the modal for a project that has not opted in', () => {
+    expect(resolveFlowTarget(undefined, HOSTED_BASE)).toBe('modal');
+    expect(resolveFlowTarget('modal', HOSTED_BASE)).toBe('modal');
+  });
+
+  it('falls back to the modal when the project has no custom domain', () => {
+    // the backend omits hostedPageBaseUrl rather than publishing the shared
+    // Descope host, so "popup" with no url means popup mode is unavailable -
+    // a modal is better than a button that does nothing
+    const onUnavailable = jest.fn();
+
+    expect(resolveFlowTarget('popup', undefined, onUnavailable)).toBe('modal');
+    expect(onUnavailable).toHaveBeenCalledTimes(1);
+  });
+
+  it('stays quiet when the modal was the choice anyway', () => {
+    const onUnavailable = jest.fn();
+
+    resolveFlowTarget(undefined, undefined, onUnavailable);
+
+    expect(onUnavailable).not.toHaveBeenCalled();
   });
 });
