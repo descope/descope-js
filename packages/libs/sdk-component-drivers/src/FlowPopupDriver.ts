@@ -10,6 +10,12 @@ const DONE_ACTION = 'widget-flow-done';
 // another tab. Login belongs to the app, whose OIDC redirect re-establishes the
 // session on the auth domain too.
 const UNAUTHENTICATED_ACTION = 'widget-flow-unauthenticated';
+// The popup proves who it is talking to before it reports anything: it posts
+// this to the origin written in the window name and waits for the same code
+// back. Only a page really at that origin can receive it, so a page that merely
+// CLAIMS to be the app cannot answer. See auth-hosting's confirmWidgetOpener.
+const HELLO_ACTION = 'widget-flow-hello';
+const HELLO_ACK_ACTION = 'widget-flow-hello-ack';
 const CLOSED_POLL_MS = 1000;
 
 /**
@@ -168,6 +174,16 @@ export class FlowPopupDriver {
       if (event.origin !== this.#expectedOrigin) {
         this.logger?.debug(
           `Ignoring popup message from unexpected origin "${event.origin}"`,
+        );
+        return;
+      }
+      if (event.data?.action === HELLO_ACTION) {
+        // Answered straight back to the window that asked, at the origin this
+        // driver opened - both already checked above. The code is echoed as
+        // sent; it is the popup's own, and only it needs to recognise it.
+        (event.source as Window | null)?.postMessage(
+          { action: HELLO_ACK_ACTION, nonce: event.data?.nonce },
+          event.origin,
         );
         return;
       }

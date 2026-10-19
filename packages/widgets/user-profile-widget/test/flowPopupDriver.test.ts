@@ -22,10 +22,19 @@ const createFakePopup = () => ({
   closed: false,
   name: '',
   close: jest.fn(),
+  postMessage: jest.fn(),
 });
 
 const postFromPopup = (data: any, origin = POPUP_ORIGIN) => {
   window.dispatchEvent(new MessageEvent('message', { data, origin }));
+};
+
+// Same, but with event.source set, which the handshake needs: the driver
+// answers the window that asked, not whichever window it happens to hold.
+const postFromPopupWindow = (popup: any, data: any, origin = POPUP_ORIGIN) => {
+  const event = new MessageEvent('message', { data, origin });
+  Object.defineProperty(event, 'source', { value: popup });
+  window.dispatchEvent(event);
 };
 
 describe('FlowPopupDriver', () => {
@@ -68,6 +77,56 @@ describe('FlowPopupDriver', () => {
       // already navigating to another origin - caught in live testing.
       const [, name] = openMock.mock.calls[0];
       expect(name).toBe(`descope-widget-flow|${window.location.origin}`);
+    });
+  });
+
+  // The popup cannot trust the origin written in its window name - anyone can
+  // open it with any name. So it posts a code to that origin and waits for it
+  // back. Only a page really at that origin receives the code, so this answer
+  // is what proves the app is where it says it is.
+  describe('the opener handshake', () => {
+    it('answers the hello with the same code, to the window that asked', () => {
+      const popup = createFakePopup();
+      openMock.mockReturnValue(popup);
+      new FlowPopupDriver({ logger }).open(FLOW_URL);
+
+      postFromPopupWindow(popup, { action: 'widget-flow-hello', nonce: 'n1' });
+
+      expect(popup.postMessage).toHaveBeenCalledWith(
+        { action: 'widget-flow-hello-ack', nonce: 'n1' },
+        POPUP_ORIGIN,
+      );
+    });
+
+    it('says nothing to a hello from another origin', () => {
+      const popup = createFakePopup();
+      openMock.mockReturnValue(popup);
+      new FlowPopupDriver({ logger }).open(FLOW_URL);
+
+      postFromPopupWindow(
+        popup,
+        { action: 'widget-flow-hello', nonce: 'n1' },
+        'https://evil.example',
+      );
+
+      expect(popup.postMessage).not.toHaveBeenCalled();
+    });
+
+    it('does not treat the hello as the flow finishing', () => {
+      const popup = createFakePopup();
+      openMock.mockReturnValue(popup);
+      const driver = new FlowPopupDriver({ logger });
+      const onDone = jest.fn();
+      const onClosed = jest.fn();
+      driver.onDone(onDone);
+      driver.onClosed(onClosed);
+      driver.open(FLOW_URL);
+
+      postFromPopupWindow(popup, { action: 'widget-flow-hello', nonce: 'n1' });
+
+      expect(onDone).not.toHaveBeenCalled();
+      expect(onClosed).not.toHaveBeenCalled();
+      expect(driver.isOpen).toBe(true);
     });
   });
 
