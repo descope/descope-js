@@ -15,10 +15,32 @@ const flowEle = (attrs: Record<string, string>) => {
   return ele;
 };
 
-const paramsOf = (ele: Element | null, onParseError?: any) =>
-  new URL(buildFlowPopupUrl(HOSTED_BASE, ele, onParseError)).searchParams;
+const paramsOf = (ele: Element | null, onParseError?: any, appId?: string) =>
+  new URL(buildFlowPopupUrl(HOSTED_BASE, ele, onParseError, undefined, appId))
+    .searchParams;
 
 describe('buildFlowPopupUrl', () => {
+  // The app the widget is embedded in. The page in the popup hands it to the
+  // backend, which merges that app's trusted domains with the project's before
+  // the flow may report anything back.
+  it('carries the app when the host named one', () => {
+    const params = paramsOf(
+      flowEle({ 'flow-id': 'f', 'project-id': 'P2Test' }),
+      undefined,
+      'SA1',
+    );
+
+    expect(params.get('appId')).toBe('SA1');
+  });
+
+  it('leaves it out when the host named none, so nothing changes by upgrading', () => {
+    const params = paramsOf(
+      flowEle({ 'flow-id': 'f', 'project-id': 'P2Test' }),
+    );
+
+    expect(params.has('appId')).toBe(false);
+  });
+
   it('carries the flow so the page knows what to run', () => {
     const params = paramsOf(
       flowEle({ 'flow-id': 'add-passkey', 'project-id': 'P2Test' }),

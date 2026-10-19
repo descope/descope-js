@@ -116,10 +116,18 @@ export const buildFlowPopupUrl = (
   flowEle: Element | null,
   onParseError?: (attr: string, raw: string) => void,
   onTooLong?: (length: number) => void,
+  // The app this widget is embedded in, when the host named one. Read from the
+  // widget rather than the flow template: it is a popup concern, so it does not
+  // belong in the shared template every widget builds.
+  appId?: string,
 ): string => {
   const projectId = flowEle?.getAttribute('project-id') || '';
   // auth-hosting reads the project from the last path segment
   const url = new URL(`${hostedPageBaseUrl.replace(/\/$/, '')}/${projectId}`);
+  // An identifier, which is all this url ever carries. The page in the popup
+  // hands it to the backend, which merges that app's trusted domains with the
+  // project's before it may report anything back here.
+  if (appId) url.searchParams.set('appId', appId);
 
   Object.entries(ATTR_TO_PARAM).forEach(([attr, param]) => {
     const value = flowEle?.getAttribute(attr);
@@ -249,6 +257,7 @@ export const flowRunnerMixin = createSingletonMixin(
             this.logger?.error(
               `The flow popup url is ${length} characters, past the ${POPUP_URL_MAX_CHARS} that is safe everywhere, so the popup may be refused before the flow starts. Pass identifiers in form and client inputs rather than data.`,
             ),
+          this.getAttribute('app-id') || undefined,
         );
       }
 
