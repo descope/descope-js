@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.20](https://github.com/descope/descope-js/compare/angular-sdk-0.28.19...angular-sdk-0.28.20) (2026-10-19)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.21.5`
+* `user-profile-widget` updated to version `0.19.14`
+* `tenant-profile-widget` updated to version `0.11.8`
+* `web-component` updated to version `4.5.0`
 ## [0.28.19](https://github.com/descope/descope-js/compare/angular-sdk-0.28.18...angular-sdk-0.28.19) (2026-10-18)
 
 ### Dependency Updates
