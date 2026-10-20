@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.5.1](https://github.com/descope/descope-js/compare/web-component-4.5.0...web-component-4.5.1) (2026-10-20)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.28.0`
+
+### Bug Fixes
+
+* **web-component:** send the page origin when starting a flow and resuming from a redirect ([#1520](https://github.com/descope/descope-js/issues/1520)) ([a096220](https://github.com/descope/descope-js/commit/a0962209ec9f95b055926c83cf6d918ff3c5a313))
+
 ## [4.5.0](https://github.com/descope/descope-js/compare/web-component-4.4.12...web-component-4.5.0) (2026-10-19)
 
 

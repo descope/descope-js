@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.20.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.19.14...user-profile-widget-0.20.0) (2026-10-20)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.5.1`
+* `sdk-mixins` updated to version `0.28.0`
+
+### Features
+
+* **user-profile-widget:** support session/refresh token cookie config ([#1521](https://github.com/descope/descope-js/issues/1521)) RELEASE ([f17a01b](https://github.com/descope/descope-js/commit/f17a01bc55cf10a85df65b2c0dadf5d19aa1a1c8))
+
 ## [0.19.14](https://github.com/descope/descope-js/compare/user-profile-widget-0.19.13...user-profile-widget-0.19.14) (2026-10-19)
 
 ### Dependency Updates
