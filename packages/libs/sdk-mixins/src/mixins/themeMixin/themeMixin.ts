@@ -10,6 +10,7 @@ import { DEFAULT_STYLE_ID } from './constants';
 import {
   deepMergeNonEmpty,
   flattenToVars,
+  getFontUrlsFromCss,
   loadDevTheme,
   loadFont,
 } from './helpers';
@@ -280,6 +281,20 @@ export const themeMixin = createSingletonMixin(
         } else {
           this.logger.debug('No fonts to load');
         }
+        this.#loadTenantFonts();
+      }
+
+      // Project fonts come from the config, which has no tenant fonts; the tenant
+      // theme carries the URLs of its fonts in its globals css
+      async #loadTenantFonts() {
+        if (!this.tenantId) return;
+        const tenantTheme = await this.#tenantThemeResource;
+        getFontUrlsFromCss(tenantTheme?.[this.theme]?.globals || '').forEach(
+          (url) => {
+            this.logger.debug(`Loading tenant font from URL "${url}"`);
+            loadFont(url);
+          },
+        );
       }
 
       async #applyTheme() {
@@ -329,6 +344,7 @@ export const themeMixin = createSingletonMixin(
           this.#_tenantThemeResource = null;
           this.#loadTenantStyle();
           this.#loadComponentsStyle();
+          this.#loadTenantFonts();
         });
 
         this.observeAttributes(['style-id'], () => {

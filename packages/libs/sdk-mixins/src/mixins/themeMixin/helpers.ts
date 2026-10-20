@@ -1,5 +1,10 @@
 import { UI_COMPONENTS_URL_KEY } from '../descopeUiMixin/constants';
 
+// A rendered theme carries its font URLs as css vars, e.g.
+// --descope-fonts-font1-url:url(https://fonts.googleapis.com/css?family=...)
+const FONT_URL_VAR_REGEX =
+  /--descope-fonts-[\w-]+-url\s*:\s*url\(\s*(['"]?)([^'")]+)\1\s*\)/g;
+
 export const isSafeCssVarSegment = (segment: string): boolean =>
   /^[a-zA-Z0-9-]+$/.test(segment);
 
@@ -40,6 +45,10 @@ export const loadFont = (url: string) => {
   font.rel = 'stylesheet';
   document.head.appendChild(font);
 };
+
+export const getFontUrlsFromCss = (css: string) => [
+  ...new Set([...css.matchAll(FONT_URL_VAR_REGEX)].map(([, , url]) => url)),
+];
 
 export const loadDevTheme = async () => {
   const componentsUrl = localStorage.getItem(UI_COMPONENTS_URL_KEY);
