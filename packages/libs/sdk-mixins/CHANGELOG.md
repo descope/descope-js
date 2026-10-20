@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.2...sdk-mixins-0.28.0) (2026-10-20)
+
+
+### Features
+
+* **user-profile-widget:** support session/refresh token cookie config ([#1521](https://github.com/descope/descope-js/issues/1521)) RELEASE ([f17a01b](https://github.com/descope/descope-js/commit/f17a01bc55cf10a85df65b2c0dadf5d19aa1a1c8))
+
 ## [0.27.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.1...sdk-mixins-0.27.2) (2026-09-29)
 
 ### Dependency Updates
