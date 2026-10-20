@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.0](https://github.com/descope/descope-js/compare/react-sdk-3.3.19...react-sdk-3.4.0) (2026-10-20)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.13`
+* `applications-portal-widget` updated to version `0.9.13`
+* `audit-management-widget` updated to version `0.9.13`
+* `outbound-applications-widget` updated to version `0.7.15`
+* `role-management-widget` updated to version `0.10.13`
+* `tenant-profile-widget` updated to version `0.11.9`
+* `user-management-widget` updated to version `0.21.6`
+* `user-profile-widget` updated to version `0.20.0`
+* `web-component` updated to version `4.5.1`
+
+### Features
+
+* **user-profile-widget:** support session/refresh token cookie config ([#1521](https://github.com/descope/descope-js/issues/1521)) RELEASE ([f17a01b](https://github.com/descope/descope-js/commit/f17a01bc55cf10a85df65b2c0dadf5d19aa1a1c8))
+
 ## [3.3.19](https://github.com/descope/descope-js/compare/react-sdk-3.3.18...react-sdk-3.3.19) (2026-10-19)
 
 ### Dependency Updates
