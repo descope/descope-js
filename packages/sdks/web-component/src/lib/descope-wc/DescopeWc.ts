@@ -908,6 +908,7 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           flowVersions,
           {
+            origin: this.#origin,
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
@@ -964,6 +965,7 @@ class DescopeWc extends BaseDescopeWc {
           token,
           exchangeCode: code,
           exchangeError,
+          origin: this.#origin,
         },
       );
       this.#handleSdkResponse(sdkResp);
@@ -1990,6 +1992,10 @@ class DescopeWc extends BaseDescopeWc {
     };
   }
 
+  get #origin() {
+    return this.nativeOptions?.origin || window.location.origin;
+  }
+
   #validateInputs() {
     let isValid = true;
     const invalidInputs: HTMLInputElement[] = [];
@@ -2264,7 +2270,7 @@ class DescopeWc extends BaseDescopeWc {
             // When running in a native flow in a Android app the webauthn authentication
             // is performed in the native app, so a custom origin needs to be injected
             // into the webauthn request data.
-            origin: this.nativeOptions?.origin || window.location.origin,
+            origin: this.#origin,
           };
 
           const res = await next(submitterId, actionArgs);

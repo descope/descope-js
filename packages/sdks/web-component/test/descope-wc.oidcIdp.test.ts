@@ -81,6 +81,7 @@ describe('web-component', () => {
           },
           {
             externalId: 'dummyUser',
+            origin: 'http://localhost',
           },
         ),
       { timeout: WAIT_TIMEOUT },
@@ -149,7 +150,7 @@ describe('web-component', () => {
             otpSignInEmail: 1,
             'versioned-flow': 1,
           },
-          {},
+          { origin: 'http://localhost' },
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -218,7 +219,7 @@ describe('web-component', () => {
             otpSignInEmail: 1,
             'versioned-flow': 1,
           },
-          {},
+          { origin: 'http://localhost' },
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -287,7 +288,7 @@ describe('web-component', () => {
             otpSignInEmail: 1,
             'versioned-flow': 1,
           },
-          {},
+          { origin: 'http://localhost' },
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -366,6 +367,7 @@ describe('web-component', () => {
           {
             exchangeCode: 'code1',
             idpInitiated: true,
+            origin: 'http://localhost',
           },
         ),
       { timeout: WAIT_TIMEOUT },
@@ -423,6 +425,7 @@ describe('web-component', () => {
           {
             exchangeCode: 'code1',
             idpInitiated: true,
+            origin: 'http://localhost',
           },
         ),
       { timeout: WAIT_TIMEOUT },
@@ -459,7 +462,7 @@ describe('web-component', () => {
           {
             'sign-in': 0,
           },
-          {},
+          { origin: 'http://localhost' },
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -498,7 +501,7 @@ describe('web-component', () => {
           {
             'sign-in': 0,
           },
-          {},
+          { origin: 'http://localhost' },
         ),
       { timeout: WAIT_TIMEOUT },
     );
