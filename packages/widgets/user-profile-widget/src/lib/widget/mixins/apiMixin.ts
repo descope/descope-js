@@ -7,6 +7,7 @@ import {
   observeAttributesMixin,
   projectIdMixin,
 } from '@descope/sdk-mixins';
+import type { CookieConfig } from '@descope/web-js-sdk';
 import { Sdk, createSdk } from '../api/sdk';
 
 export const apiMixin = createSingletonMixin(
@@ -29,10 +30,30 @@ export const apiMixin = createSingletonMixin(
             projectId: this.projectId,
             baseUrl: this.baseUrl,
             refreshCookieName: this.refreshCookieName,
+            sessionTokenViaCookie: this.sessionTokenViaCookie,
+            refreshTokenViaCookie: this.refreshTokenViaCookie,
           },
           this.mock === 'true',
           this.widgetId,
         );
+      }
+
+      #getCookieConfig(attrName: string): CookieConfig | undefined {
+        try {
+          return JSON.parse(this.getAttribute(attrName)) ?? undefined;
+        } catch (e) {
+          return undefined;
+        }
+      }
+
+      // same as the AuthProvider's sessionTokenViaCookie, as a JSON string
+      get sessionTokenViaCookie() {
+        return this.#getCookieConfig('session-token-via-cookie');
+      }
+
+      // same as the AuthProvider's refreshTokenViaCookie, as a JSON string
+      get refreshTokenViaCookie() {
+        return this.#getCookieConfig('refresh-token-via-cookie');
       }
 
       get widgetId() {
@@ -58,11 +79,19 @@ export const apiMixin = createSingletonMixin(
       async init() {
         await super.init?.();
 
-        this.observeAttributes(['project-id', 'base-url'], () => {
-          if (this.#api) {
-            this.#createSdk();
-          }
-        });
+        this.observeAttributes(
+          [
+            'project-id',
+            'base-url',
+            'session-token-via-cookie',
+            'refresh-token-via-cookie',
+          ],
+          () => {
+            if (this.#api) {
+              this.#createSdk();
+            }
+          },
+        );
       }
     };
   },
