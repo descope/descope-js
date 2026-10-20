@@ -235,8 +235,9 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       baseCdnUrl,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
-      sessionTokenViaCookie,
-      refreshTokenViaCookie,
+      // stringified so inline object literals don't create a new context value on every render
+      JSON.stringify(sessionTokenViaCookie),
+      JSON.stringify(refreshTokenViaCookie),
       customStorage,
       setUser,
       setSession,

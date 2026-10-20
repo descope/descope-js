@@ -25,15 +25,21 @@ const rootMixin = (superclass: CustomElementConstructor) =>
           (module) => module.default,
         ));
 
+      const widget = this;
       WebComponent.sdkConfigOverrides = {
         baseHeaders: {
           'x-descope-widget-type': 'user-profile-widget',
           'x-descope-widget-id': this.getAttribute('widget-id'),
           'x-descope-widget-version': BUILD_VERSION,
         },
-        // inner flows read and write tokens with the same cookie config as the widget sdk
-        sessionTokenViaCookie: this.sessionTokenViaCookie,
-        refreshTokenViaCookie: this.refreshTokenViaCookie,
+        // inner flows read and write tokens with the same cookie config as the widget sdk.
+        // getters, so a flow created after the attributes change gets the current config
+        get sessionTokenViaCookie() {
+          return widget.sessionTokenViaCookie;
+        },
+        get refreshTokenViaCookie() {
+          return widget.refreshTokenViaCookie;
+        },
       };
     }
   };
