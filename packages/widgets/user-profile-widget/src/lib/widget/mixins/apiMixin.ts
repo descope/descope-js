@@ -42,6 +42,9 @@ export const apiMixin = createSingletonMixin(
         try {
           return JSON.parse(this.getAttribute(attrName)) ?? undefined;
         } catch (e) {
+          this.logger.warn(
+            `invalid JSON in "${attrName}" attribute, ignoring it`,
+          );
           return undefined;
         }
       }
