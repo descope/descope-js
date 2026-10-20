@@ -242,12 +242,17 @@ describe('web-component theme', () => {
 
     const tenantTheme = {
       light: {
+        // font urls in the rendered css (e.g. theme defaults) are not loaded
         globals:
-          '[data-theme=light]{--descope-fonts-font1-family:Lato;--descope-fonts-font1-url:url(https://fonts.example.com/lato.css);--descope-fonts-font2-url:url("https://fonts.example.com/inter.css")}',
+          '[data-theme=light]{--descope-fonts-font1-url:url(https://fonts.example.com/default.css)}',
+        fonts: {
+          font1: { url: 'https://fonts.example.com/lato.css' },
+          font2: { url: 'https://fonts.example.com/inter.css' },
+        },
       },
       dark: {
-        globals:
-          '[data-theme=dark]{--descope-fonts-font1-url:url(https://fonts.example.com/dark.css)}',
+        globals: '',
+        fonts: { font1: { url: 'https://fonts.example.com/dark.css' } },
       },
     };
 
@@ -288,6 +293,11 @@ describe('web-component theme', () => {
     expect(
       document.head.querySelector(
         'link[href="https://fonts.example.com/dark.css"]',
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      document.head.querySelector(
+        'link[href="https://fonts.example.com/default.css"]',
       ),
     ).not.toBeInTheDocument();
   });
