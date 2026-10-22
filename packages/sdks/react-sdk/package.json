@@ -82,7 +82,7 @@
     "@babel/preset-react": "7.26.3",
     "@babel/preset-typescript": "7.26.0",
     "@open-wc/rollup-plugin-html": "^1.2.5",
-    "@remix-run/router": "1.21.0",
+    "@remix-run/router": "1.23.3",
     "@rollup/plugin-alias": "5.1.1",
     "@rollup/plugin-commonjs": "^28.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
