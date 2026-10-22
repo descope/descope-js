@@ -78,13 +78,8 @@ export const withAutoRefresh =
     }
 
     const afterRequest: AfterRequestHook = async (req, res) => {
-      const {
-        sessionJwt,
-        refreshJwt,
-        sessionExpiration,
-        nextRefreshSeconds,
-        cookieExpiration,
-      } = await getAuthInfoFromResponse(res);
+      const { sessionJwt, refreshJwt, sessionExpiration, nextRefreshSeconds } =
+        await getAuthInfoFromResponse(res);
 
       // if we got a failed response on a session validation route we want to cancel all timers
       if (isInvalidSessionResponse(req, res)) {
@@ -104,7 +99,7 @@ export const withAutoRefresh =
         refreshToken = refreshJwt;
         // Updated on each server response — may change if server starts/stops returning nextRefreshSeconds
         hasInactivityTimeout = nextRefreshSeconds > 0;
-        const timeout = getAutoRefreshTimeout(
+        let timeout = getAutoRefreshTimeout(
           sessionExpirationDate,
           nextRefreshSeconds,
         );
@@ -114,40 +109,14 @@ export const withAutoRefresh =
           /*
             When receiving a session with very short expiration - it means that the refresh token is also close to expiration
             This happens because session expiration cannot be more than the refresh expiration
-            We verify it with the refresh expiration (cookieExpiration) - both are server timestamps, so the client clock does not matter
+            In this case we refresh when the session expires (refreshing before that would just return the same short session)
+            If the refresh token expired as well, the refresh fails with 401, which clears the session and notifies subscribers
+            We never refresh sooner than the threshold, so a client clock that is ahead of the server does not cause a tight loop
           */
-          const refreshExpiresWithSession =
-            cookieExpiration > 0 &&
-            cookieExpiration * 1000 - sessionExpirationDate.getTime() <=
-              REFRESH_THRESHOLD;
-          if (!refreshExpiresWithSession) {
-            logger.debug(
-              'Session is too close to expiration, not setting refresh timer',
-            );
-            return;
-          }
-
-          // Nothing left to refresh - when the session expires, mark it as invalid instead (see invalidateSession)
-          const expiresIn = Math.max(
+          timeout = Math.max(
             millisecondsUntilDate(sessionExpirationDate),
-            0,
+            REFRESH_THRESHOLD,
           );
-          const scheduledRefreshToken = currentRefreshToken();
-          logger.debug(
-            `Session is too close to expiration, invalidating session in ${expiresIn}ms instead of refreshing`,
-          );
-          setTimer(() => {
-            // Another tab may have logged in while this tab was in the background - join that session instead of clearing it
-            if (currentRefreshToken() !== scheduledRefreshToken) {
-              refreshSession();
-              return;
-            }
-            logger.debug(
-              'Session and refresh token expired, invalidating session',
-            );
-            invalidateSession();
-          }, expiresIn);
-          return;
         }
 
         const refreshTimeStr = new Date(
@@ -189,24 +158,13 @@ export const withAutoRefresh =
 
     const sdk = createSdk(addHooks(config, { afterRequest }));
 
-    // We prefer the persisted refresh token, in case it was rotated from another tab
-    const currentRefreshToken = () => getRefreshToken() || refreshToken;
-
     // Background refreshes are fire-and-forget, catch so a transport failure (e.g. offline)
     // does not escape as an unhandled rejection
+    // We prefer the persisted refresh token, in case it was rotated from another tab
     const refreshSession = () =>
-      sdk.refresh(currentRefreshToken()).catch((err: unknown) => {
+      sdk.refresh(getRefreshToken() || refreshToken).catch((err: unknown) => {
         logger.warn('Automatic session refresh failed', err);
       });
-
-    // When the refresh token expires, a refresh call gets a 401, and the after-request hooks of all the enhancers
-    // clear the session and notify subscribers. If the tab stays open with no request made, that never happens,
-    // so we run the hooks ourselves with the same 401 (OIDC does the same for responses that skip the http client)
-    const invalidateSession = () =>
-      sdk.httpClient.hooks?.afterRequest(
-        { path: '/v1/auth/refresh' } as any,
-        new Response(null, { status: 401 }),
-      );
 
     const wrapper: SdkFnWrapper<{}> =
       (fn) =>
