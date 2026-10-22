@@ -112,10 +112,16 @@ export const withAutoRefresh =
             In this case there is nothing left to refresh, so instead of a refresh timer we set a timer
             for the moment the session expires, to mark the session as invalid (see invalidateSession)
           */
-          const expiresIn = Math.max(
-            millisecondsUntilDate(sessionExpirationDate),
-            0,
-          );
+          const expiresIn = millisecondsUntilDate(sessionExpirationDate);
+          if (expiresIn <= 0) {
+            // The server never returns an expired session, so if it is already expired when it arrives
+            // the client clock is ahead of the server (or the response was very slow). The session is
+            // still valid on the server, so we leave it alone rather than log the user out
+            logger.debug(
+              'Session already expired when received, not setting any timer',
+            );
+            return;
+          }
           logger.debug(
             `Session is too close to expiration, invalidating session in ${expiresIn}ms instead of refreshing`,
           );

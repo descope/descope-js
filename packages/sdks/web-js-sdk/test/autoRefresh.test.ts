@@ -160,6 +160,44 @@ describe('autoRefresh', () => {
     localStorage.clear();
   });
 
+  it('should not set any timer when the session is already expired when received', async () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const loggerDebugMock = logger.debug as jest.Mock;
+
+    const sessionExpiration = Math.floor(Date.now() / 1000) - 10; // 10 seconds ago
+    global.fetch = jest.fn().mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionJwt: undefined,
+        sessionExpiration,
+      }),
+    );
+
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const onIsAuthenticatedChange = jest.fn();
+    sdk.onIsAuthenticatedChange(onIsAuthenticatedChange);
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+
+    expect(loggerDebugMock).toHaveBeenCalledWith(
+      'Session already expired when received, not setting any timer',
+    );
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
+    expect(onIsAuthenticatedChange).toHaveBeenLastCalledWith(true);
+
+    // invalidate this sdk so its visibilitychange listener (expired session) does not interfere with later tests
+    const unauthMock = {
+      clone: () => unauthMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve('{}'),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    (global.fetch as jest.Mock).mockReturnValue(unauthMock);
+    await sdk.httpClient.get('/v1/auth/refresh');
+  });
+
   it('should refresh token after interval if only sessionToken was returned', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');

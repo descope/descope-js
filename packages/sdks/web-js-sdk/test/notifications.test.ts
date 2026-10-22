@@ -12,7 +12,7 @@ describe('notifications', () => {
       .mockReturnValue(createMockReturnValue(authInfo));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
     const sessionTokenHandler = jest.fn();
     sdk.onSessionTokenChange(sessionTokenHandler);
 
@@ -44,7 +44,7 @@ describe('notifications', () => {
       .mockReturnValue(createMockReturnValue(authInfo));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
 
     const userHandler = jest.fn();
     sdk.onUserChange(userHandler);
@@ -73,7 +73,7 @@ describe('notifications', () => {
       .mockReturnValueOnce(Promise.resolve(unauthMock));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
 
     const sessionTokenHandler = jest.fn();
     sdk.onSessionTokenChange(sessionTokenHandler);
@@ -122,7 +122,7 @@ describe('notifications', () => {
       .mockReturnValueOnce(Promise.resolve(failedMock));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
 
     const sessionTokenHandler = jest.fn();
     sdk.onSessionTokenChange(sessionTokenHandler);
@@ -163,7 +163,7 @@ describe('notifications', () => {
       .mockReturnValueOnce(Promise.resolve(failedOtpMock));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
 
     const sessionTokenHandler = jest.fn();
     sdk.onSessionTokenChange(sessionTokenHandler);
@@ -205,7 +205,7 @@ describe('notifications', () => {
       .mockReturnValueOnce(Promise.resolve(serverErrorMock));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
 
     const sessionTokenHandler = jest.fn();
     sdk.onSessionTokenChange(sessionTokenHandler);
@@ -237,7 +237,7 @@ describe('notifications', () => {
       .mockReturnValue(Promise.resolve(createMockReturnValue({})));
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid' });
+    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
 
     const sessionTokenHandler = jest.fn();
     sdk.onSessionTokenChange(sessionTokenHandler);
