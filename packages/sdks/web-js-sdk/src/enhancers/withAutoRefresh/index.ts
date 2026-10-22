@@ -112,26 +112,22 @@ export const withAutoRefresh =
 
         if (timeout <= REFRESH_THRESHOLD) {
           /*
-            When receiving a session with very short expiration - it usually means that the refresh token is also close to expiration
+            When receiving a session with very short expiration - it means that the refresh token is also close to expiration
             This happens because session expiration cannot be more than the refresh expiration
-            We verify it by comparing the session expiration with the refresh expiration (cookieExpiration),
-            both are server timestamps, so the client clock does not affect the comparison
+            We verify it with the refresh expiration (cookieExpiration) - both are server timestamps, so the client clock does not matter
           */
           const refreshExpiresWithSession =
             cookieExpiration > 0 &&
             cookieExpiration * 1000 - sessionExpirationDate.getTime() <=
               REFRESH_THRESHOLD;
           if (!refreshExpiresWithSession) {
-            // The refresh token is still good for a while (e.g. the client clock is ahead of the server),
-            // so we keep the previous behavior and do not set a timer
             logger.debug(
               'Session is too close to expiration, not setting refresh timer',
             );
             return;
           }
 
-          // There is nothing left to refresh, so instead of a refresh timer we set a timer
-          // for the moment the session expires, to mark the session as invalid (see invalidateSession)
+          // Nothing left to refresh - when the session expires, mark it as invalid instead (see invalidateSession)
           const expiresIn = Math.max(
             millisecondsUntilDate(sessionExpirationDate),
             0,
@@ -141,17 +137,13 @@ export const withAutoRefresh =
             `Session is too close to expiration, invalidating session in ${expiresIn}ms instead of refreshing`,
           );
           setTimer(() => {
-            // The timer can fire late (e.g. the tab was in the background), and by then another tab
-            // may have logged in and persisted a new refresh token. In that case we join that session instead of clearing it
+            // Another tab may have logged in while this tab was in the background - join that session instead of clearing it
             if (currentRefreshToken() !== scheduledRefreshToken) {
-              logger.debug(
-                'Refresh token changed since the timer was set, refreshing instead of invalidating',
-              );
               refreshSession();
               return;
             }
             logger.debug(
-              'Session expired and the refresh token expired with it, invalidating session',
+              'Session and refresh token expired, invalidating session',
             );
             invalidateSession();
           }, expiresIn);
