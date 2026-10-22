@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.4](https://github.com/descope/descope-js/compare/react-sdk-3.4.3...react-sdk-3.4.4) (2026-10-22)
+
 ## [3.4.3](https://github.com/descope/descope-js/compare/react-sdk-3.4.2...react-sdk-3.4.3) (2026-10-22)
 
 ## [3.4.2](https://github.com/descope/descope-js/compare/react-sdk-3.4.1...react-sdk-3.4.2) (2026-10-22)
