@@ -19,6 +19,23 @@ jest.mock('jwt-decode', () => {
 const mockFetch = jest.fn().mockReturnValueOnce(new Promise(() => {}));
 global.fetch = mockFetch;
 
+// jsdom has no Response, the enhancer creates one to invalidate an expired session
+Object.defineProperty(global, 'Response', {
+  value: class {
+    status: number;
+    ok: boolean;
+    constructor(_body: unknown, init: { status?: number } = {}) {
+      this.status = init.status ?? 200;
+      this.ok = this.status < 400;
+    }
+    clone() {
+      return this;
+    }
+  },
+  configurable: true,
+  writable: true,
+});
+
 describe('autoRefresh', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -90,9 +107,8 @@ describe('autoRefresh', () => {
     );
   });
 
-  it('should not refresh token after interval when the session expiration is too close', async () => {
+  it('should invalidate the session when it expires instead of refreshing when the session expiration is too close', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const loggerDebugMock = logger.debug as jest.Mock;
 
     const sessionExpiration = Math.floor(Date.now() / 1000) + 10; // 10 seconds from now
@@ -105,19 +121,43 @@ describe('autoRefresh', () => {
     );
     global.fetch = mockFetch;
 
-    const sdk = createSdk({ projectId: 'pid', autoRefresh: true });
+    const sdk = createSdk({
+      projectId: 'pid',
+      autoRefresh: true,
+      persistTokens: true,
+    });
     const refreshSpy = jest
       .spyOn(sdk, 'refresh')
       .mockReturnValue(new Promise(() => {}));
+    const onIsAuthenticatedChange = jest.fn();
+    sdk.onIsAuthenticatedChange(onIsAuthenticatedChange);
     await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
 
-    // ensure logger called
+    expect(onIsAuthenticatedChange).toHaveBeenLastCalledWith(true);
+    expect(sdk.getRefreshToken()).toBe(authInfo.refreshJwt);
     expect(loggerDebugMock).not.toHaveBeenCalledWith(
       expect.stringMatching(/^Setting refresh timer for/),
     );
-    loggerDebugMock.mockClear();
 
-    expect(setTimeoutSpy).not.toHaveBeenCalled();
+    // a timer is set for the session expiration (not a refresh timer)
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const [timeoutFn, timeoutTimer] = setTimeoutSpy.mock.calls[0];
+    expect(timeoutTimer).toBeGreaterThan(8 * 1000);
+    expect(timeoutTimer).toBeLessThanOrEqual(10 * 1000);
+
+    await timeoutFn();
+    await new Promise(process.nextTick);
+
+    // session is invalidated the same way a failed refresh does it - tokens cleared and subscribers notified
+    expect(refreshSpy).not.toHaveBeenCalled();
+    expect(onIsAuthenticatedChange).toHaveBeenLastCalledWith(false);
+    expect(sdk.getRefreshToken()).toBe('');
+
+    // and the expired session is not refreshed when the tab becomes visible again
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(refreshSpy).not.toHaveBeenCalled();
+    localStorage.clear();
   });
 
   it('should refresh token after interval if only sessionToken was returned', async () => {

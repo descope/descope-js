@@ -12,6 +12,7 @@ import {
   getTokenExpiration,
   getAutoRefreshTimeout,
   createActivityTracker,
+  millisecondsUntilDate,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
@@ -108,11 +109,22 @@ export const withAutoRefresh =
           /*
             When receiving a session with very short expiration - it means that the refresh token is also close to expiration
             This happens because session expiration cannot be more than the refresh expiration
-            In this case - the user is going to be logged out soon, so we don't want to set a refresh timer
+            In this case there is nothing left to refresh, so instead of a refresh timer we set a timer
+            for the moment the session expires, to mark the session as invalid (see invalidateSession)
           */
-          logger.debug(
-            'Session is too close to expiration, not setting refresh timer',
+          const expiresIn = Math.max(
+            millisecondsUntilDate(sessionExpirationDate),
+            0,
           );
+          logger.debug(
+            `Session is too close to expiration, invalidating session in ${expiresIn}ms instead of refreshing`,
+          );
+          setTimer(() => {
+            logger.debug(
+              'Session expired and the refresh token expired with it, invalidating session',
+            );
+            invalidateSession();
+          }, expiresIn);
           return;
         }
 
@@ -162,6 +174,15 @@ export const withAutoRefresh =
       sdk.refresh(getRefreshToken() || refreshToken).catch((err: unknown) => {
         logger.warn('Automatic session refresh failed', err);
       });
+
+    // When the refresh token expires, a refresh call gets a 401, and the after-request hooks of all the enhancers
+    // clear the session and notify subscribers. If the tab stays open with no request made, that never happens,
+    // so we run the hooks ourselves with the same 401 (OIDC does the same for responses that skip the http client)
+    const invalidateSession = () =>
+      sdk.httpClient.hooks?.afterRequest(
+        { path: '/v1/auth/refresh' } as any,
+        new Response(null, { status: 401 }),
+      );
 
     const wrapper: SdkFnWrapper<{}> =
       (fn) =>
