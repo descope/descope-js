@@ -78,8 +78,13 @@ export const withAutoRefresh =
     }
 
     const afterRequest: AfterRequestHook = async (req, res) => {
-      const { sessionJwt, refreshJwt, sessionExpiration, nextRefreshSeconds } =
-        await getAuthInfoFromResponse(res);
+      const {
+        sessionJwt,
+        refreshJwt,
+        sessionExpiration,
+        nextRefreshSeconds,
+        cookieExpiration,
+      } = await getAuthInfoFromResponse(res);
 
       // if we got a failed response on a session validation route we want to cancel all timers
       if (isInvalidSessionResponse(req, res)) {
@@ -107,25 +112,44 @@ export const withAutoRefresh =
 
         if (timeout <= REFRESH_THRESHOLD) {
           /*
-            When receiving a session with very short expiration - it means that the refresh token is also close to expiration
+            When receiving a session with very short expiration - it usually means that the refresh token is also close to expiration
             This happens because session expiration cannot be more than the refresh expiration
-            In this case there is nothing left to refresh, so instead of a refresh timer we set a timer
-            for the moment the session expires, to mark the session as invalid (see invalidateSession)
+            We verify it by comparing the session expiration with the refresh expiration (cookieExpiration),
+            both are server timestamps, so the client clock does not affect the comparison
           */
-          const expiresIn = millisecondsUntilDate(sessionExpirationDate);
-          if (expiresIn <= 0) {
-            // The server never returns an expired session, so if it is already expired when it arrives
-            // the client clock is ahead of the server (or the response was very slow). The session is
-            // still valid on the server, so we leave it alone rather than log the user out
+          const refreshExpiresWithSession =
+            cookieExpiration > 0 &&
+            cookieExpiration * 1000 - sessionExpirationDate.getTime() <=
+              REFRESH_THRESHOLD;
+          if (!refreshExpiresWithSession) {
+            // The refresh token is still good for a while (e.g. the client clock is ahead of the server),
+            // so we keep the previous behavior and do not set a timer
             logger.debug(
-              'Session already expired when received, not setting any timer',
+              'Session is too close to expiration, not setting refresh timer',
             );
             return;
           }
+
+          // There is nothing left to refresh, so instead of a refresh timer we set a timer
+          // for the moment the session expires, to mark the session as invalid (see invalidateSession)
+          const expiresIn = Math.max(
+            millisecondsUntilDate(sessionExpirationDate),
+            0,
+          );
+          const scheduledRefreshToken = currentRefreshToken();
           logger.debug(
             `Session is too close to expiration, invalidating session in ${expiresIn}ms instead of refreshing`,
           );
           setTimer(() => {
+            // The timer can fire late (e.g. the tab was in the background), and by then another tab
+            // may have logged in and persisted a new refresh token. In that case we join that session instead of clearing it
+            if (currentRefreshToken() !== scheduledRefreshToken) {
+              logger.debug(
+                'Refresh token changed since the timer was set, refreshing instead of invalidating',
+              );
+              refreshSession();
+              return;
+            }
             logger.debug(
               'Session expired and the refresh token expired with it, invalidating session',
             );
@@ -173,11 +197,13 @@ export const withAutoRefresh =
 
     const sdk = createSdk(addHooks(config, { afterRequest }));
 
+    // We prefer the persisted refresh token, in case it was rotated from another tab
+    const currentRefreshToken = () => getRefreshToken() || refreshToken;
+
     // Background refreshes are fire-and-forget, catch so a transport failure (e.g. offline)
     // does not escape as an unhandled rejection
-    // We prefer the persisted refresh token, in case it was rotated from another tab
     const refreshSession = () =>
-      sdk.refresh(getRefreshToken() || refreshToken).catch((err: unknown) => {
+      sdk.refresh(currentRefreshToken()).catch((err: unknown) => {
         logger.warn('Automatic session refresh failed', err);
       });
 
