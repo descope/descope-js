@@ -79,8 +79,8 @@ importers:
         specifier: 22.7.10
         version: 22.7.10
       playwright:
-        specifier: 1.47.0
-        version: 1.47.0
+        specifier: 1.55.1
+        version: 1.55.1
       prettier:
         specifier: ^3.0.0
         version: 3.1.0
@@ -13831,8 +13831,18 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.55.1:
+    resolution: {integrity: sha512-Z6Mh9mkwX+zxSlHqdr5AOcJnfp+xUWLCt9uKV18fhzA8eyxUd8NUWzAjxUh55RZKSYwDGX0cfaySdhZJGMoJ+w==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.47.0:
     resolution: {integrity: sha512-jOWiRq2pdNAX/mwLiwFYnPHpEZ4rM+fRSQpRHwEwZlP2PUANvL3+aJOF/bvISMhFD30rqMxUB4RJx9aQbfh4Ww==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.55.1:
+    resolution: {integrity: sha512-cJW4Xd/G3v5ovXtJJ52MAOclqeac9S/aGGgRzLabuF8TnIb6xHvMzKIa6JmrRzUkeXJgfL1MhukP0NK6l39h3A==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -20310,6 +20320,21 @@ snapshots:
       - typescript
       - verdaccio
 
+  '@nrwl/js@19.8.4(@babel/traverse@7.29.8)(@types/node@20.17.13)(nx@22.7.10)(typescript@5.4.5)':
+    dependencies:
+      '@nx/js': 19.8.4(@babel/traverse@7.29.8)(@types/node@20.17.13)(nx@22.7.10)(typescript@5.4.5)
+    transitivePeerDependencies:
+      - '@babel/traverse'
+      - '@swc-node/register'
+      - '@swc/core'
+      - '@swc/wasm'
+      - '@types/node'
+      - debug
+      - nx
+      - supports-color
+      - typescript
+      - verdaccio
+
   '@nrwl/js@19.8.4(@babel/traverse@7.29.8)(@types/node@20.17.13)(nx@22.7.10)(typescript@5.7.3)':
     dependencies:
       '@nx/js': 19.8.4(@babel/traverse@7.29.8)(@types/node@20.17.13)(nx@22.7.10)(typescript@5.7.3)
@@ -20491,7 +20516,7 @@ snapshots:
       '@babel/preset-env': 7.26.0(@babel/core@7.26.0)
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
       '@babel/runtime': 7.25.6
-      '@nrwl/js': 19.8.4(@babel/traverse@7.29.8)(@types/node@20.17.13)(nx@22.7.10)(typescript@5.7.3)
+      '@nrwl/js': 19.8.4(@babel/traverse@7.29.8)(@types/node@20.17.13)(nx@22.7.10)(typescript@5.4.5)
       '@nx/devkit': 19.8.4(nx@22.7.10)
       '@nx/workspace': 19.8.4
       babel-plugin-const-enum: 1.2.0(@babel/core@7.26.0)
@@ -31215,9 +31240,17 @@ snapshots:
 
   playwright-core@1.47.0: {}
 
+  playwright-core@1.55.1: {}
+
   playwright@1.47.0:
     dependencies:
       playwright-core: 1.47.0
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.55.1:
+    dependencies:
+      playwright-core: 1.55.1
     optionalDependencies:
       fsevents: 2.3.2
 
