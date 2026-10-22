@@ -139,6 +139,121 @@ describe('flowNonce', () => {
     });
   });
 
+  describe('Component Data', () => {
+    it('adds the current nonce to component data requests', async () => {
+      const executionId = 'test-execution-id';
+      const nonce = 'test-nonce-value';
+
+      setupNonce(executionId, nonce, 3600 * 1000);
+      const mockFetch = jest.fn().mockResolvedValue(createResponse());
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.flow.componentData(
+        `flow|#|${executionId}`,
+        'stepId',
+        'source',
+        'componentId',
+        'componentType',
+      );
+
+      const [url, options] = mockFetch.mock.calls[0];
+      expect(url).toContain('flow/component/data');
+      expect(hasHeader(options, FLOW_NONCE_HEADER, nonce)).toBe(true);
+    });
+
+    it('does not add a nonce to component data requests when none is stored', async () => {
+      const mockFetch = jest.fn().mockResolvedValue(createResponse());
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.flow.componentData(
+        'flow|#|test-execution-id',
+        'stepId',
+        'source',
+        'componentId',
+        'componentType',
+      );
+
+      const [, options] = mockFetch.mock.calls[0];
+      expect(hasHeader(options, FLOW_NONCE_HEADER)).toBe(false);
+    });
+
+    it('does not rotate the stored nonce from component data responses', async () => {
+      const executionId = 'test-execution-id';
+      const nonce = 'test-nonce-value';
+
+      const key = setupNonce(executionId, nonce, 3600 * 1000);
+      const before = localStorage.getItem(key);
+      const mockFetch = jest
+        .fn()
+        .mockResolvedValue(
+          createResponse(`flow|#|${executionId}`, 'rotated-nonce'),
+        );
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.flow.componentData(
+        `flow|#|${executionId}`,
+        'stepId',
+        'source',
+        'componentId',
+        'componentType',
+      );
+
+      expect(localStorage.getItem(key)).toBe(before);
+    });
+
+    it('does not store a nonce from component data responses', async () => {
+      const executionId = 'test-execution-id';
+
+      const mockFetch = jest
+        .fn()
+        .mockResolvedValue(createResponse(`flow|#|${executionId}`, 'nonce'));
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.flow.componentData(
+        `flow|#|${executionId}`,
+        'stepId',
+        'source',
+        'componentId',
+        'componentType',
+      );
+
+      expect(
+        localStorage.getItem(`${FLOW_NONCE_PREFIX}${executionId}`),
+      ).toBeNull();
+    });
+
+    it('sends the nonce rotated by next on a later component data request', async () => {
+      const executionId = 'test-execution-id';
+
+      setupNonce(executionId, 'old-nonce', 3600 * 1000);
+      const mockFetch = jest
+        .fn()
+        .mockResolvedValueOnce(
+          createResponse(`flow|#|${executionId}`, 'new-nonce'),
+        )
+        .mockResolvedValue(createResponse());
+      global.fetch = mockFetch;
+
+      const sdk = createSdk({ projectId: 'pid' });
+      await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
+      await sdk.flow.componentData(
+        `flow|#|${executionId}`,
+        'stepId',
+        'source',
+        'componentId',
+        'componentType',
+      );
+
+      const [url, options] = mockFetch.mock.calls[1];
+      expect(url).toContain('flow/component/data');
+      expect(hasHeader(options, FLOW_NONCE_HEADER, 'new-nonce')).toBe(true);
+    });
+  });
+
   describe('Edge Cases', () => {
     it('skips expired nonces in requests and removes them', async () => {
       const executionId = 'test-execution-id';
