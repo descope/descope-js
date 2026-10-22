@@ -1,70 +1,28 @@
-import {
-  AvatarDriver,
-  FlowDriver,
-  ModalDriver,
-} from '@descope/sdk-component-drivers';
+import { AvatarDriver } from '@descope/sdk-component-drivers';
 import {
   compose,
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import {
-  localeMixin,
-  cookieConfigMixin,
-  loggerMixin,
-  flowModalMixin,
-  themeMixin,
-  flowInputMixin,
-} from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin, themeMixin } from '@descope/sdk-mixins';
 import { getName, getPicture } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initAvatarMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class AvatarMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       themeMixin,
       stateManagementMixin,
       loggerMixin,
-      cookieConfigMixin,
       initWidgetRootMixin,
-      flowModalMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
       avatar: AvatarDriver;
 
-      #modal: ModalDriver;
-
-      #flow: FlowDriver;
-
-      #initModal() {
-        if (!this.avatar.flowId) return;
-
-        this.#modal = this.createFlowModal({
-          'data-id': 'update-pic',
-          'close-on-outside-click': 'true',
-        });
-        this.#flow = new FlowDriver(
-          () => this.#modal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#modal.afterClose = this.#initModalContent.bind(this);
-        this.#initModalContent();
-        this.syncFlowTheme(this.#flow);
-      }
-
-      #initModalContent() {
-        this.#modal.setContent(
-          this.createFlowTemplate({ flowId: this.avatar.flowId }),
-        );
-        this.#flow.onSuccess(() => {
-          this.#modal.close();
-          this.actions.getMe();
-        });
-      }
+      #runner: FlowRunner | undefined;
 
       #initAvatar() {
         this.avatar = new AvatarDriver(
@@ -73,7 +31,7 @@ export const initAvatarMixin = createSingletonMixin(
         );
 
         this.avatar.onClick(() => {
-          this.#modal?.open();
+          this.#runner?.open();
         });
       }
 
@@ -91,7 +49,12 @@ export const initAvatarMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initAvatar();
-        this.#initModal();
+
+        this.#runner = this.createFlowRunner({
+          dataId: 'update-pic',
+          flowId: this.avatar.flowId,
+          onSuccess: () => this.actions.getMe(),
+        });
 
         this.#onPictureUpdate(getPicture(this.state));
         this.#onNameUpdate(getName(this.state));

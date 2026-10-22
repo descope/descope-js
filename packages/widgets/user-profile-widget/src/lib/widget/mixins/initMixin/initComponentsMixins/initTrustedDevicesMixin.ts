@@ -1,80 +1,34 @@
-import {
-  DeviceListDriver,
-  FlowDriver,
-  ModalDriver,
-} from '@descope/sdk-component-drivers';
+import { DeviceListDriver } from '@descope/sdk-component-drivers';
 import {
   compose,
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import {
-  localeMixin,
-  cookieConfigMixin,
-  loggerMixin,
-  flowModalMixin,
-  themeMixin,
-  flowInputMixin,
-} from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin, themeMixin } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { getTrustedDevices, getUserId } from '../../../state/selectors';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initTrustedDevicesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TrustedDevicesMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       themeMixin,
       stateManagementMixin,
       loggerMixin,
-      cookieConfigMixin,
       initWidgetRootMixin,
-      flowModalMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
       deviceList: DeviceListDriver;
 
-      #modal: ModalDriver;
-
-      #flow: FlowDriver;
-
-      #initModal() {
-        if (!this.deviceList.flowId) return;
-
-        this.#modal = this.createFlowModal({
-          'data-id': 'untrust-device',
-          'close-on-outside-click': 'true',
-        });
-        this.#flow = new FlowDriver(
-          () => this.#modal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#modal.afterClose = () => this.#initModalContent('');
-        this.syncFlowTheme(this.#flow);
-      }
-
-      #initModalContent(deviceId: string = '') {
-        this.#modal.setContent(
-          this.createFlowTemplate({
-            flowId: this.deviceList.flowId,
-            form: { deviceId },
-          }),
-        );
-
-        this.#flow.onSuccess(() => {
-          this.#modal.close();
-          this.actions.listDevices({
-            userId: getUserId(this.state),
-          });
-        });
-      }
+      #untrustRunner: FlowRunner | undefined;
 
       #initDeviceList(deviceList: ReturnType<typeof getTrustedDevices>) {
         this.deviceList.onRemoveDeviceClick(({ id }) => {
-          this.#initModalContent(id);
-          this.#modal?.open();
+          // the flow needs the device being removed, so the content cannot be
+          // built until the user picks one - see presetContent below
+          this.#untrustRunner?.open({ form: { deviceId: id } });
         });
 
         this.deviceList.data = deviceList;
@@ -101,7 +55,15 @@ export const initTrustedDevicesMixin = createSingletonMixin(
         if (this.deviceList.isExists) {
           await this.#fetchTrustedDevices();
           this.#initDeviceList(getTrustedDevices(this.state));
-          this.#initModal();
+
+          this.#untrustRunner = this.createFlowRunner({
+            dataId: 'untrust-device',
+            flowId: this.deviceList.flowId,
+            presetContent: false,
+            onSuccess: () =>
+              this.actions.listDevices({ userId: getUserId(this.state) }),
+          });
+
           this.subscribe(this.updateDeviceList.bind(this), getTrustedDevices);
         }
       }

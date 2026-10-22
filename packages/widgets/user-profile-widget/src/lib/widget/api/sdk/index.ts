@@ -35,6 +35,12 @@ export const createSdk = (
     passkey: {
       ...createPasskeySdk({ httpClient: webSdk.httpClient, mock }),
     },
+    // a flow running in a popup can change the user - a new email, a new
+    // password - which leaves this window holding a stale session, so the
+    // widget refreshes once the popup is done with it
+    refresh: !mock
+      ? webSdk.refresh
+      : <typeof webSdk.refresh>(<unknown>(async () => ({ ok: true }))),
     // Exposed (narrowed to a minimal type) so the shared conditions mixin reuses
     // this same webSdk instance for its fetch instead of creating its own.
     httpClient: webSdk.httpClient as ConditionsHttpClient,
