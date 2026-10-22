@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.16.19](https://github.com/descope/descope-js/compare/nextjs-sdk-0.16.18...nextjs-sdk-0.16.19) (2026-10-22)
+
+### Dependency Updates
+
+* `react-sdk` updated to version `3.4.1`
 ## [0.16.18](https://github.com/descope/descope-js/compare/nextjs-sdk-0.16.17...nextjs-sdk-0.16.18) (2026-10-20)
 
 ### Dependency Updates
