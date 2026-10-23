@@ -304,6 +304,42 @@ export const updateScreenFromScreenState = (
   replaceElementInputs(baseEle, screenState?.form);
 };
 
+const PASSWORD_POLICY_EMAIL_ATTR = 'data-password-policy-value-email';
+
+/**
+ * Keep the new password's "does not match your email" rule in sync with the
+ * email input on the same screen (e.g. sign-up), so it checks the email being
+ * typed and not only the one known when the screen was rendered
+ */
+export const syncPasswordPolicyEmail = (rootEle: HTMLElement) => {
+  const emailInput = rootEle.querySelector<HTMLInputElement>('[name="email"]');
+  const newPasswords = rootEle.querySelectorAll('descope-new-password');
+  if (!emailInput || !newPasswords.length) {
+    return;
+  }
+
+  const renderedEmails = new Map(
+    Array.from(newPasswords, (ele) => [
+      ele,
+      ele.getAttribute(PASSWORD_POLICY_EMAIL_ATTR),
+    ]),
+  );
+
+  const sync = () => {
+    renderedEmails.forEach((renderedEmail, ele) => {
+      const email = emailInput.value || renderedEmail;
+      if (email) {
+        ele.setAttribute(PASSWORD_POLICY_EMAIL_ATTR, email);
+      } else {
+        ele.removeAttribute(PASSWORD_POLICY_EMAIL_ATTR);
+      }
+    });
+  };
+
+  sync();
+  emailInput.addEventListener('input', sync);
+};
+
 export const setTOTPVariable = (rootEle: HTMLElement, image?: string) => {
   setImageVariable(rootEle, 'descope-totp-image', image);
 };
