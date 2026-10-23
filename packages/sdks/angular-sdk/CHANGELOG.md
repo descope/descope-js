@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.24](https://github.com/descope/descope-js/compare/angular-sdk-0.28.23...angular-sdk-0.28.24) (2026-10-23)
+
 ## [0.28.23](https://github.com/descope/descope-js/compare/angular-sdk-0.28.22...angular-sdk-0.28.23) (2026-10-22)
 
 ## [0.28.22](https://github.com/descope/descope-js/compare/angular-sdk-0.28.21...angular-sdk-0.28.22) (2026-10-22)
