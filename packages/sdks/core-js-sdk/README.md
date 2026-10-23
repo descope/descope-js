@@ -33,10 +33,7 @@ Unlike the email message, the text message contains only the correct link, so th
 to choose. Polling with `waitForSession` and verification are unchanged.
 
 ```js
-const { data } = await sdk.enchantedLink.signUpOrInWithPhone(
-  '+11234567890',
-  'https://myapp.com/verify-enchanted-link',
-);
+const { data } = await sdk.enchantedLink.signUpOrInWithPhone('+11234567890', 'https://myapp.com/verify-enchanted-link');
 const jwt = await sdk.enchantedLink.waitForSession(data.pendingRef);
 ```
 
@@ -86,3 +83,14 @@ const response = await sdk.outbound.connect(
   'user-session-token',
 );
 ```
+
+### Finishing a Connection
+
+When the project stores the provider tokens only once a connection is finished, the redirect back to your application carries a one-time `code` query param. Finish the connection with it, using the session of the user who started it:
+
+```js
+const code = new URLSearchParams(window.location.search).get('code');
+await sdk.outbound.connectFinish(code, 'tenant-123', 'user-session-token');
+```
+
+The provider tokens are stored only when the session belongs to the user who started the connection. `tenantId` is optional, and the session token is optional when the SDK already manages it.

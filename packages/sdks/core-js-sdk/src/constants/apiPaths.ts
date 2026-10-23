@@ -47,6 +47,7 @@ export default {
   },
   outbound: {
     connect: '/v1/outbound/oauth/connect',
+    connectFinish: '/v1/outbound/oauth/connect/finish',
   },
   saml: {
     start: '/v1/auth/saml/authorize',
