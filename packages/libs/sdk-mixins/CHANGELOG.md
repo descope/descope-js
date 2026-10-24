@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.28.0...sdk-mixins-0.28.1) (2026-10-24)
+
+
+### Bug Fixes
+
+* **sdk-mixins:** let widget root fill its host when ROOT is stretched RELEASE ([#1540](https://github.com/descope/descope-js/issues/1540)) ([cc1aac6](https://github.com/descope/descope-js/commit/cc1aac69c05e65b9f51d94b00041f5304362433d))
+
 ## [0.28.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.2...sdk-mixins-0.28.0) (2026-10-20)
 
 
