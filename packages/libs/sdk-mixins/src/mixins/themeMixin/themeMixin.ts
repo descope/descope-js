@@ -288,10 +288,10 @@ export const themeMixin = createSingletonMixin(
       async #loadTenantFonts() {
         if (!this.tenantId) return;
         const tenantTheme = await this.#tenantThemeResource;
-        const fonts: Record<string, { url?: string }> | undefined =
+        const fonts: Record<string, { url?: string } | null> | undefined =
           tenantTheme?.[this.theme]?.fonts;
         Object.values(fonts || {}).forEach((font) => {
-          if (font.url) {
+          if (font?.url) {
             this.logger.debug(`Loading tenant font from URL "${font.url}"`);
             loadFont(font.url);
           }
