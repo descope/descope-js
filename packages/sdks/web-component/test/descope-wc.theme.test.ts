@@ -231,6 +231,77 @@ describe('web-component theme', () => {
     }
   });
 
+  it('loads the tenant fonts of the current theme from the tenant theme', async () => {
+    startMock.mockReturnValue(generateSdkResponse());
+    fixtures.pageContent = '<span>It works!</span>';
+    fixtures.themeContent = { light: { globals: '' }, dark: { globals: '' } };
+    fixtures.configContent = {
+      flows: { otpSignInEmail: { version: 1 } },
+      componentsVersion: '1.2.3',
+    };
+
+    const tenantTheme = {
+      light: {
+        // font urls in the rendered css (e.g. theme defaults) are not loaded
+        globals:
+          '[data-theme=light]{--descope-fonts-font1-url:url(https://fonts.example.com/default.css)}',
+        fonts: {
+          font1: { url: 'https://fonts.example.com/lato.css' },
+          font2: { url: 'https://fonts.example.com/inter.css' },
+        },
+      },
+      dark: {
+        globals: '',
+        fonts: { font1: { url: 'https://fonts.example.com/dark.css' } },
+      },
+    };
+
+    fetchMock.mockImplementation((url: string) => {
+      const res = { ok: true, headers: new Headers({ 'x-geo': 'XX' }) };
+      if (url.includes('tenant-a/theme.json'))
+        return { ...res, json: () => tenantTheme };
+      if (url.endsWith('theme.json'))
+        return { ...res, json: () => fixtures.themeContent };
+      if (url.endsWith('.html'))
+        return { ...res, text: () => fixtures.pageContent };
+      if (url.endsWith('config.json'))
+        return { ...res, json: () => fixtures.configContent };
+      return { ok: false };
+    });
+
+    document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" theme="light" tenant="tenant-a"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(
+      () => {
+        expect(
+          document.head.querySelector(
+            'link[href="https://fonts.example.com/lato.css"]',
+          ),
+        ).toBeInTheDocument();
+        expect(
+          document.head.querySelector(
+            'link[href="https://fonts.example.com/inter.css"]',
+          ),
+        ).toBeInTheDocument();
+      },
+      { timeout: WAIT_TIMEOUT },
+    );
+    expect(
+      document.head.querySelector(
+        'link[href="https://fonts.example.com/dark.css"]',
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      document.head.querySelector(
+        'link[href="https://fonts.example.com/default.css"]',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   it('fetches a new tenant theme when the tenant attribute changes', async () => {
     startMock.mockReturnValue(generateSdkResponse());
     fixtures.pageContent = '<span>It works!</span>';
