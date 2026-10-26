@@ -12,6 +12,13 @@ const withNextValidations = withValidations(
   stringNonEmpty('interactionId'),
 );
 const withEventValidations = withValidations(stringNonEmpty('executionId'));
+const withComponentDataValidations = withValidations(
+  stringNonEmpty('executionId'),
+  stringNonEmpty('stepId'),
+  stringNonEmpty('source'),
+  stringNonEmpty('componentId'),
+  stringNonEmpty('componentType'),
+);
 
 const withFlow = (httpClient: HttpClient) => ({
   start: withStartValidations(
@@ -83,6 +90,32 @@ const withFlow = (httpClient: HttpClient) => ({
           apiPaths.flow.event,
           { executionId, events },
           { keepalive, disableRetry: true },
+        ),
+      ),
+  ),
+  /**
+   * Fetch data for a screen component of a running flow. The backend checks
+   * that `source` is allowed for `componentId` on the current step and
+   * dispatches to the provider registered for it; the provider owns the shape
+   * of `data`.
+   *
+   * disableRetry: components call this on user input (e.g. while typing), so a
+   * newer request supersedes a failed one and retrying only adds load.
+   */
+  componentData: withComponentDataValidations(
+    (
+      executionId: string,
+      stepId: string,
+      source: string,
+      componentId: string,
+      componentType: string,
+      params?: Record<string, string>,
+    ): Promise<SdkResponse<{ data: unknown }>> =>
+      transformResponse(
+        httpClient.post(
+          apiPaths.flow.componentData,
+          { executionId, stepId, source, componentId, componentType, params },
+          { disableRetry: true },
         ),
       ),
   ),
