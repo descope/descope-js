@@ -95,7 +95,7 @@ describe('web-component', () => {
       );
     });
 
-    it('should log a rejected credentials.store instead of leaving it unhandled', async () => {
+    it('should log a rejected credentials.store as debug instead of leaving it unhandled', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
 
@@ -120,9 +120,50 @@ describe('web-component', () => {
       });
 
       const error = jest.fn();
+      const debug = jest.fn();
       document.querySelector('descope-wc').logger = {
         error,
         warn: jest.fn(),
+        info: jest.fn(),
+        debug,
+      };
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() =>
+        expect(debug).toHaveBeenCalledWith(
+          'Could not store credentials',
+          storeError.message,
+        ),
+      );
+      expect(error).not.toHaveBeenCalled();
+    });
+
+    it('should log a thrown PasswordCredential as warn', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+      const credentialError = new TypeError("'id' must not be empty.");
+      Object.assign(navigator, { credentials: { store: jest.fn() } });
+      globalThis.PasswordCredential = class {
+        constructor() {
+          throw credentialError;
+        }
+      };
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><input id="email" name="email" value="1@1.com"></input><input id="password" name="password" value="pass"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const error = jest.fn();
+      const warn = jest.fn();
+      document.querySelector('descope-wc').logger = {
+        error,
+        warn,
         info: jest.fn(),
         debug: jest.fn(),
       };
@@ -130,11 +171,13 @@ describe('web-component', () => {
       fireEvent.click(screen.getByShadowText('click'));
 
       await waitFor(() =>
-        expect(error).toHaveBeenCalledWith(
+        expect(warn).toHaveBeenCalledWith(
           'Could not store credentials',
-          storeError.message,
+          credentialError.message,
         ),
       );
+      expect(error).not.toHaveBeenCalled();
+      expect(navigator.credentials.store).not.toHaveBeenCalled();
     });
 
     describe('username anchor injection', () => {

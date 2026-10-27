@@ -2,8 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import useContext from './useContext';
 
 const useUser = () => {
-  const { user, fetchUser, isUserLoading, isAuthenticated, isUserFetched } =
-    useContext();
+  const {
+    user,
+    fetchUser,
+    isUserLoading,
+    isAuthenticated,
+    isUserFetchStarted,
+    isUserFetchCompleted,
+  } = useContext();
   const [isInit, setIsInit] = useState(false); // we want to get the user only in the first time we got a session
 
   // when session should be received, we want the return value of "isUserLoading" to be true starting from the first call
@@ -16,16 +22,17 @@ const useUser = () => {
   );
 
   // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
+  // isUserFetchCompleted guarantees a re-run when the fetch settles, even if isUserLoading never visibly changed
   useMemo(() => {
     isLoading.current = isUserLoading;
-  }, [isUserLoading]);
+  }, [isUserLoading, isUserFetchCompleted]);
 
   // we want this to happen before returning a value so we are using "useMemo" and not "useEffect"
   useMemo(() => {
-    if (shouldFetchUser && !isUserFetched) {
+    if (shouldFetchUser && !isUserFetchStarted) {
       isLoading.current = true;
     }
-  }, [shouldFetchUser, isUserFetched]);
+  }, [shouldFetchUser, isUserFetchStarted]);
 
   useEffect(() => {
     if (shouldFetchUser) {

@@ -183,6 +183,34 @@ describe('Descope Widgets', () => {
     expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');
   });
 
+  it('forwards AuthProvider cookie configs as attributes - UserProfile', async () => {
+    render(
+      <AuthProvider
+        projectId="project1"
+        sessionTokenViaCookie={{ domain: 'localhost', cookieName: 'my_ds' }}
+        refreshTokenViaCookie={{ secure: false }}
+      >
+        <UserProfile widgetId="widget1" />
+      </AuthProvider>,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-user-profile-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector('descope-user-profile-widget');
+    expect(widget).toHaveAttribute(
+      'session-token-via-cookie',
+      JSON.stringify({ domain: 'localhost', cookieName: 'my_ds' }),
+    );
+    expect(widget).toHaveAttribute(
+      'refresh-token-via-cookie',
+      JSON.stringify({ secure: false }),
+    );
+  });
+
   it('forwards client and form flow inputs as attributes - UserProfile', async () => {
     renderWithProvider(
       <UserProfile

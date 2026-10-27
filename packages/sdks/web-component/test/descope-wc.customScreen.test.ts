@@ -389,6 +389,129 @@ describe('web-component', () => {
       expect(hiddenInput.reportValidity).not.toHaveBeenCalled();
     });
 
+    // Regression for descope/etc#19151. The condition targets a container, so
+    // the required input inside keeps a clean class list. Before the fix it
+    // was still validated and blocked the submit with nothing shown to the
+    // user, because the field it complained about was not rendered.
+    it('should not validate a required input inside a hidden container', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'zip-box': 'hide',
+            },
+          },
+        }),
+      );
+
+      fixtures.pageContent = `<div>
+        <descope-button id="submit-button">Submit</descope-button>
+        <div id="zip-box"><input id="zip" name="zip" required /></div>
+      </div>`;
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const zipBox = descopeWc.shadowRoot.querySelector('#zip-box');
+      const zipInput = descopeWc.shadowRoot.querySelector('#zip');
+
+      // The shape of the bug: the container is hidden, the input is not.
+      expect(zipBox).toHaveClass('hidden');
+      expect(zipInput).not.toHaveClass('hidden');
+
+      zipInput.checkValidity = jest.fn().mockReturnValue(false);
+      zipInput.reportValidity = jest.fn();
+
+      descopeWc.shadowRoot.querySelector('#submit-button').click();
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      expect(zipInput.checkValidity).not.toHaveBeenCalled();
+      expect(zipInput.reportValidity).not.toHaveBeenCalled();
+    });
+
+    // Guards the opposite direction: the ancestor walk must not switch off
+    // validation for fields that are plainly visible.
+    it('should still validate a required input when no container is hidden', async () => {
+      startMock.mockReturnValue(generateSdkResponse({ screenState: {} }));
+
+      fixtures.pageContent = `<div>
+        <descope-button id="submit-button">Submit</descope-button>
+        <div id="zip-box"><input id="zip" name="zip" required /></div>
+      </div>`;
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const zipInput = descopeWc.shadowRoot.querySelector('#zip');
+      zipInput.checkValidity = jest.fn().mockReturnValue(false);
+      zipInput.reportValidity = jest.fn();
+
+      descopeWc.shadowRoot.querySelector('#submit-button').click();
+
+      await waitFor(() => expect(zipInput.reportValidity).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(nextMock).not.toHaveBeenCalled();
+    });
+
+    // Skipping validation must not also drop the value. A user can fill a
+    // field and then hide it by changing the control above it, and flows read
+    // those values server side.
+    it('still posts the value of an input inside a hidden container', async () => {
+      startMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsState: {
+              'zip-box': 'hide',
+            },
+          },
+        }),
+      );
+
+      fixtures.pageContent = `<div>
+        <descope-button id="submit-button">Submit</descope-button>
+        <div id="zip-box"><input id="zip" name="zip" required /></div>
+      </div>`;
+
+      document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+
+      await waitFor(() => screen.getByShadowText('Submit'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      descopeWc.shadowRoot.querySelector('#zip').value = '90210';
+      descopeWc.shadowRoot.querySelector('#submit-button').click();
+
+      await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      expect(nextMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        expect.objectContaining({ zip: '90210' }),
+        expect.anything(),
+      );
+    });
+
     it('should disable components when componentsState contains disable state', async () => {
       startMock.mockReturnValue(
         generateSdkResponse({

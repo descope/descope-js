@@ -384,12 +384,13 @@ export const componentConditionsMixin = createSingletonMixin(
           r.unsubscribePauseListener();
         }
         if (r.root) {
-          // Undo anything we applied so the next screen starts clean. Skip
-          // if the root is already gone (replaced by the next screen) —
-          // nothing left to undo.
-          if (Object.keys(r.applied).length > 0 && r.root.isConnected) {
-            apply(r.root, r.applied, {});
-          }
+          // Deliberately NOT undoing what we applied. `r.root` is the host's
+          // content root, which is built once in the constructor and never
+          // replaced. Only its children are. By the time we get here the caller
+          // has already swapped in the next screen, so looking our component
+          // ids up in `r.root` finds the NEW screen's elements and would strip
+          // the state the server just painted on them. Nothing needs undoing
+          // anyway, because the elements we touched went with the old screen.
           REALTIME_CONDITION_EVENTS.forEach((ev) => {
             r.root!.removeEventListener(ev, r.inputHandler, true);
           });

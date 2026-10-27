@@ -1,7 +1,13 @@
 import { createSelector } from 'reselect';
 import { flatten, formatCustomAttrValue } from '../../helpers';
 import { State } from './types';
-import { userStatusMappings, MULTIPLE_ROLES_LABEL } from './constants';
+import {
+  userStatusMappings,
+  MULTIPLE_ROLES_LABEL,
+  lockReasonLabels,
+  LOCKED_LABEL,
+  TEMP_LOCKED_LABEL,
+} from './constants';
 
 export const getRawUsersList = (state: State) => state.usersList.data;
 export const getTenantRoles = (state: State) => state.tenantRoles.data;
@@ -66,6 +72,27 @@ const getRolesDisplay = (user: {
   return allSame ? allRoleSets[0] : MULTIPLE_ROLES_LABEL;
 };
 
+// Same rule as the console users page. tempLockExpiration tells the two lock kinds apart: a
+// temporary lock is in effect while it is in the future (whatever the status); a policy lock is a
+// disabled user with a reason and no expiration (the backend clears it on a policy lock), so an
+// admin disable of a formerly temp-locked user is not shown as a lock.
+const getLockReasonDisplay = (user: {
+  status?: string;
+  lockReason?: string;
+  tempLockExpiration?: number;
+}): string => {
+  if (!user?.lockReason) return '';
+  const method = lockReasonLabels[user.lockReason] || user.lockReason;
+  const tempLockExpiration = user.tempLockExpiration || 0;
+  if (tempLockExpiration * 1000 > Date.now()) {
+    return `${TEMP_LOCKED_LABEL} - ${method}`;
+  }
+  if (user.status === 'disabled' && tempLockExpiration === 0) {
+    return `${LOCKED_LABEL} - ${method}`;
+  }
+  return '';
+};
+
 export const getUsersList = createSelector(getFormattedUserList, (users) =>
   users.map((user) => ({
     ...user,
@@ -74,6 +101,7 @@ export const getUsersList = createSelector(getFormattedUserList, (users) =>
       (user?.createdTime || 0) * 1000,
     ).toLocaleString(),
     status: userStatusMappings[user.status] || user.status,
+    lockReasonFormatted: getLockReasonDisplay(user),
     roles: getRolesDisplay(user),
     tenants: user.userTenants?.map(
       (tenant) => tenant.tenantName || tenant.tenantId,

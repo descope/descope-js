@@ -26,6 +26,7 @@ import {
 } from '../constants';
 import {
   clearPreviousExternalInputs,
+  clearSsoQueryParams,
   getAnimationDirection,
   getElementDescopeAttributes,
   getScriptResultPath,
@@ -56,6 +57,7 @@ import {
   setLastAuth,
   updateLastUsedPerScreen,
 } from '../helpers/lastAuth';
+import { isHiddenByCondition } from '../helpers/realtime-conditions/applier';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
@@ -346,7 +348,7 @@ class DescopeWc extends BaseDescopeWc {
         if (!globalThis.descope?.[script.id]) {
           await this.injectNpmLib(
             '@descope/flow-scripts',
-            '1.0.19', // currently using a fixed version when loading scripts
+            '1.0.20', // currently using a fixed version when loading scripts
             `dist/${script.id}.js`,
           );
         }
@@ -394,14 +396,18 @@ class DescopeWc extends BaseDescopeWc {
       }),
     );
 
+    let timeoutId: ReturnType<typeof setTimeout>;
     const toPromise = new Promise((resolve) => {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         this.loggerWrapper.warn('SDK scripts loading timeout');
         resolve(true);
       }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
 
-    return Promise.race([promises, toPromise]);
+    // clear the timer once scripts load, otherwise the timeout warning is logged even on success
+    return Promise.race([promises, toPromise]).finally(() =>
+      clearTimeout(timeoutId),
+    );
   }
 
   get isDismissScreenErrorOnInput() {
@@ -902,6 +908,7 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           flowVersions,
           {
+            origin: this.#origin,
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
@@ -958,6 +965,7 @@ class DescopeWc extends BaseDescopeWc {
           token,
           exchangeCode: code,
           exchangeError,
+          origin: this.#origin,
         },
       );
       this.#handleSdkResponse(sdkResp);
@@ -1588,6 +1596,15 @@ class DescopeWc extends BaseDescopeWc {
       // runs. Do it here, or validation errors held from the start screen are
       // dropped when the component tears down.
       this.setValidationTrackingExecution(sdkResp.data.executionId);
+      // the flow is done, so a stored OIDC context has served its purpose and
+      // must not leak into an unrelated visit later in this tab.
+      // Note: an OIDC flow does NOT reach here. It ends on the RESPONSE_ACTIONS
+      // .redirect branch in onFlowChange with a non-completed status, so
+      // its entry is left to expire on the 10 minute cap instead. Measured
+      // against the local stack, not assumed. That is safe because the backend
+      // deletes the state_id on success, so a later restore of it cannot
+      // authorize anything, it only errors.
+      clearSsoQueryParams(this.projectId, this.flowId);
       this.#dispatch('success', payload);
       return;
     }
@@ -1975,14 +1992,23 @@ class DescopeWc extends BaseDescopeWc {
     };
   }
 
+  get #origin() {
+    return this.nativeOptions?.origin || window.location.origin;
+  }
+
   #validateInputs() {
     let isValid = true;
     const invalidInputs: HTMLInputElement[] = [];
     Array.from(this.shadowRoot.querySelectorAll('*[name]'))
       .reverse()
       .forEach((input: HTMLInputElement) => {
-        // We are hiding conditional components so we don't want to validate them
-        if (input.localName === 'slot' || input.classList.contains('hidden')) {
+        // We are hiding conditional components so we don't want to validate
+        // them. The condition can target the input itself or a container
+        // around it, so this looks up the tree as well as at the element.
+        if (
+          input.localName === 'slot' ||
+          isHiddenByCondition(input, this.contentRootElement)
+        ) {
           return;
         }
         input.reportValidity?.();
@@ -1991,8 +2017,10 @@ class DescopeWc extends BaseDescopeWc {
         if (input.validity && !input.validity.valid) {
           invalidInputs.push(input);
         }
+        // Elements that carry a `name` but cannot validate (e.g. descope-enriched-text)
+        // must not block the submit
         if (isValid) {
-          isValid = input.checkValidity?.();
+          isValid = input.checkValidity?.() ?? true;
         }
       });
 
@@ -2242,7 +2270,7 @@ class DescopeWc extends BaseDescopeWc {
             // When running in a native flow in a Android app the webauthn authentication
             // is performed in the native app, so a custom origin needs to be injected
             // into the webauthn request data.
-            origin: this.nativeOptions?.origin || window.location.origin,
+            origin: this.#origin,
           };
 
           const res = await next(submitterId, actionArgs);

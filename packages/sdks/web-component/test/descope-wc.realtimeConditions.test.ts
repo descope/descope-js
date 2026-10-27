@@ -97,6 +97,81 @@ describe('web-component real-time conditions integration', () => {
     expect(chk).toHaveClass('hidden');
   });
 
+  // Regression for descope/etc#19151, real-time half. The rule hides a
+  // CONTAINER, so the required input inside it never gets the class itself.
+  // Before the fix the submit was silently blocked with nothing shown.
+  it('does not validate a required input inside a container hidden by a rule', async () => {
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        screenState: {
+          form: { phone: '+1' },
+          componentsState: {},
+          realtimeComponentsConditions: [
+            {
+              id: 'cc1',
+              componentIds: ['zip-box'],
+              action: 'hide',
+              rules: [
+                {
+                  atomicConditions: [
+                    {
+                      operator: 'empty',
+                      target: { kind: 'form', form: 'form.phone' },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      }),
+    );
+
+    fixtures.pageContent = `
+      <input name="phone" id="phone" />
+      <div id="zip-box"><input name="zip" id="zip" required /></div>
+      <descope-button id="submit-button">Submit</descope-button>
+    `;
+
+    document.body.innerHTML = `<descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('Submit'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    jest.advanceTimersByTime(0);
+
+    const wc = document.querySelector('descope-wc') as any;
+    const zipBox = wc.shadowRoot.querySelector('[id="zip-box"]');
+    const zipInput = wc.shadowRoot.querySelector('[id="zip"]');
+    const phone = wc.shadowRoot.querySelector(
+      '[id="phone"]',
+    ) as HTMLInputElement;
+
+    // phone starts filled, so the rule does not fire and the container is open.
+    expect(zipBox).not.toHaveClass('hidden');
+
+    // Clearing it makes the rule fire. Going through a real value change is
+    // the point: this covers the real-time path, not just the state the
+    // server painted on first render.
+    phone.value = '';
+    phone.dispatchEvent(new Event('input', { bubbles: true }));
+    jest.advanceTimersByTime(REALTIME_CONDITION_DEBOUNCE_MS + 5);
+
+    expect(zipBox).toHaveClass('hidden');
+    expect(zipInput).not.toHaveClass('hidden');
+
+    zipInput.checkValidity = jest.fn().mockReturnValue(false);
+    zipInput.reportValidity = jest.fn();
+
+    wc.shadowRoot.querySelector('[id="submit-button"]').click();
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(zipInput.checkValidity).not.toHaveBeenCalled();
+    expect(zipInput.reportValidity).not.toHaveBeenCalled();
+  });
+
   it('re-evaluates on a `change` event, not just `input`', async () => {
     // descope-radio-group and the button selection-groups re-emit `change`
     // (not `input`) from the host on selection. This pins that `change` is a
@@ -430,5 +505,120 @@ describe('web-component real-time conditions integration', () => {
 
     // Nothing real-time — class should remain.
     expect(chk).toHaveClass('hidden');
+  });
+
+  // Regression for descope/etc#18730 and #18750: a server error brings the user
+  // back to the SAME screen. The screen re-renders, the server's componentsState
+  // already carries the right verdict, and the realtime layer must leave it
+  // alone instead of stripping it off the freshly mounted elements.
+  //
+  // Covers all three actions, because they share one applier and the bug hit
+  // all of them equally.
+  it('keeps hide / disable / read-only when an error returns to the same screen', async () => {
+    const page = `
+      <input name="customerClass" value="Residential" />
+      <span id="_zip">ZIP</span>
+      <span id="_pin">PIN</span>
+      <span id="_note">NOTE</span>
+      <descope-button id="next-btn">go</descope-button>
+    `;
+
+    const conditionFor = (
+      componentId: string,
+      action: 'hide' | 'disable' | 'read-only',
+    ) => ({
+      id: `cc-${componentId}`,
+      componentIds: [componentId],
+      action,
+      rules: [
+        {
+          atomicConditions: [
+            {
+              operator: 'equal',
+              target: { kind: 'form', form: 'form.customerClass' },
+              predicate: { kind: 'value', value: 'Residential' },
+            },
+          ],
+        },
+      ],
+    });
+
+    const conditions = [
+      conditionFor('_zip', 'hide'),
+      conditionFor('_pin', 'disable'),
+      conditionFor('_note', 'read-only'),
+    ];
+
+    fixtures.pageContent = page;
+
+    // First render: the server has no form value yet, so it paints nothing and
+    // the client applies all three actions itself.
+    startMock.mockReturnValue(
+      generateSdkResponse({
+        screenId: '0',
+        screenState: {
+          form: { customerClass: 'Residential' },
+          componentsState: {},
+          realtimeComponentsConditions: conditions,
+        },
+      }),
+    );
+
+    document.body.innerHTML = `<descope-wc project-id="1" flow-id="otpSignInEmail"></descope-wc>`;
+
+    const zip = await waitFor(() => screen.getByShadowText('ZIP'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    jest.advanceTimersByTime(0);
+
+    const wc = document.querySelector('descope-wc') as any;
+    const pin = wc.shadowRoot.querySelector('[id="_pin"]') as HTMLElement;
+    const note = wc.shadowRoot.querySelector('[id="_note"]') as HTMLElement;
+
+    expect(zip).toHaveClass('hidden');
+    expect(pin).toHaveAttribute('disabled', 'true');
+    expect(note).toHaveAttribute('readonly', 'true');
+
+    // Submit fails. Same screen comes back with an error, and this time the
+    // server HAS the form value, so componentsState already carries the verdict.
+    //
+    // stepId is deliberately left at its default. A changed stepId makes
+    // `getAnimationDirection` return a direction, and the page-switch transition
+    // then waits for a `transitionend` that jsdom never fires. The realtime
+    // teardown and init run in the same order either way, the transition only
+    // delays `injectNextPage`.
+    nextMock.mockReturnValueOnce(
+      generateSdkResponse({
+        screenId: '0',
+        screenState: {
+          errorText: 'Something went wrong',
+          form: { customerClass: 'Residential' },
+          componentsState: {
+            _zip: 'hide',
+            _pin: 'disable',
+            _note: 'read-only',
+          },
+          realtimeComponentsConditions: conditions,
+        },
+      }),
+    );
+
+    fireEvent.click(screen.getByShadowText('go'));
+    // Wait for the re-render, then let the post-render setTimeout run so
+    // initRealtimeConditions (and its teardown) have both happened.
+    await waitFor(
+      () => expect(wc.shadowRoot.querySelector('[id="_zip"]')).not.toBe(zip),
+      { timeout: WAIT_TIMEOUT },
+    );
+    jest.advanceTimersByTime(0);
+
+    const zip2 = wc.shadowRoot.querySelector('[id="_zip"]') as HTMLElement;
+    const pin2 = wc.shadowRoot.querySelector('[id="_pin"]') as HTMLElement;
+    const note2 = wc.shadowRoot.querySelector('[id="_note"]') as HTMLElement;
+
+    // The whole bug: these were visible / enabled / editable before the fix.
+    expect(zip2).toHaveClass('hidden');
+    expect(pin2).toHaveAttribute('disabled', 'true');
+    expect(note2).toHaveAttribute('readonly', 'true');
   });
 });
