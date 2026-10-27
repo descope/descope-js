@@ -33,7 +33,10 @@ Unlike the email message, the text message contains only the correct link, so th
 to choose. Polling with `waitForSession` and verification are unchanged.
 
 ```js
-const { data } = await sdk.enchantedLink.signUpOrInWithPhone('+11234567890', 'https://myapp.com/verify-enchanted-link');
+const { data } = await sdk.enchantedLink.signUpOrInWithPhone(
+  '+11234567890',
+  'https://myapp.com/verify-enchanted-link',
+);
 const jwt = await sdk.enchantedLink.waitForSession(data.pendingRef);
 ```
 
