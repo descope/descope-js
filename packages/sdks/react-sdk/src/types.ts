@@ -15,7 +15,7 @@ import type {
 } from '@descope/web-component';
 import type OverrideThemes from '@descope/web-component';
 import DescopeWc from '@descope/web-component';
-import type { UserResponse } from '@descope/web-js-sdk';
+import type { CookieConfig, UserResponse } from '@descope/web-js-sdk';
 import React, { DOMAttributes } from 'react';
 import createSdk from './sdk';
 
@@ -110,13 +110,15 @@ export interface IContext {
   fetchUser: () => void;
   user: User;
   isUserLoading: boolean;
-  isUserFetched: boolean;
+  isUserFetchStarted: boolean;
+  isUserFetchCompleted: boolean;
   fetchSession: () => void;
   session: string;
   isAuthenticated: boolean;
   isSessionLoading: boolean;
   isOidcLoading: boolean;
-  isSessionFetched: boolean;
+  isSessionFetchStarted: boolean;
+  isSessionFetchCompleted: boolean;
   projectId: string;
   baseUrl?: string;
   styleId?: string;
@@ -125,6 +127,8 @@ export interface IContext {
   storeLastAuthenticatedUser?: boolean;
   keepLastAuthenticatedUserAfterLogout?: boolean;
   refreshCookieName?: string;
+  sessionTokenViaCookie?: CookieConfig;
+  refreshTokenViaCookie?: CookieConfig;
   customStorage?: CustomStorage;
   claims?: JWTResponse['claims'];
   sdk?: Sdk;

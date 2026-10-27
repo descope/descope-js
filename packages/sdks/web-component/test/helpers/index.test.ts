@@ -1,4 +1,6 @@
+import '@testing-library/jest-dom';
 import { waitFor } from '@testing-library/dom';
+import { applyAction } from '../../src/lib/helpers/realtime-conditions/applier';
 import {
   URL_RUN_IDS_PARAM_NAME,
   OIDC_RESOURCE_PARAM_NAME,
@@ -400,60 +402,78 @@ describe('helpers', () => {
 });
 
 describe('handleAutoFocus', () => {
-  it('should focus element when auto focus is on', async () => {
+  // Real DOM rather than a `{ querySelector }` stub: the stub pinned how the
+  // helper queries, so it broke the moment the query changed. These assert
+  // which element ends up focused, which is the thing callers care about.
+  const mkScreen = () => {
+    const root = document.createElement('div');
+    root.innerHTML = '<input id="first" name="first" />';
+    document.body.appendChild(root);
+    const input = root.querySelector('#first') as HTMLInputElement;
     const focusFn = jest.fn();
+    input.focus = focusFn;
+    return { root, focusFn };
+  };
 
-    handleAutoFocus(
-      {
-        querySelector: () => ({ focus: focusFn }),
-      } as never as HTMLElement,
-      true,
-      false,
-    );
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it('should focus element when auto focus is on', async () => {
+    const { root, focusFn } = mkScreen();
+
+    handleAutoFocus(root, true, false);
 
     await waitFor(() => expect(focusFn).toBeCalled());
   });
 
   it('should not focus element when auto focus is off', () => {
-    const focusFn = jest.fn();
+    const { root, focusFn } = mkScreen();
 
-    handleAutoFocus(
-      {
-        querySelector: () => ({ focus: focusFn }),
-      } as never as HTMLElement,
-      false,
-      true,
-    );
+    handleAutoFocus(root, false, true);
 
     setTimeout(() => expect(focusFn).not.toBeCalled());
   });
 
   it('should not focus element when auto focus is `skipAutoFocus` on first screen', () => {
-    const focusFn = jest.fn();
+    const { root, focusFn } = mkScreen();
 
-    handleAutoFocus(
-      {
-        querySelector: () => ({ focus: focusFn }),
-      } as never as HTMLElement,
-      'skipFirstScreen',
-      true,
-    );
+    handleAutoFocus(root, 'skipFirstScreen', true);
 
     setTimeout(() => expect(focusFn).not.toBeCalled());
   });
 
   it('should focus element when auto focus is `skipAutoFocus` on non-first screen', async () => {
-    const focusFn = jest.fn();
+    const { root, focusFn } = mkScreen();
 
-    handleAutoFocus(
-      {
-        querySelector: () => ({ focus: focusFn }),
-      } as never as HTMLElement,
-      'skipFirstScreen',
-      false,
-    );
+    handleAutoFocus(root, 'skipFirstScreen', false);
 
     await waitFor(() => expect(focusFn).toBeCalled());
+  });
+
+  // Regression for descope/etc#19151: a condition hides the CONTAINER, so the
+  // input inside it keeps a clean class list and the selector cannot see it.
+  it('should skip an input inside a container hidden by a condition', async () => {
+    const root = document.createElement('div');
+    root.innerHTML =
+      '<div id="box"><input id="hidden-one" name="zip" /></div>' +
+      '<input id="visible-one" name="city" />';
+    document.body.appendChild(root);
+
+    const hiddenOne = root.querySelector('#hidden-one') as HTMLInputElement;
+    const visibleOne = root.querySelector('#visible-one') as HTMLInputElement;
+    const hiddenFocus = jest.fn();
+    const visibleFocus = jest.fn();
+    hiddenOne.focus = hiddenFocus;
+    visibleOne.focus = visibleFocus;
+
+    applyAction(root.querySelector('#box') as Element, 'hide');
+    expect(hiddenOne).not.toHaveClass('hidden');
+
+    handleAutoFocus(root, true, false);
+
+    await waitFor(() => expect(visibleFocus).toBeCalled());
+    expect(hiddenFocus).not.toBeCalled();
   });
 });
 

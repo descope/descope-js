@@ -114,6 +114,31 @@ test.describe('widget', () => {
 
     await logoutRequest;
   });
+
+  test('passes cookie configs to the inner flows sdk', async ({ page }) => {
+    const readOverrides = () =>
+      page.evaluate(() => {
+        const { sessionTokenViaCookie, refreshTokenViaCookie } = (
+          customElements.get('descope-wc') as any
+        ).sdkConfigOverrides;
+        return { sessionTokenViaCookie, refreshTokenViaCookie };
+      });
+
+    await page.evaluate(() => {
+      const widget = document.querySelector('descope-user-profile-widget');
+      widget.setAttribute(
+        'session-token-via-cookie',
+        JSON.stringify({ domain: 'localhost' }),
+      );
+      widget.setAttribute('refresh-token-via-cookie', 'true');
+    });
+
+    // read lazily, so a flow created after the attributes change gets the current config
+    await expect.poll(readOverrides).toEqual({
+      sessionTokenViaCookie: { domain: 'localhost' },
+      refreshTokenViaCookie: true,
+    });
+  });
   test.describe('user attributes', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const attr of [

@@ -116,4 +116,36 @@ describe('sdk', () => {
 
     expect(resp.error).toMatchObject({ retryAfter: 0 });
   });
+
+  it('should add trace id to the response error', async () => {
+    const createSdk1 = jest.requireActual('../src/sdk').default;
+    const httpResp = {
+      status: 400,
+      clone: () => httpResp,
+      json: () => ({ errorCode: 'E061102' }),
+      headers: new Headers({ 'cf-ray': 'abc123-TLV' }),
+    };
+    const httpClient = { post: () => httpResp };
+    const sdk = createSdk1(httpClient);
+
+    const resp = await sdk.otp.signIn.email('1@1.com');
+
+    expect(resp.error).toMatchObject({ traceId: 'abc123-TLV' });
+  });
+
+  it('should not add trace id when there is no header', async () => {
+    const createSdk1 = jest.requireActual('../src/sdk').default;
+    const httpResp = {
+      status: 400,
+      clone: () => httpResp,
+      json: () => ({ errorCode: 'E061102' }),
+      headers: new Headers(),
+    };
+    const httpClient = { post: () => httpResp };
+    const sdk = createSdk1(httpClient);
+
+    const resp = await sdk.otp.signIn.email('1@1.com');
+
+    expect(resp.error).not.toHaveProperty('traceId');
+  });
 });
