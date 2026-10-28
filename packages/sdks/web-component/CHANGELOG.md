@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.6.0](https://github.com/descope/descope-js/compare/web-component-4.5.2...web-component-4.6.0) (2026-10-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.29.0`
+
+### Features
+
+* **web-component:** load tenant font files from the tenant theme ([#1522](https://github.com/descope/descope-js/issues/1522)) ([3ba19c8](https://github.com/descope/descope-js/commit/3ba19c892054af0341e56e19de2b932ce0d44b67)), closes [descope/etc#19225](https://github.com/descope/etc/issues/19225)
+
 ## [4.5.2](https://github.com/descope/descope-js/compare/web-component-4.5.1...web-component-4.5.2) (2026-10-24)
 
 ### Dependency Updates
