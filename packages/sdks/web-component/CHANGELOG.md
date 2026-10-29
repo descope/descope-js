@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.6.1](https://github.com/descope/descope-js/compare/web-component-4.6.0...web-component-4.6.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* **web-component:** load @descope/flow-scripts 1.0.21 ([#1545](https://github.com/descope/descope-js/issues/1545)) ([84d8026](https://github.com/descope/descope-js/commit/84d80264e8f636c6d40435ce41402407c560a328)), closes [descope/content#2463](https://github.com/descope/content/issues/2463) [descope/etc#19463](https://github.com/descope/etc/issues/19463) [descope/content#2483](https://github.com/descope/content/issues/2483)
+
 ## [4.6.0](https://github.com/descope/descope-js/compare/web-component-4.5.2...web-component-4.6.0) (2026-10-28)
 
 ### Dependency Updates
