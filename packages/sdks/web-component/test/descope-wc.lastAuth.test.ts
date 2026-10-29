@@ -235,8 +235,16 @@ describe('web-component lastAuth', () => {
       startMock.mockReturnValueOnce(
         generateSdkResponse({ screenId: 'screen-1' }),
       );
+      // hold the first next() open until the test releases it, so the in-flight
+      // window is ours rather than a race with how fast the mock resolves
+      let releaseFirstNext: () => void;
+      const firstNext = new Promise<void>((resolve) => {
+        releaseFirstNext = resolve;
+      });
       nextMock
-        .mockReturnValueOnce(generateSdkResponse({ screenId: 'screen-1' }))
+        .mockReturnValueOnce(
+          firstNext.then(() => generateSdkResponse({ screenId: 'screen-1' })),
+        )
         .mockReturnValueOnce(
           generateSdkResponse({
             status: 'completed',
@@ -258,6 +266,29 @@ describe('web-component lastAuth', () => {
       await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
         timeout: WAIT_TIMEOUT,
       });
+
+      // wait for the first submit to actually settle before clicking again:
+      // a click while the request is still in flight is ignored as a duplicate.
+      // the submitter is marked loading for the duration of the request, and the
+      // re-rendered screen clears it, so that transition is the settle signal
+      await waitFor(
+        () =>
+          expect(screen.getByShadowText('click a')).toHaveAttribute(
+            'loading',
+            'true',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      releaseFirstNext();
+
+      await waitFor(
+        () =>
+          expect(screen.getByShadowText('click a')).not.toHaveAttribute(
+            'loading',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
 
       // Same screen rendered again, click a different button
       fireEvent.click(screen.getByShadowText('click b'));

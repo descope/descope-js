@@ -2,6 +2,73 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.9.15](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.14...applications-portal-widget-0.9.15) (2026-10-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.29.0`
+## [0.9.14](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.13...applications-portal-widget-0.9.14) (2026-10-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.28.1`
+## [0.9.13](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.12...applications-portal-widget-0.9.13) (2026-10-20)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.28.0`
+## [0.9.12](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.11...applications-portal-widget-0.9.12) (2026-10-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.4`
+## [0.9.11](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.10...applications-portal-widget-0.9.11) (2026-10-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.3`
+## [0.9.10](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.9...applications-portal-widget-0.9.10) (2026-10-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.2`
+## [0.9.9](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.8...applications-portal-widget-0.9.9) (2026-10-06)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.1`
+## [0.9.8](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.7...applications-portal-widget-0.9.8) (2026-09-29)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.27.2`
+* `sdk-component-drivers` updated to version `0.18.0`
+## [0.9.7](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.6...applications-portal-widget-0.9.7) (2026-09-27)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.0`
+* `sdk-helpers` updated to version `0.10.1`
+* `sdk-mixins` updated to version `0.27.1`
+* `sdk-component-drivers` updated to version `0.17.1`
+## [0.9.6](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.5...applications-portal-widget-0.9.6) (2026-09-22)
+
+### Dependency Updates
+
+* `e2e-helpers` updated to version `0.1.1`
+## [0.9.5](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.4...applications-portal-widget-0.9.5) (2026-09-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.2`
+## [0.9.4](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.3...applications-portal-widget-0.9.4) (2026-09-16)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.53.1`
+* `sdk-helpers` updated to version `0.10.0`
+* `sdk-mixins` updated to version `0.27.0`
+* `sdk-component-drivers` updated to version `0.17.0`
 ## [0.9.3](https://github.com/descope/descope-js/compare/applications-portal-widget-0.9.2...applications-portal-widget-0.9.3) (2026-09-10)
 
 ### Dependency Updates

@@ -15,7 +15,11 @@ export type State = {
   tenantAdminLinkSSO: {
     loading: boolean;
     error: unknown;
-    data: { defaultLink: string; ssoIdToLink: Record<string, string> };
+    data: {
+      defaultLink: string;
+      ssoIdToLink: Record<string, string>;
+      ssoIdToAuthenticationOnly?: Record<string, boolean>;
+    };
   };
 };
 

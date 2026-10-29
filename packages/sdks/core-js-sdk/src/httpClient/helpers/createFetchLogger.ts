@@ -89,6 +89,11 @@ const retryDelaysMs = [100, 5000, 5000];
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+// sendRequest sets this on the init when a caller passes disableRetry. fetch
+// ignores properties it does not know, so it never reaches the network.
+const isRetryDisabled = (init: Parameters<Fetch>[1]) =>
+  !!(init as { disableRetry?: boolean })?.disableRetry;
+
 /** Log the response object */
 const buildResponseLog = async (resp: Response & { retries?: number }) => {
   const respBody = await resp.text();
@@ -109,8 +114,10 @@ const fetchWrapper = (fetch: Fetch) =>
   async function fetchWithRetries(...args: Parameters<Fetch>) {
     let resp: Response & { retries?: number } = await fetch(...args);
 
+    const retryDisabled = isRetryDisabled(args[1]);
     let retries = 0;
     while (
+      !retryDisabled &&
       retryStatusCodes.includes(resp.status) &&
       retries < retryDelaysMs.length
     ) {

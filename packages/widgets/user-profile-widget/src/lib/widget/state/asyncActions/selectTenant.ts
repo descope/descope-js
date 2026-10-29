@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-shadow */
+import { escapeHtml } from '@descope/sdk-helpers';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
@@ -57,13 +58,11 @@ const reducer = buildAsyncReducer(action)(
   },
   withRequestStatus((state: State) => state.selectTenant),
   withNotifications({
-    getErrorMsg: (action) => {
-      const errorMsg = action.error?.message || '';
-      if (action.error?.name === 'Error') {
-        return errorMsg;
-      }
-      return `${errorMsg || 'Error'}`;
-    },
+    // Always default. This widget's withNotifications drops a falsy msg, so a
+    // blank message would otherwise show no notification at all while the
+    // tenant selection silently reverts.
+    getErrorMsg: (action) =>
+      escapeHtml(action.error?.message).trim() || 'Error',
   }),
 );
 

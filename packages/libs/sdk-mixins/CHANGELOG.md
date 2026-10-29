@@ -2,6 +2,55 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.29.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.28.1...sdk-mixins-0.29.0) (2026-10-28)
+
+
+### Features
+
+* **web-component:** load tenant font files from the tenant theme ([#1522](https://github.com/descope/descope-js/issues/1522)) ([3ba19c8](https://github.com/descope/descope-js/commit/3ba19c892054af0341e56e19de2b932ce0d44b67)), closes [descope/etc#19225](https://github.com/descope/etc/issues/19225)
+
+## [0.28.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.28.0...sdk-mixins-0.28.1) (2026-10-24)
+
+
+### Bug Fixes
+
+* **sdk-mixins:** let widget root fill its host when ROOT is stretched RELEASE ([#1540](https://github.com/descope/descope-js/issues/1540)) ([cc1aac6](https://github.com/descope/descope-js/commit/cc1aac69c05e65b9f51d94b00041f5304362433d))
+
+## [0.28.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.2...sdk-mixins-0.28.0) (2026-10-20)
+
+
+### Features
+
+* **user-profile-widget:** support session/refresh token cookie config ([#1521](https://github.com/descope/descope-js/issues/1521)) RELEASE ([f17a01b](https://github.com/descope/descope-js/commit/f17a01bc55cf10a85df65b2c0dadf5d19aa1a1c8))
+
+## [0.27.2](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.1...sdk-mixins-0.27.2) (2026-09-29)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.18.0`
+## [0.27.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.27.0...sdk-mixins-0.27.1) (2026-09-27)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.17.1`
+* `sdk-helpers` updated to version `0.10.1`
+
+### Bug Fixes
+
+* **widgets:** escape API error text before it reaches innerHTML RELEASE ([#1496](https://github.com/descope/descope-js/issues/1496)) ([89d3c1d](https://github.com/descope/descope-js/commit/89d3c1d220f5125d7ffa88ddd4be63443a00c42f)), closes [descope/etc#18718](https://github.com/descope/etc/issues/18718) [#39](https://github.com/descope/descope-js/issues/39)
+
+## [0.27.0](https://github.com/descope/descope-js/compare/sdk-mixins-0.26.1...sdk-mixins-0.27.0) (2026-09-16)
+
+### Dependency Updates
+
+* `sdk-component-drivers` updated to version `0.17.0`
+* `sdk-helpers` updated to version `0.10.0`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+* **web-component:** track client-side form validation errors RELEASE ([#1482](https://github.com/descope/descope-js/issues/1482)) ([4846b6b](https://github.com/descope/descope-js/commit/4846b6b72a0e1a9e90e2dbe3600ac2d10d5ad675)), closes [descope/etc#15181](https://github.com/descope/etc/issues/15181) [descope/etc#15181](https://github.com/descope/etc/issues/15181)
+
 ## [0.26.1](https://github.com/descope/descope-js/compare/sdk-mixins-0.26.0...sdk-mixins-0.26.1) (2026-09-07)
 
 ### Dependency Updates

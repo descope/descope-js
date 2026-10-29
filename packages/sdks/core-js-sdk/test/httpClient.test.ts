@@ -7,6 +7,25 @@ import { ExtendedResponse } from '../src/httpClient/types';
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch;
 
+// Local runs. CI fetches the regions devops generates into REGIONS:
+// https://imgs.descope.com/regions/regions.json (descope/etc#18332).
+const FALLBACK_REGIONS = [
+  'use1',
+  'euc1',
+  'euw2',
+  'aps1',
+  'aps2',
+  'cac1',
+  'sae1',
+];
+
+const regionsUnderTest = (): string[] => {
+  if (!process.env.CI) return FALLBACK_REGIONS;
+  return JSON.parse(process.env.REGIONS ?? '').map(
+    (region: { symbol: string }) => region.symbol,
+  );
+};
+
 const afterRequestHook = jest.fn();
 
 const projectId = '456';
@@ -464,6 +483,36 @@ describe('httpClient', () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       'https://api.descope.com/1/2/3',
+      expect.anything(),
+    );
+  });
+  it.each(regionsUnderTest())(
+    'should resolve the %s region from the project id',
+    (region) => {
+      const httpClient = createHttpClient({
+        baseUrl: DEFAULT_BASE_API_URL,
+        projectId: `P${region}2aAc4T2V93bddihGEx2Ryhc8e5Z`,
+      });
+
+      httpClient.get('1/2/3', { token: null });
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `https://api.${region}.descope.com/1/2/3`,
+        expect.anything(),
+      );
+    },
+  );
+
+  it('should resolve a region that does not exist', () => {
+    const httpClient = createHttpClient({
+      baseUrl: DEFAULT_BASE_API_URL,
+      projectId: 'Pzz992aAc4T2V93bddihGEx2Ryhc8e5Z',
+    });
+
+    httpClient.get('1/2/3', { token: null });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.zz99.descope.com/1/2/3',
       expect.anything(),
     );
   });
@@ -1031,6 +1080,85 @@ describe('createFetchLogger', () => {
       expect(await response.text()).toBe('Error 4');
       expect(response.retries).toBe(3);
     });
+
+    it('should not retry when the request opts out', async () => {
+      // Callers that run their own bounded retry (best-effort telemetry) opt
+      // out, so a single failure is not multiplied by two stacked policies.
+      fetch.mockResolvedValue({
+        ok: false,
+        text: () => 'Error',
+        url: 'http://descope.com/',
+        headers: new Headers({ header: 'header' }),
+        status: 503,
+        statusText: 'Service Unavailable',
+      });
+
+      const promise = fetchWithLogger('http://descope.com/test', {
+        method: 'POST',
+        headers: new Headers({ test: '123' }),
+        disableRetry: true,
+      } as any);
+
+      await jest.runAllTimersAsync();
+      const response = await promise;
+
+      // One attempt only, where the same 503 would otherwise cost four.
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(503);
+      expect(response.retries).toBeUndefined();
+    });
+
+    it.each(['get', 'delete'] as const)(
+      'should honour disableRetry on %s',
+      async (verb) => {
+        // The option is advertised on every verb's config, so every verb has to
+        // forward it - otherwise it silently does nothing.
+        fetch.mockResolvedValue({
+          ok: false,
+          text: () => 'Error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        });
+
+        const client = createHttpClient({
+          baseUrl: 'http://descope.com',
+          projectId,
+          fetch,
+        }) as any;
+        const promise = client[verb]('/path', { disableRetry: true });
+        await jest.runAllTimersAsync();
+        await promise;
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it.each(['patch', 'put'] as const)(
+      'should honour disableRetry on %s',
+      async (verb) => {
+        fetch.mockResolvedValue({
+          ok: false,
+          text: () => 'Error',
+          url: 'http://descope.com/',
+          headers: new Headers({ header: 'header' }),
+          status: 503,
+          statusText: 'Service Unavailable',
+        });
+
+        const client = createHttpClient({
+          baseUrl: 'http://descope.com',
+          projectId,
+          fetch,
+        }) as any;
+        const promise = client[verb]('/path', {}, { disableRetry: true });
+        await jest.runAllTimersAsync();
+        await promise;
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+      },
+    );
 
     it('should use correct delays: 100ms for first retry, 5000ms for subsequent retries', async () => {
       fetch

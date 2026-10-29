@@ -2,6 +2,54 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.54.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.3...web-js-sdk-1.54.4) (2026-10-18)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** catch background refresh rejections ([#1490](https://github.com/descope/descope-js/issues/1490)) ([3ed5b28](https://github.com/descope/descope-js/commit/3ed5b285e88fadbf984e125cf489c76dd1b6af8e)), closes [#1479](https://github.com/descope/descope-js/issues/1479)
+* **web-js-sdk:** stop refreshing on tab return after refresh failed ([#1513](https://github.com/descope/descope-js/issues/1513)) ([ca77ee7](https://github.com/descope/descope-js/commit/ca77ee77266fd5aee8a266e30da5a36ffbeebad7))
+
+## [1.54.3](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.2...web-js-sdk-1.54.3) (2026-10-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.77.0`
+## [1.54.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.1...web-js-sdk-1.54.2) (2026-10-12)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.76.0`
+## [1.54.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.0...web-js-sdk-1.54.1) (2026-10-06)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.75.0`
+## [1.54.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.53.2...web-js-sdk-1.54.0) (2026-09-27)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.74.0`
+
+### Features
+
+* **core-js-sdk:** add family fields to UserResponse ([#1498](https://github.com/descope/descope-js/issues/1498)) ([7e814cd](https://github.com/descope/descope-js/commit/7e814cdba88fbb5926880d919658424915f0f05c)), closes [descope/node-sdk#793](https://github.com/descope/node-sdk/issues/793)
+
+## [1.53.2](https://github.com/descope/descope-js/compare/web-js-sdk-1.53.1...web-js-sdk-1.53.2) (2026-09-17)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.73.0`
+
+### Bug Fixes
+
+* **web-component:** recover when a passkey prompt is never answered RELEASE ([#1491](https://github.com/descope/descope-js/issues/1491)) ([e2d2f57](https://github.com/descope/descope-js/commit/e2d2f57612d59be47807eb6f17e7c25330fc4aef)), closes [descope/etc#18538](https://github.com/descope/etc/issues/18538)
+
+## [1.53.1](https://github.com/descope/descope-js/compare/web-js-sdk-1.53.0...web-js-sdk-1.53.1) (2026-09-16)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.72.0`
 ## [1.53.0](https://github.com/descope/descope-js/compare/web-js-sdk-1.52.1...web-js-sdk-1.53.0) (2026-09-10)
 
 ### Dependency Updates

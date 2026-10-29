@@ -249,6 +249,7 @@ describe('web-component', () => {
             {
               exchangeCode: 'code1',
               idpInitiated: true,
+              origin: 'http://localhost',
             },
           ),
         { timeout: WAIT_TIMEOUT },
@@ -337,6 +338,7 @@ describe('web-component', () => {
             },
             {
               token: 'code1',
+              origin: 'http://localhost',
             },
           ),
         { timeout: WAIT_TIMEOUT },
@@ -419,7 +421,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            {},
+            { origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -468,7 +470,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            { token },
+            { token, origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -509,7 +511,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            {},
+            { origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -643,7 +645,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            {},
+            { origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -685,7 +687,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            {},
+            { origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -724,7 +726,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            {},
+            { origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -764,6 +766,7 @@ describe('web-component', () => {
             },
             {
               idpInitiated: true,
+              origin: 'http://localhost',
             },
           ),
         { timeout: WAIT_TIMEOUT },
@@ -836,7 +839,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            {},
+            { origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );
@@ -876,7 +879,7 @@ describe('web-component', () => {
             {
               'sign-in': 0,
             },
-            {},
+            { origin: 'http://localhost' },
           ),
         { timeout: WAIT_TIMEOUT },
       );

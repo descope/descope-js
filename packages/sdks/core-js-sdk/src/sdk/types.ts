@@ -68,15 +68,25 @@ export type UserResponse = User & {
   picture?: string;
   roleNames?: string[];
   userTenants?: UserTenant[];
+  userFamilies?: UserFamily[];
+  dependent?: boolean;
   createdTime: number;
   TOTP: boolean;
   SAML: boolean;
   SCIM: boolean;
+  /** The tenant whose SCIM connection provisioned the user. Omitted when none or ambiguous. */
+  scimTenantId?: string;
+  /** The tenant whose SAML SSO created the user or merged the user's login into it. Omitted when none or ambiguous. */
+  samlTenantId?: string;
+  /** The tenant whose OIDC SSO created the user or merged the user's login into it. Omitted when none or ambiguous. */
+  oidcTenantId?: string;
   password: boolean;
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
   status: string;
   test: boolean;
+  lockReason?: string;
+  tempLockExpiration?: number;
 };
 
 export type Tenant = {
@@ -103,6 +113,14 @@ export type UserTenant = {
   roleNames?: string[];
   permissions?: string[];
   tenantName: string;
+};
+
+/** A family association mapping */
+export type UserFamily = {
+  familyId: string;
+  roleNames?: string[];
+  permissions?: string[];
+  familyScopedAttributes?: Record<string, any>;
 };
 
 export type TemplateOptions = Record<string, string>; // for providing messaging template options (templates that are being sent via email / text message)
@@ -193,6 +211,16 @@ export type EnchantedLinkResponse = {
   linkId: string;
   /** Email to which the link was sent to */
   maskedEmail: string;
+};
+
+/** Enchanted link response for the SMS delivery routes */
+export type PhoneEnchantedLinkResponse = {
+  /** Pending reference URL to poll while waiting for user to click the link */
+  pendingRef: string;
+  /** Link id, printed at the start of the text message so the user can confirm it */
+  linkId: string;
+  /** Phone to which the link was sent to */
+  maskedPhone: string;
 };
 
 /** URL response to redirect user in case of OAuth or SSO */
@@ -399,6 +427,7 @@ export type SdkResponse<T extends ResponseData> = {
     errorDescription: string;
     errorMessage?: string;
     retryAfter?: string;
+    traceId?: string;
   };
   data?: T;
 };

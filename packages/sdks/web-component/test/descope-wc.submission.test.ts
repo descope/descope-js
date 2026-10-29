@@ -228,6 +228,13 @@ describe('web-component submission', () => {
       ),
     );
 
+    // `loading` is set at click time now, before next() is called, so it no
+    // longer implies the mock has run - wait for the call itself before
+    // resolving it
+    await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+      timeout: WAIT_TIMEOUT,
+    });
+
     resolve(generateSdkResponse({ screenId: '1' }));
 
     await waitFor(

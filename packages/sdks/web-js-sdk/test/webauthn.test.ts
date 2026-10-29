@@ -221,6 +221,35 @@ describe('webauthn error categorization (error.reason)', () => {
     expect(error.reason).toEqual('not_allowed');
   });
 
+  it('should pass an abort controller signal through to the browser call', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    const abort = new AbortController();
+    mockCredentials.get.mockRejectedValueOnce(
+      new DOMException('boom', 'NotAllowedError'),
+    );
+
+    await webauthn.helpers
+      .get(createOptions({ allowCredentials: [] }), abort)
+      .catch((e) => e);
+
+    expect(mockCredentials.get).toHaveBeenCalledWith(
+      expect.objectContaining({ signal: abort.signal }),
+    );
+  });
+
+  it('should not set a signal when no abort controller is given', async () => {
+    const webauthn = createWebAuthn(createMockSdk());
+    mockCredentials.get.mockRejectedValueOnce(
+      new DOMException('boom', 'NotAllowedError'),
+    );
+
+    await webauthn.helpers
+      .get(createOptions({ allowCredentials: [] }))
+      .catch((e) => e);
+
+    expect(mockCredentials.get.mock.calls[0][0].signal).toBeUndefined();
+  });
+
   it('should report authenticator_already_registered for an InvalidStateError on create', async () => {
     const webauthn = createWebAuthn(createMockSdk());
     mockCredentials.create.mockRejectedValueOnce(

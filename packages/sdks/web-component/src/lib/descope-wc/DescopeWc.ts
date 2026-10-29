@@ -22,9 +22,11 @@ import {
   URL_ERR_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   URL_TOKEN_PARAM_NAME,
+  WEBAUTHN_TIMEOUT,
 } from '../constants';
 import {
   clearPreviousExternalInputs,
+  clearSsoQueryParams,
   getAnimationDirection,
   getElementDescopeAttributes,
   getScriptResultPath,
@@ -55,6 +57,7 @@ import {
   setLastAuth,
   updateLastUsedPerScreen,
 } from '../helpers/lastAuth';
+import { isHiddenByCondition } from '../helpers/realtime-conditions/applier';
 import { IsChanged } from '../helpers/state';
 import {
   disableWebauthnButtons,
@@ -68,6 +71,7 @@ import {
   ClientScript,
   ComponentsConfig,
   CustomScreenState,
+  FlowConfig,
   FlowState,
   NextFn,
   NextFnReturnPromiseValue,
@@ -78,6 +82,19 @@ import {
   FlowJWTResponse,
 } from '../types';
 import BaseDescopeWc from './BaseDescopeWc';
+
+// Resolved with, not thrown: timeoutPromise rejects with a plain Error, which
+// is exactly what some password manager extensions throw.
+const WEBAUTHN_TIMED_OUT = '__descope_webauthn_timed_out__';
+
+// What a passkey attempt reports back to the flow: a response on success, the
+// failure fields otherwise.
+type WebauthnCeremonyOutcome = {
+  response?: string;
+  failure?: string;
+  failureReason?: string;
+  failureMessage?: string;
+};
 
 // this class is responsible for WC flow execution
 class DescopeWc extends BaseDescopeWc {
@@ -119,6 +136,18 @@ class DescopeWc extends BaseDescopeWc {
     super(flowState.update.bind(flowState));
 
     this.flowState = flowState;
+
+    // The validation-tracking mixin captures and batches; delivery is ours, so
+    // validation events go out over the same SDK that runs flow.start and
+    // flow.next. `this.sdk` is read when a batch is actually sent, by which
+    // point it exists. A 4xx will never turn into a 2xx, so only 5xx and 429
+    // are worth another attempt.
+    this.setValidationTrackingSender(
+      async ({ executionId, events }, { keepalive }) => {
+        const res = await this.sdk.flow.event(executionId, events, keepalive);
+        return { ok: res.ok, retryable: res.code >= 500 || res.code === 429 };
+      },
+    );
   }
 
   #eventsCbRefs = {
@@ -319,7 +348,7 @@ class DescopeWc extends BaseDescopeWc {
         if (!globalThis.descope?.[script.id]) {
           await this.injectNpmLib(
             '@descope/flow-scripts',
-            '1.0.19', // currently using a fixed version when loading scripts
+            '1.0.20', // currently using a fixed version when loading scripts
             `dist/${script.id}.js`,
           );
         }
@@ -367,26 +396,30 @@ class DescopeWc extends BaseDescopeWc {
       }),
     );
 
+    let timeoutId: ReturnType<typeof setTimeout>;
     const toPromise = new Promise((resolve) => {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         this.loggerWrapper.warn('SDK scripts loading timeout');
         resolve(true);
       }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
 
-    return Promise.race([promises, toPromise]).catch((e) => {
-      // A script that fails to load - blocked by an extension, a strict CSP, a
-      // CDN outage - must never reject here. Callers either await this through
-      // `#sdkScriptsLoading` before a submit, where a rejection leaves the submit
-      // button stuck in its loading state with no way back, or do not await it at
-      // all, where it becomes an unhandled rejection. Carry on without the
-      // script instead: the backend already handles a missing token.
-      this.loggerWrapper.warn(
-        'Sdk scripts failed to load, continuing without them',
-        (e as Error)?.message,
-      );
-      return null;
-    });
+    // clear the timer once scripts load, otherwise the timeout warning is logged even on success
+    return Promise.race([promises, toPromise])
+      .finally(() => clearTimeout(timeoutId))
+      .catch((e) => {
+        // A script that fails to load - blocked by an extension, a strict CSP, a
+        // CDN outage - must never reject here. Callers either await this through
+        // `#sdkScriptsLoading` before a submit, where a rejection leaves the submit
+        // button stuck in its loading state with no way back, or do not await it at
+        // all, where it becomes an unhandled rejection. Carry on without the
+        // script instead: the backend already handles a missing token.
+        this.loggerWrapper.warn(
+          'Sdk scripts failed to load, continuing without them',
+          (e as Error)?.message,
+        );
+        return null;
+      });
   }
 
   get isDismissScreenErrorOnInput() {
@@ -520,6 +553,9 @@ class DescopeWc extends BaseDescopeWc {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+
+    // Flush + detach any client-side validation tracking (validationTrackingMixin).
+    this.teardownValidationTracking();
 
     // Drop our handle from the native bridge (mirror of the init-time register).
     if (this.#bridgeKey) {
@@ -669,6 +705,61 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.forceUpdate = isCustomScreen;
   }
 
+  // Runs the browser's passkey call and turns it into what flow.next expects:
+  // either a response, or the failure fields describing what went wrong.
+  async #runWebauthnCeremony(
+    action: string,
+    webauthnOptions: string,
+  ): Promise<WebauthnCeremonyOutcome> {
+    const abortController = new AbortController();
+
+    try {
+      const ceremony =
+        action === RESPONSE_ACTIONS.webauthnCreate
+          ? this.sdk.webauthn.helpers.create(webauthnOptions, abortController)
+          : this.sdk.webauthn.helpers.get(webauthnOptions, abortController);
+
+      const outcome = await timeoutPromise(
+        WEBAUTHN_TIMEOUT,
+        ceremony,
+        WEBAUTHN_TIMED_OUT,
+      );
+
+      if (outcome !== WEBAUTHN_TIMED_OUT) {
+        return { response: outcome };
+      }
+
+      // We gave up, the browser did not. Asking it to stop is honoured by some
+      // extensions and ignored by others, so it is cleanup rather than the
+      // mechanism.
+      abortController.abort();
+      this.loggerWrapper.warn(
+        `WebAuthn operation timed out after ${WEBAUTHN_TIMEOUT}ms`,
+      );
+      // Report it as an abort, which is what it is from the flow's side and a
+      // value the SDK already produces (see identifyWebauthnError).
+      return {
+        failure: 'AbortError',
+        failureReason: 'aborted',
+        failureMessage: 'Passkey operation timed out',
+      };
+    } catch (e) {
+      if (e.name === 'InvalidStateError') {
+        // currently returned in Chrome when trying to register a WebAuthn device
+        // that's already registered for the user
+        this.loggerWrapper.warn('WebAuthn operation failed', e.message);
+      } else if (e.name !== 'NotAllowedError') {
+        // shouldn't happen in normal usage ('AbortError' is only when setting an AbortController)
+        this.loggerWrapper.error(e.message);
+      }
+      return {
+        failure: e.name,
+        failureReason: e.reason,
+        failureMessage: e.message,
+      };
+    }
+  }
+
   async onFlowChange(
     currentState: FlowState,
     prevState: FlowState,
@@ -713,10 +804,15 @@ class DescopeWc extends BaseDescopeWc {
     let startScreenName: string;
     let conditionInteractionId: string;
     const abTestingKey = getABTestingKey();
-    const { outboundAppId } = this;
-    const { outboundAppScopes } = this;
+    const { outboundAppId, outboundAppScopes } = this;
     const loginId = this.sdk.getLastUserLoginId();
+    // Switching flows: turn tracking off before we know the new flow's setting,
+    // so the previous flow's "on" cannot carry over while the config resolves.
+    if (isChanged('flowId')) {
+      this.setValidationTrackingEnabled(false);
+    }
     const flowConfig = await this.getFlowConfig();
+    this.#syncValidationTracking(flowConfig, executionId, isChanged);
     const projectConfig = await this.getProjectConfig();
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow
@@ -775,20 +871,25 @@ class DescopeWc extends BaseDescopeWc {
         ));
         clientScripts.push(...(conditionScripts || []));
       } else if (flowConfig.condition) {
-        ({ startScreenId, conditionInteractionId } = calculateCondition(
-          flowConfig.condition,
-          {
+        ({ startScreenId, startScreenName, conditionInteractionId } =
+          calculateCondition(flowConfig.condition, {
             loginId,
             code,
             token,
             abTestingKey,
             lastAuth: getLastAuth(loginId, this.loggerWrapper),
-          },
-        ));
+          }));
       } else {
         startScreenName = flowConfig.startScreenName;
         startScreenId = flowConfig.startScreenId;
       }
+
+      // Which screen the config actually renders first is only known here: with
+      // conditions, it is chosen above rather than read from the flow config.
+      // Validation errors on that screen are held until the flow starts, so the
+      // identity they carry has to be the resolved one.
+      this.#startScreenId = startScreenId;
+      this.#startScreenName = startScreenName;
 
       this.#sdkScriptsLoading = this.loadSdkScripts(clientScripts);
       if (flowConfig.fingerprintEnabled && flowConfig.fingerprintKey) {
@@ -819,6 +920,7 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           flowVersions,
           {
+            origin: this.#origin,
             ...this.formConfigValues,
             ...(code ? { exchangeCode: code, idpInitiated: true } : {}),
             ...(ssoQueryParams.descopeIdpInitiated && { idpInitiated: true }),
@@ -875,6 +977,7 @@ class DescopeWc extends BaseDescopeWc {
           token,
           exchangeCode: code,
           exchangeError,
+          origin: this.#origin,
         },
       );
       this.#handleSdkResponse(sdkResp);
@@ -1067,29 +1170,8 @@ class DescopeWc extends BaseDescopeWc {
       this.#conditionalUiAbortController?.abort();
       this.#conditionalUiAbortController = null;
 
-      let response: string;
-      let failure: string;
-      let failureReason: string;
-      let failureMessage: string;
+      const outcome = await this.#runWebauthnCeremony(action, webauthnOptions);
 
-      try {
-        response =
-          action === RESPONSE_ACTIONS.webauthnCreate
-            ? await this.sdk.webauthn.helpers.create(webauthnOptions)
-            : await this.sdk.webauthn.helpers.get(webauthnOptions);
-      } catch (e) {
-        if (e.name === 'InvalidStateError') {
-          // currently returned in Chrome when trying to register a WebAuthn device
-          // that's already registered for the user
-          this.loggerWrapper.warn('WebAuthn operation failed', e.message);
-        } else if (e.name !== 'NotAllowedError') {
-          // shouldn't happen in normal usage ('AbortError' is only when setting an AbortController)
-          this.loggerWrapper.error(e.message);
-        }
-        failure = e.name;
-        failureReason = e.reason;
-        failureMessage = e.message;
-      }
       // Call next with the transactionId and the response or failure
       const sdkResp = await this.sdk.flow.next(
         executionId,
@@ -1099,10 +1181,7 @@ class DescopeWc extends BaseDescopeWc {
         projectConfig.componentsVersion,
         {
           transactionId: webauthnTransactionId,
-          response,
-          failure,
-          failureReason,
-          failureMessage,
+          ...outcome,
         },
       );
       this.#handleSdkResponse(sdkResp);
@@ -1524,6 +1603,20 @@ class DescopeWc extends BaseDescopeWc {
       if (sdkResp.data.output && Object.keys(sdkResp.data.output).length > 0) {
         payload.flowOutput = sdkResp.data.output;
       }
+      // A flow that completes on its first submit returns here before the
+      // execution ever reaches flowState, so onFlowChange's hand-over never
+      // runs. Do it here, or validation errors held from the start screen are
+      // dropped when the component tears down.
+      this.setValidationTrackingExecution(sdkResp.data.executionId);
+      // the flow is done, so a stored OIDC context has served its purpose and
+      // must not leak into an unrelated visit later in this tab.
+      // Note: an OIDC flow does NOT reach here. It ends on the RESPONSE_ACTIONS
+      // .redirect branch in onFlowChange with a non-completed status, so
+      // its entry is left to expire on the 10 minute cap instead. Measured
+      // against the local stack, not assumed. That is safe because the backend
+      // deletes the state_id on success, so a later restore of it cannot
+      // authorize anything, it only errors.
+      clearSsoQueryParams(this.projectId, this.flowId);
       this.#dispatch('success', payload);
       return;
     }
@@ -1811,7 +1904,9 @@ class DescopeWc extends BaseDescopeWc {
         this.updateUsernameAnchor();
 
         if (this.validateOnBlur) {
-          handleReportValidityOnBlur(rootElement);
+          handleReportValidityOnBlur(rootElement, (input) =>
+            this.trackValidationErrors([input], this.#currentFlowContext),
+          );
         }
 
         // we need to wait for all components to render before we can set its value
@@ -1854,20 +1949,97 @@ class DescopeWc extends BaseDescopeWc {
     this.#handlePageSwitchTransition(injectNextPage);
   }
 
+  // The start screen is rendered from config.json before the flow starts, so
+  // the flow state has no screen id yet. Set in onFlowChange once conditions
+  // have picked the screen, because #currentFlowContext is sync and cannot
+  // resolve them itself.
+  #startScreenId?: string;
+
+  #startScreenName?: string;
+
+  // Everything the validation-tracking mixin needs from a flow change, in one
+  // place: whether this flow wants it, which screen the config renders first,
+  // and the moment an execution finally exists to attribute held events to.
+  #syncValidationTracking(
+    flowConfig: FlowConfig,
+    executionId: string,
+    isChanged: IsChanged<FlowState>,
+  ) {
+    // Per-flow switch from config.json. Absent means off.
+    this.setValidationTrackingEnabled(
+      !!flowConfig.clientValidationTrackingEnabled,
+    );
+    // The start screen renders before the flow starts, so errors there are
+    // held until an execution exists. This is that moment.
+    if (executionId && isChanged('executionId')) {
+      this.setValidationTrackingExecution(executionId);
+    }
+  }
+
+  // Where a client-side validation event happened (passed to
+  // trackValidationErrors at capture time). Validation only happens on screens,
+  // so the screen is the location. Private: only this component reads it.
+  //
+  // screenName is the screen task's name - what the flow author sees on the
+  // node and the end user sees as the screen. There is no separate screen-name
+  // field in the model; config.json's startScreenName is the same task name.
+  get #currentFlowContext() {
+    const flow = this.flowState?.current;
+    // With no live execution we are on the config-rendered start screen. The
+    // flow state can still hold the previous screen here - a restart and a
+    // flow-id change clear only executionId/stepId - so the config wins.
+    if (!flow?.executionId) {
+      return {
+        executionId: undefined,
+        screenId: this.#startScreenId ?? flow?.screenId,
+        screenName:
+          this.#startScreenName ??
+          (this.stepState?.current?.stepName || flow?.stepName),
+      };
+    }
+    return {
+      executionId: flow.executionId,
+      screenId: flow.screenId,
+      screenName: this.stepState?.current?.stepName || flow.stepName,
+    };
+  }
+
+  get #origin() {
+    return this.nativeOptions?.origin || window.location.origin;
+  }
+
   #validateInputs() {
     let isValid = true;
+    const invalidInputs: HTMLInputElement[] = [];
     Array.from(this.shadowRoot.querySelectorAll('*[name]'))
       .reverse()
       .forEach((input: HTMLInputElement) => {
-        // We are hiding conditional components so we don't want to validate them
-        if (input.localName === 'slot' || input.classList.contains('hidden')) {
+        // We are hiding conditional components so we don't want to validate
+        // them. The condition can target the input itself or a container
+        // around it, so this looks up the tree as well as at the element.
+        if (
+          input.localName === 'slot' ||
+          isHiddenByCondition(input, this.contentRootElement)
+        ) {
           return;
         }
         input.reportValidity?.();
+        // Collect from the validity reportValidity just computed - avoids an
+        // extra checkValidity() call (and the extra `invalid` event it fires).
+        if (input.validity && !input.validity.valid) {
+          invalidInputs.push(input);
+        }
+        // Elements that carry a `name` but cannot validate (e.g. descope-enriched-text)
+        // must not block the submit
         if (isValid) {
-          isValid = input.checkValidity?.();
+          isValid = input.checkValidity?.() ?? true;
         }
       });
+
+    // Best-effort: report the fields that failed validation on submit.
+    if (invalidInputs.length) {
+      this.trackValidationErrors(invalidInputs, this.#currentFlowContext);
+    }
 
     return isValid;
   }
@@ -1903,6 +2075,7 @@ class DescopeWc extends BaseDescopeWc {
 
   #prevPageShowListener: ((e: PageTransitionEvent) => void) | null = null;
 
+  // Returns a reset for the loading/disabled state, for the error path.
   #handleComponentsLoadingState(submitter: HTMLElement) {
     const enabledElements = Array.from(
       this.contentRootElement.querySelectorAll(
@@ -1919,6 +2092,14 @@ class DescopeWc extends BaseDescopeWc {
     // available.
     const screenClientScripts =
       this.flowState.current?.screenState?.clientScripts || [];
+
+    // Set in the click task - from the nextRequestStatus subscriber below they
+    // land a task late and a second submit slips through. #handleSubmit reads
+    // them back as its guard: the components only refuse a repeat via click(),
+    // and these live on the screen, so they also cover the gap after next()
+    // resolves, while the old screen is still mounted.
+    submitter.setAttribute('loading', 'true');
+    enabledElements.forEach((ele) => ele.setAttribute('disabled', 'true'));
 
     // reset the in-flight loading/disabled state set when the next request started
     const resetComponentsState = () => {
@@ -2006,14 +2187,10 @@ class DescopeWc extends BaseDescopeWc {
     const unsubscribeNextRequestStatus = this.nextRequestStatus.subscribe(
       ({ isLoading }) => {
         if (isLoading) {
+          // the loading/disabled attributes are already set, at click time
           this.addEventListener('popupclosed', restoreComponentsState, {
             once: true,
           });
-          // if the next request is loading, we want to set loading state on the submitter, and disable all other enabled elements
-          submitter.setAttribute('loading', 'true');
-          enabledElements.forEach((ele) =>
-            ele.setAttribute('disabled', 'true'),
-          );
         } else {
           this.nextRequestStatus.unsubscribe(unsubscribeNextRequestStatus);
           // If the flow completed successfully, no new screen will render to
@@ -2030,6 +2207,8 @@ class DescopeWc extends BaseDescopeWc {
         }
       },
     );
+
+    return resetComponentsState;
   }
 
   #updateExternalInputs() {
@@ -2073,35 +2252,50 @@ class DescopeWc extends BaseDescopeWc {
   #handleSubmit = leadingDebounce(
     async (submitter: HTMLElement, next: NextFn, screenId: string) => {
       if (
+        submitter.getAttribute('loading') === 'true' ||
+        submitter.getAttribute('disabled') === 'true'
+      ) {
+        this.loggerWrapper.debug('Submit already in flight, ignoring');
+        return;
+      }
+
+      if (
         submitter.getAttribute('formnovalidate') === 'true' ||
         this.#validateInputs()
       ) {
         const submitterId = submitter?.getAttribute('id');
         this.#trackLastUsed(submitter, submitterId, screenId);
 
-        this.#handleComponentsLoadingState(submitter);
+        const resetComponentsState =
+          this.#handleComponentsLoadingState(submitter);
 
-        const formData = await this.#getFormData();
-        const eleDescopeAttrs = getElementDescopeAttributes(submitter);
+        try {
+          const formData = await this.#getFormData();
+          const eleDescopeAttrs = getElementDescopeAttributes(submitter);
 
-        this.nextRequestStatus.update({ isLoading: true });
+          this.nextRequestStatus.update({ isLoading: true });
 
-        const actionArgs = {
-          ...eleDescopeAttrs,
-          ...formData,
-          // 'origin' is required to start webauthn. For now we'll add it to every request.
-          // When running in a native flow in a Android app the webauthn authentication
-          // is performed in the native app, so a custom origin needs to be injected
-          // into the webauthn request data.
-          origin: this.nativeOptions?.origin || window.location.origin,
-        };
+          const actionArgs = {
+            ...eleDescopeAttrs,
+            ...formData,
+            // 'origin' is required to start webauthn. For now we'll add it to every request.
+            // When running in a native flow in a Android app the webauthn authentication
+            // is performed in the native app, so a custom origin needs to be injected
+            // into the webauthn request data.
+            origin: this.#origin,
+          };
 
-        const res = await next(submitterId, actionArgs);
+          const res = await next(submitterId, actionArgs);
 
-        this.nextRequestStatus.update({ isLoading: false });
+          this.nextRequestStatus.update({ isLoading: false });
 
-        this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
-        this.storeCredentials(formData);
+          this.captureLastSubmittedLoginId(formData, res?.data?.executionId);
+          this.storeCredentials(formData);
+        } catch (e) {
+          // no new screen will render, so clear the loading state here
+          resetComponentsState();
+          throw e;
+        }
       }
     },
   );

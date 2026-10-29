@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import mockTheme from '../test/mocks/mockTheme';
 import { apiPaths } from '../src/lib/widget/api/apiPaths';
@@ -28,8 +29,6 @@ const configContent = {
 const apiPath = (prop: 'accesskey' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 2000;
 const cleartext = 'aaaaaaaaaaaaaa';
 
 // Reads `.value` from a custom element matching `selector` anywhere in the
@@ -59,6 +58,10 @@ const readShadowDomElementValue = (
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await listenForWidgetReady(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -160,9 +163,8 @@ test.describe('widget', () => {
       route.fulfill({ json: { componentsState: {} } }),
     );
 
-    await page.goto(`http://localhost:${widgetPort}`, {
-      waitUntil: 'networkidle',
-    });
+    await page.goto(`http://localhost:${widgetPort}`);
+    await waitForWidgetReady(page);
   });
 
   test('access keys table', async ({ page }) => {
@@ -180,8 +182,6 @@ test.describe('widget', () => {
   });
 
   test('create access key', async ({ page, browserName }) => {
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     const openAddAccessKeyModalButton = page
       .getByTestId('create-access-key-trigger')
       .first();
@@ -189,10 +189,10 @@ test.describe('widget', () => {
     // open add access key modal
     await openAddAccessKeyModalButton.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
+    // web-first, so it retries while the modal finishes rendering rather than
+    // reading the value once
     const expirationInput = page.getByText('Expiration');
-    expect(await expirationInput.last().inputValue()).toEqual('30 Days');
+    await expect(expirationInput.last()).toHaveValue('30 Days');
 
     // submit name
     const createAccessKeyNameInput = page.getByText('Name');
@@ -262,32 +262,26 @@ test.describe('widget', () => {
       .getByTestId('delete-access-keys-modal-submit')
       .first();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // delete button initial state is disabled
-    expect(deleteAccessKeyTrigger).toBeDisabled();
+    await expect(deleteAccessKeyTrigger).toBeDisabled();
 
     // select all items
     await page.locator('descope-checkbox').first().click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // delete button is enabled on selection
-    expect(deleteAccessKeyTrigger).toBeEnabled();
+    await expect(deleteAccessKeyTrigger).toBeEnabled();
 
     // delete access keys
     await deleteAccessKeyTrigger.click();
 
     // show delete access keys modal
     const deleteAccessKeyModal = page.locator('text=Delete Access Keys');
-    expect(deleteAccessKeyModal).toBeVisible();
+    await expect(deleteAccessKeyModal).toBeVisible();
 
     // click modal delete button
     await deleteAccessKeyModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // delete modal closed
     await expect(page.locator('Delete Access Keys')).toBeHidden();
 
@@ -303,8 +297,6 @@ test.describe('widget', () => {
   });
 
   test('deactivate access keys', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const deactivateAccessKeyTrigger = await page
       .getByTestId('deactivate-access-keys-trigger')
       .first();
@@ -318,10 +310,8 @@ test.describe('widget', () => {
     // select all items
     await page.locator('descope-checkbox').first().click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // deactivate button is enabled on selection
-    expect(deactivateAccessKeyTrigger).toBeEnabled();
+    await expect(deactivateAccessKeyTrigger).toBeEnabled();
 
     // deactivate access keys
     await deactivateAccessKeyTrigger.click();
@@ -339,8 +329,6 @@ test.describe('widget', () => {
     await deactivateAccessKeyModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // deactivate modal closed
     await expect(page.locator('Deactivate Access Keys')).toBeHidden();
 
@@ -356,8 +344,6 @@ test.describe('widget', () => {
   });
 
   test('activate access keys', async ({ page }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const activateAccessKeyTrigger = page
       .getByTestId('activate-access-keys-trigger')
       .first();
@@ -374,8 +360,6 @@ test.describe('widget', () => {
     // select all items
     await page.locator('descope-checkbox').first().click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // activate button is enabled on selection
     await expect(activateAccessKeyTrigger).toBeEnabled();
 
@@ -389,8 +373,6 @@ test.describe('widget', () => {
     await activateAccessKeyModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // activate modal closed
     await expect(page.locator('Activate Access Keys')).toBeHidden();
 
@@ -406,8 +388,6 @@ test.describe('widget', () => {
   });
 
   test('search access keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
-
     // Handle all search requests (initial empty-text mount call AND the user-typed
     // call). Branch on `text` to filter — asserting inside the handler would race
     // with the initial mount call where text is "".
@@ -453,20 +433,31 @@ test.describe('widget', () => {
     // only search results shown in grid - wait longer for UI to update
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].name}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     await expect(
       page.locator(`text=${mockAccessKeys.keys[1].boundUserId}`).first(),
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
 
     // The unfiltered key is no longer in the grid — proves the filter actually
     // ran on the typed text (not just that the response renders).
     await expect(
       page.locator(`text=${mockAccessKeys.keys[0].name}`).first(),
-    ).toBeHidden({ timeout: 10000 });
+    ).toBeHidden();
   });
 
   test('close notification', async ({ page }) => {
+    // Uses an error notification on purpose: a success one self-dismisses
+    // after 3s, so clicking its close button races that timer and the
+    // "closed" assertion would pass on the timer alone. Error notifications
+    // have duration 0. Success is covered by the 'delete access keys' test.
+    await page.route(apiPath('accesskey', 'deleteBatch'), async (route) =>
+      route.fulfill({
+        status: 400,
+        json: { errorDescription: 'could not delete access keys' },
+      }),
+    );
+
     const deleteAccessKeyTrigger = page
       .getByTestId('delete-access-keys-trigger')
       .first();
@@ -482,34 +473,25 @@ test.describe('widget', () => {
 
     // show delete access keys modal
     const deleteAccessKeyModal = page.locator('text=Delete Access Keys');
-    expect(deleteAccessKeyModal).toBeVisible();
+    await expect(deleteAccessKeyModal).toBeVisible();
 
     // click modal delete button
     await deleteAccessKeyModalButton.click();
 
-    // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
-    // show notification
-    await expect(
-      page.locator(
-        `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
-      ),
-    ).toBeVisible();
+    // Address the close icon by slot name, not a positional getByRole('img').
+    // It sits outside descope-notification and the vaadin card, because the
+    // component renders its content into a separate overlay.
+    const closeIcon = page.locator('[slot="close"]').last();
+    await expect(closeIcon).toBeVisible();
 
     // click close button
-    await page.getByRole('img').nth(1).click();
+    await closeIcon.click();
 
     // notification closed
-    await expect(
-      page.locator(
-        `text=${mockAccessKeys.keys.length} access keys deleted successfully`,
-      ),
-    ).toBeHidden();
+    await expect(closeIcon).toBeHidden();
   });
 
   test('deactivate access keys for non editable key', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -517,10 +499,8 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithNonEditable.keys }),
       }),
     );
-    page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.reload();
+    await waitForWidgetReady(page);
 
     const deactivateAccessKeyTrigger = page
       .getByTestId('deactivate-access-keys-trigger')
@@ -534,15 +514,12 @@ test.describe('widget', () => {
 
     // select all items
     await page.locator('descope-checkbox').first().click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     // deactivate button is disabled on selection
     await expect(deactivateAccessKeyTrigger).toBeDisabled();
   });
 
   test('activate access keys for non editable key', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -550,10 +527,8 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithNonEditable.keys }),
       }),
     );
-    page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.reload();
+    await waitForWidgetReady(page);
 
     const activateAccessKeyTrigger = page
       .getByTestId('activate-access-keys-trigger')
@@ -568,14 +543,11 @@ test.describe('widget', () => {
     // select all items
     await page.locator('descope-checkbox').first().click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // activate button is disabled on selection
     await expect(activateAccessKeyTrigger).toBeDisabled();
   });
 
   test('activate button is disabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -583,10 +555,8 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.reload();
+    await waitForWidgetReady(page);
 
     const activateAccessKeyTrigger = page
       .getByTestId('activate-access-keys-trigger')
@@ -600,14 +570,11 @@ test.describe('widget', () => {
     // select all items
     await page.locator('descope-checkbox').first().click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // activate button remains disabled for expired keys
     await expect(activateAccessKeyTrigger).toBeDisabled();
   });
 
   test('deactivate button is disabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -615,10 +582,8 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.reload();
+    await waitForWidgetReady(page);
 
     const deactivateAccessKeyTrigger = page
       .getByTestId('deactivate-access-keys-trigger')
@@ -631,8 +596,6 @@ test.describe('widget', () => {
 
     // select all items
     await page.locator('descope-checkbox').first().click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     // deactivate button remains disabled for expired keys
     await expect(deactivateAccessKeyTrigger).toBeDisabled();
@@ -648,9 +611,6 @@ test.describe('widget', () => {
         },
       }),
     );
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
       .first();
@@ -666,8 +626,6 @@ test.describe('widget', () => {
     // select a single row (.first() is the select-all header checkbox; .nth(1)
     // is the first row's checkbox)
     await page.locator('descope-checkbox').nth(1).click();
-
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
     // rotate button is enabled when exactly one active key is selected
     await expect(rotateAccessKeyTrigger).toBeEnabled();
@@ -728,9 +686,6 @@ test.describe('widget', () => {
         }),
       }),
     );
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
       .first();
@@ -742,23 +697,23 @@ test.describe('widget', () => {
 
     // pick a row + open the confirm modal
     await page.locator('descope-checkbox').nth(1).click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
     await rotateAccessKeyTrigger.click();
 
     await expect(page.locator('text=Rotate access key').first()).toBeVisible();
 
     // submit → API rejects → no reveal modal, error notification surfaces
     await rotateModalSubmitButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // The click does not await the submit handler, so check the notification
+    // first - asserting "hidden" before the rejection is handled would only
+    // prove the modal had not opened yet.
+    await expect(
+      page.locator('text=Failed to rotate access key').first(),
+    ).toBeVisible();
 
     // The "secret isn't lost" invariant: reveal modal must NOT open on failure,
     // otherwise the user would see an empty/stale cleartext input.
     await expect(page.locator('text=Access key secret rotated')).toBeHidden();
-
-    // Error notification surfaced via the withNotifications helper.
-    await expect(
-      page.locator('text=Failed to rotate access key').first(),
-    ).toBeVisible();
   });
 
   test('rotate confirm modal can be cancelled without firing the API', async ({
@@ -774,9 +729,6 @@ test.describe('widget', () => {
         },
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
       .first();
@@ -788,14 +740,16 @@ test.describe('widget', () => {
 
     // pick a row + open the confirm modal
     await page.locator('descope-checkbox').nth(1).click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
     await rotateAccessKeyTrigger.click();
 
     await expect(page.locator('text=Rotate access key').first()).toBeVisible();
 
     // cancel → modal closes, no API call, no reveal
     await rotateModalCancelButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // You cannot wait for the absence of a call, so anchor on the modal
+    // closing: by then anything the cancel could have triggered has run.
+    await expect(page.locator('text=Rotate access key').first()).toBeHidden();
 
     expect(rotateCalls).toBe(0);
     await expect(page.locator('text=Access key secret rotated')).toBeHidden();
@@ -804,8 +758,6 @@ test.describe('widget', () => {
   test('rotate button is disabled when multiple keys are selected', async ({
     page,
   }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
       .first();
@@ -818,14 +770,11 @@ test.describe('widget', () => {
     // select-all checkbox (selects all 3 keys)
     await page.locator('descope-checkbox').first().click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // rotate requires a single selection — stays disabled with multi-select
     await expect(rotateAccessKeyTrigger).toBeDisabled();
   });
 
   test('rotate button is disabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -833,10 +782,8 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.reload();
+    await waitForWidgetReady(page);
 
     const rotateAccessKeyTrigger = page
       .getByTestId('rotate-access-keys-trigger')
@@ -849,14 +796,11 @@ test.describe('widget', () => {
     // select first row's checkbox
     await page.locator('descope-checkbox').nth(1).click();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // rotate stays disabled for expired keys
     await expect(rotateAccessKeyTrigger).toBeDisabled();
   });
 
   test('delete button is still enabled for expired keys', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
     await page.route(apiPath('accesskey', 'search'), async (route) =>
       route.fulfill({
         status: 200,
@@ -864,10 +808,8 @@ test.describe('widget', () => {
         body: JSON.stringify({ keys: mockAccessKeysWithExpired.keys }),
       }),
     );
-    page.reload();
-    await page.waitForLoadState('networkidle');
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await page.reload();
+    await waitForWidgetReady(page);
 
     const deleteAccessKeyTrigger = page
       .getByTestId('delete-access-keys-trigger')
@@ -880,8 +822,6 @@ test.describe('widget', () => {
 
     // select all items
     await page.locator('descope-checkbox').first().click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     // delete button is enabled even for expired keys
     await expect(deleteAccessKeyTrigger).toBeEnabled();

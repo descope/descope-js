@@ -44,6 +44,7 @@ export type {
   JWTResponse,
   FlowStartOptions,
   FlowNextOptions,
+  UserFamily,
 } from '@descope/core-js-sdk';
 export type { OneTapConfig } from './sdk/fedcm';
 export type { CookieConfig } from './enhancers/withPersistTokens/types';

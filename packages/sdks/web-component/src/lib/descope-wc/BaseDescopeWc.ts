@@ -36,6 +36,7 @@ import {
   componentConditionsMixin,
   duplicateFlowWarningMixin,
   passwordManagerMixin,
+  validationTrackingMixin,
 } from '../mixins';
 import {
   AutoFocusOptions,
@@ -63,6 +64,7 @@ const BaseClass = compose(
   passwordManagerMixin,
   injectStyleMixin,
   telemetryMixin,
+  validationTrackingMixin,
 )(HTMLElement);
 
 // this base class is responsible for WC initialization
@@ -709,7 +711,7 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
       ssoQueryParams,
-    } = handleUrlParams(this.flowId, this.loggerWrapper);
+    } = handleUrlParams(this.flowId, this.projectId, this.loggerWrapper);
 
     // we want to update the state when user clicks on back in the browser
     window.addEventListener('popstate', this.#eventsCbRefs.popstate);

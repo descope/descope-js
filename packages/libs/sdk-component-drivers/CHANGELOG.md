@@ -2,6 +2,28 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.18.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.17.1...sdk-component-drivers-0.18.0) (2026-09-29)
+
+
+### Features
+
+* **tenant-profile-widget:** show and edit the authentication-only classification ([#1495](https://github.com/descope/descope-js/issues/1495)) ([f5b9e61](https://github.com/descope/descope-js/commit/f5b9e61c3c0d68545da11493699c989d4e2dea7d)), closes [descope/etc#18650](https://github.com/descope/etc/issues/18650) [descope/backend#2713](https://github.com/descope/backend/issues/2713) [descope/web-components-ui#1108](https://github.com/descope/web-components-ui/issues/1108)
+
+## [0.17.1](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.17.0...sdk-component-drivers-0.17.1) (2026-09-27)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.10.1`
+## [0.17.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.16.0...sdk-component-drivers-0.17.0) (2026-09-16)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.10.0`
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+
 ## [0.16.0](https://github.com/descope/descope-js/compare/sdk-component-drivers-0.15.0...sdk-component-drivers-0.16.0) (2026-09-07)
 
 

@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.10.1](https://github.com/descope/descope-js/compare/sdk-helpers-0.10.0...sdk-helpers-0.10.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* **widgets:** escape API error text before it reaches innerHTML RELEASE ([#1496](https://github.com/descope/descope-js/issues/1496)) ([89d3c1d](https://github.com/descope/descope-js/commit/89d3c1d220f5125d7ffa88ddd4be63443a00c42f)), closes [descope/etc#18718](https://github.com/descope/etc/issues/18718) [#39](https://github.com/descope/descope-js/issues/39)
+
+## [0.10.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.9.0...sdk-helpers-0.10.0) (2026-09-16)
+
+
+### Features
+
+* **web-component:** add lazy-start to hold a flow's start call ([#1488](https://github.com/descope/descope-js/issues/1488)) ([4adcf53](https://github.com/descope/descope-js/commit/4adcf530948a43f22a2652e4d108a56c6593dcd2))
+
 ## [0.9.0](https://github.com/descope/descope-js/compare/sdk-helpers-0.8.0...sdk-helpers-0.9.0) (2026-06-28)
 
 

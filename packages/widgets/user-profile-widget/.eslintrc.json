@@ -29,7 +29,8 @@
     "jest-dom",
     "jest",
     "jest-formatting",
-    "no-only-tests"
+    "no-only-tests",
+    "playwright"
   ],
   "settings": {
     "import/parsers": {
@@ -42,20 +43,30 @@
     }
   },
   "rules": {
-    // override airbnb-typescript rule
     "react/jsx-filename-extension": 0,
     "semi": [2, "always"],
-    "no-tabs": ["error", { "allowIndentationTabs": true }],
+    "no-tabs": [
+      "error",
+      {
+        "allowIndentationTabs": true
+      }
+    ],
     "@typescript-eslint/indent": ["off"],
     "quotes": [
       "error",
       "single",
-      { "avoidEscape": true, "allowTemplateLiterals": true }
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
     ],
     "@typescript-eslint/quotes": [
       "error",
       "single",
-      { "avoidEscape": true, "allowTemplateLiterals": true }
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
     ],
     "@typescript-eslint/comma-dangle": ["off"],
     "comma-dangle": ["off"],
@@ -83,5 +94,29 @@
         "devDependencies": ["!./src/**/*"]
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["e2e/**/*.ts"],
+      "rules": {
+        "playwright/missing-playwright-await": "error",
+        "@typescript-eslint/no-floating-promises": "error",
+        "playwright/prefer-web-first-assertions": "error",
+        "playwright/no-wait-for-timeout": "error",
+        "playwright/no-networkidle": "error",
+        "no-console": "off",
+        "import/no-extraneous-dependencies": "off",
+        "no-restricted-syntax": "off",
+        "no-await-in-loop": "off",
+        "prefer-template": "off",
+        "no-plusplus": "off",
+        "max-classes-per-file": "off",
+        "no-return-assign": "off",
+        "jest-dom/prefer-to-have-value": "off",
+        "jest-dom/prefer-enabled-disabled": "off",
+        "jest-dom/prefer-checked": "off",
+        "jest-dom/prefer-to-have-attribute": "off"
+      }
+    }
+  ]
 }

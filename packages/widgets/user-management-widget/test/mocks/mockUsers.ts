@@ -50,6 +50,8 @@ export const mockUsers = [
     verifiedPhone: false,
     roleNames: ['Tenant Admin', 'Role 1'],
     status: 'disabled',
+    lockReason: 'password',
+    tempLockExpiration: 0,
     editable: true,
     externalIds: ['externalId2@externalId2.com'],
     picture: '',

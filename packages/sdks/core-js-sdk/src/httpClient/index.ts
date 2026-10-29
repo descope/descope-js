@@ -130,7 +130,16 @@ const createHttpClient = ({
       ? hooks.beforeRequest(config)
       : config;
 
-    const { path, body, headers, queryParams, method, token } = requestConfig;
+    const {
+      path,
+      body,
+      headers,
+      queryParams,
+      method,
+      token,
+      keepalive,
+      disableRetry,
+    } = requestConfig;
 
     const serializedBody = serializeBody(body);
     const requestInit: RequestInit = {
@@ -143,6 +152,10 @@ const createHttpClient = ({
       ),
       method,
       body: serializedBody,
+      // only set when asked - fetch treats keepalive:false as a real value
+      ...(keepalive ? { keepalive: true } : {}),
+      // read back by fetchWithRetries; not a standard RequestInit field
+      ...(disableRetry ? { disableRetry: true } : {}),
     };
 
     // On edge runtimes like Cloudflare, the fetch implementation does not support credentials
@@ -194,7 +207,10 @@ const createHttpClient = ({
   };
 
   return {
-    get: (path: string, { headers, queryParams, token } = {}) =>
+    get: (
+      path: string,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -202,8 +218,14 @@ const createHttpClient = ({
         body: undefined,
         method: HTTPMethods.get,
         token,
+        keepalive,
+        disableRetry,
       }),
-    post: (path, body, { headers, queryParams, token } = {}) =>
+    post: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -211,8 +233,14 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.post,
         token,
+        keepalive,
+        disableRetry,
       }),
-    patch: (path, body, { headers, queryParams, token } = {}) =>
+    patch: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -220,8 +248,14 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.patch,
         token,
+        keepalive,
+        disableRetry,
       }),
-    put: (path, body, { headers, queryParams, token } = {}) =>
+    put: (
+      path,
+      body,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -229,8 +263,13 @@ const createHttpClient = ({
         body,
         method: HTTPMethods.put,
         token,
+        keepalive,
+        disableRetry,
       }),
-    delete: (path, { headers, queryParams, token } = {}) =>
+    delete: (
+      path,
+      { headers, queryParams, token, keepalive, disableRetry } = {},
+    ) =>
       sendRequest({
         path,
         headers,
@@ -238,6 +277,8 @@ const createHttpClient = ({
         body: undefined,
         method: HTTPMethods.delete,
         token,
+        keepalive,
+        disableRetry,
       }),
     hooks,
     buildUrl: (path, queryParams) => {

@@ -91,7 +91,7 @@ describe('web-component errors', () => {
           '',
           '1.2.3',
           flattenConfigFlowVersions(fixtures.configContent.flows),
-          {},
+          { origin: 'http://localhost' },
         ),
       { timeout: WAIT_TIMEOUT },
     );
@@ -114,7 +114,7 @@ describe('web-component errors', () => {
           '',
           '1.2.3',
           flattenConfigFlowVersions(fixtures.configContent.flows),
-          {},
+          { origin: 'http://localhost' },
         ),
       { timeout: WAIT_TIMEOUT },
     );

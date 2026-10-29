@@ -78,10 +78,15 @@ describe('web-component webauthn', () => {
       () => expect(sdk.webauthn.helpers.create).toHaveBeenCalled(),
       { timeout: WAIT_TIMEOUT },
     );
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
-      transactionId: 't1',
-      response: 'webauthn-response',
-    });
+    // the reply goes out a tick after the browser call settles
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+          transactionId: 't1',
+          response: 'webauthn-response',
+        }),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('Should search of existing credentials when action type is "webauthnGet"', async () => {
@@ -106,10 +111,14 @@ describe('web-component webauthn', () => {
     await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
-      transactionId: 't1',
-      response: 'webauthn-response-get',
-    });
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
+          transactionId: 't1',
+          response: 'webauthn-response-get',
+        }),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('Should handle canceling webauthn', async () => {
@@ -137,12 +146,16 @@ describe('web-component webauthn', () => {
     await waitFor(() => expect(sdk.webauthn.helpers.get).toHaveBeenCalled(), {
       timeout: WAIT_TIMEOUT,
     });
-    expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
-      transactionId: 't1',
-      failure: 'NotAllowedError',
-      failureReason: 'not_allowed',
-      failureMessage: 'The operation either timed out or was not allowed.',
-    });
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
+          transactionId: 't1',
+          failure: 'NotAllowedError',
+          failureReason: 'not_allowed',
+          failureMessage: 'The operation either timed out or was not allowed.',
+        }),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 });
 

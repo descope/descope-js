@@ -41,10 +41,12 @@ export type {
   JWTResponse,
   LoginOptions,
   PasskeyOptions,
+  PhoneEnchantedLinkResponse,
   ResponseData,
   SdkResponse,
   TOTPResponse,
   URLResponse,
+  UserFamily,
   UserHistoryResponse,
   UserResponse,
 } from './sdk/types';

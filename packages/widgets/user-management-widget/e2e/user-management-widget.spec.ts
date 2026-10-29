@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { listenForWidgetReady, waitForWidgetReady } from '@descope/e2e-helpers';
 import { componentsPort, widgetPort } from '../playwright.config';
 import {
   mockUsers,
@@ -35,8 +36,10 @@ const configContent = {
 const apiPath = (prop: 'user' | 'tenant', path: string) =>
   `**/*${apiPaths[prop][path]}?tenant=*`;
 
-const MODAL_TIMEOUT = 500;
-const STATE_TIMEOUT = 2000;
+// Above the global expect ceiling on purpose: ModalDriver.open() awaits
+// beforeOpen, which fetches the config and both role lists, so opening a user
+// modal is several round trips rather than a repaint.
+const MODAL_OPEN_TIMEOUT = 30_000;
 
 const getTableBodyCellContentLocatorByIndex = async (
   page: Page,
@@ -53,6 +56,29 @@ const getTableBodyCellContentLocatorByIndex = async (
     .evaluate((e: HTMLSlotElement) => e.name);
 
   return page.locator(`vaadin-grid-cell-content[slot="${slotName}"]`);
+};
+
+/**
+ * vaadin-grid recycles its cell-content elements and rewrites their slot names
+ * as it renders, so a slot resolved a moment ago can already belong to a
+ * different cell - the click then hangs in "scrolling into view if needed"
+ * until the test times out. Re-resolve the slot and retry the click as one
+ * unit. Only used where a single click is intended, since toPass may run the
+ * body more than once.
+ */
+const clickTableBodyCellByIndex = async (
+  page: Page,
+  rowIdx: number,
+  columnIdx: number,
+) => {
+  await expect(async () => {
+    const cell = await getTableBodyCellContentLocatorByIndex(
+      page,
+      rowIdx,
+      columnIdx,
+    );
+    await cell.click({ timeout: 5_000 });
+  }).toPass({ timeout: 20_000 });
 };
 
 const getTableHeadCellContentLocatorByIndex = async (
@@ -75,6 +101,10 @@ const getTableHeadCellContentLocatorByIndex = async (
 
 test.describe('widget', () => {
   test.beforeEach(async ({ page }) => {
+    // Watches for the widget's `ready` event so tests can wait for the widget
+    // to finish loading instead of sleeping. Must run before page.goto().
+    await listenForWidgetReady(page);
+
     await page.addInitScript((port) => {
       window.localStorage.setItem(
         'base.ui.components.url',
@@ -205,7 +235,7 @@ test.describe('widget', () => {
     );
 
     await page.goto(`http://localhost:${widgetPort}`);
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
   });
 
   test('users table', async ({ page }) => {
@@ -228,8 +258,6 @@ test.describe('widget', () => {
     await page.route(apiPath('user', 'status'), async (route) =>
       route.fulfill({ json: { user: mockDisabledUser } }),
     );
-
-    await page.waitForTimeout(STATE_TIMEOUT);
 
     const createUserTrigger = page
       .locator('descope-button')
@@ -272,8 +300,6 @@ test.describe('widget', () => {
     await NonEditableUserCheckbox.click();
 
     // wait for widget state
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     await expect(createUserTrigger).toBeEnabled();
     await expect(editUserTrigger).toBeDisabled();
     await expect(enableUserTrigger).toBeDisabled();
@@ -301,12 +327,7 @@ test.describe('widget', () => {
     await editableUserCheckbox.click();
 
     // select disabled and editable user
-    const disabledUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await disabledUserCheckbox.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     await expect(createUserTrigger).toBeEnabled();
     await expect(editUserTrigger).toBeEnabled();
@@ -323,7 +344,12 @@ test.describe('widget', () => {
     // open add user modal
     await openAddUserModalButton.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // Wait for something inside the modal: without this, fill() can sit on an
+    // input that exists but is still hidden - the create and edit modals are
+    // both built at init and both carry a "Login ID" field.
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     const createUserLoginIdInput = page.getByLabel('Login Id').first();
     const createUserEmailInput = page.getByLabel('Email').first();
@@ -356,20 +382,17 @@ test.describe('widget', () => {
       .getByTestId('edit-user-trigger')
       .first();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select user
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     // open add user modal
     await openEditUserModalButton.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // the modal's content is fetched separately from the widget's own init, so
+    // wait for something inside it rather than assuming it is open
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     const editUserEmailInput = page.getByLabel('Email').last();
     const editUserNameInput = page.getByLabel('Name').last();
@@ -377,7 +400,9 @@ test.describe('widget', () => {
     const editUserRolesInput = page.getByLabel('Roles').last();
 
     // clear previous email
-    await editUserEmailInput.evaluate((e: HTMLInputElement) => (e.value = ''));
+    await editUserEmailInput.evaluate((e: HTMLInputElement) => {
+      e.value = '';
+    });
     // edit email
     await editUserEmailInput.fill(updatedUser.email);
 
@@ -419,19 +444,17 @@ test.describe('widget', () => {
       .getByTestId('edit-user-trigger')
       .first();
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select user
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     await openEditUserModalButton.click();
 
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // page.evaluate does not auto-wait, so the modal has to be open first.
+    // Wait on the modal rather than on descope-phone-field: several modals
+    // carry one, and the first in document order sits in a closed modal.
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     await page.evaluate(() => {
       const phoneField = document.querySelector(
@@ -459,12 +482,7 @@ test.describe('widget', () => {
     // delete button is enabled on selection (even for non editable user)
     await expect(deleteUserTrigger).toBeEnabled();
 
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      3,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 3, 0);
 
     // delete button is enabled on selection
     await expect(deleteUserTrigger).toBeEnabled();
@@ -480,8 +498,6 @@ test.describe('widget', () => {
     await deleteUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // delete modal closed
     await expect(page.locator('Delete Users')).toBeHidden();
 
@@ -511,15 +527,8 @@ test.describe('widget', () => {
     await expect(disableUserTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select first user (status: active)
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     // disable user button is enabled on selection
     await expect(disableUserTrigger).toBeEnabled();
@@ -535,8 +544,6 @@ test.describe('widget', () => {
     await disableUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // disable modal closed
     await expect(page.locator('Disable')).toBeHidden();
 
@@ -561,15 +568,8 @@ test.describe('widget', () => {
     await expect(enableUserTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select second user (status: disabled)
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     // enable user button is enabled on selection
     await expect(enableUserTrigger).toBeEnabled();
@@ -585,8 +585,6 @@ test.describe('widget', () => {
     await enableUserModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // enable modal closed
     await expect(page.locator('Activate')).toBeHidden();
 
@@ -611,17 +609,8 @@ test.describe('widget', () => {
     await expect(removePasskeyTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select second user
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
-
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     // enable user button is enabled on selection
     await expect(removePasskeyTrigger).toBeEnabled();
@@ -637,8 +626,6 @@ test.describe('widget', () => {
     await removePasskeyModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // enable modal closed
     await expect(page.locator('Remove passkey for')).toBeHidden();
 
@@ -666,15 +653,8 @@ test.describe('widget', () => {
     await expect(resetPasswordTrigger).toBeDisabled();
 
     // wait for widget state
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     // select second user (status: active)
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 1, 0);
 
     // enable user button is enabled on selection
     await expect(resetPasswordTrigger).toBeEnabled();
@@ -689,8 +669,6 @@ test.describe('widget', () => {
     await resetPasswordModalButton.click();
 
     // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // reset password modal closed
     await expect(resetPasswordModalButton).toBeHidden();
 
@@ -702,7 +680,8 @@ test.describe('widget', () => {
     const generatedPasswordInput = page
       .getByPlaceholder('Generated password')
       .last();
-    expect(await generatedPasswordInput.inputValue()).toEqual(cleartext);
+    // web-first, so it retries while the password lands in the field
+    await expect(generatedPasswordInput).toHaveValue(cleartext);
 
     // click modal button
     const closeGeneratedPasswordButton = page
@@ -722,7 +701,6 @@ test.describe('widget', () => {
 
   test('search users', async ({ page }) => {
     test.setTimeout(60_000);
-    await page.waitForLoadState('networkidle');
 
     // Set up route handler - fulfill all search requests; filter on mockSearchString
     await page.route(apiPath('user', 'search'), async (route) => {
@@ -736,37 +714,30 @@ test.describe('widget', () => {
       });
     });
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const searchInput = page
       .getByTestId('search-input')
       .locator('input')
       .first();
 
-    await searchInput.waitFor({ state: 'visible' });
-
     // focus search input
     await searchInput.focus();
 
-    // Trigger search by typing (simulates user behavior more accurately)
-    await searchInput.fill('mockSearchString');
-
-    // Register before the action so the response isn't missed
+    // Register the wait before typing - fill() fires the `input` the widget
+    // listens on, and a wait registered after it can miss the response.
     const searchResponsePromise = page.waitForResponse(
       (response) =>
         response.url().includes(apiPaths.user.search) &&
         response.request().postDataJSON()?.text === 'mockSearchString',
     );
 
-    // Trigger search with Enter key to ensure it fires
-    await searchInput.press('Enter');
+    await searchInput.fill('mockSearchString');
 
     await searchResponsePromise;
 
     // only search results shown in grid
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('filter users by status', async ({ page }) => {
@@ -776,7 +747,7 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     // Set up route handler — fulfill all search requests; payload is asserted via
     // the waitForResponse predicate below.
@@ -793,15 +764,9 @@ test.describe('widget', () => {
         }),
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    // Dispatch the filter-apply event directly on the descope-filter element —
-    // we don't drive the popover UI in unit-style e2e since the popover's
-    // operator/value combos require multi-step click sequences and the wire
-    // shape is what we want to assert here.
+    // Dispatch filter-apply directly rather than driving the popover UI - the
+    // request shape is what this asserts.
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const searchResponsePromise = page.waitForResponse(
       (response) =>
@@ -830,7 +795,7 @@ test.describe('widget', () => {
     // Only filtered users shown in grid.
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('filter users by name sends a searchFields LIKE query', async ({
@@ -842,7 +807,7 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     // Assert the wire shape of the search request; never hits a real backend.
     await page.route(apiPath('user', 'search'), async (route) => {
@@ -860,11 +825,7 @@ test.describe('widget', () => {
         }),
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const searchResponsePromise = page.waitForResponse((response) => {
       if (!response.url().includes(apiPaths.user.search)) return false;
@@ -903,7 +864,7 @@ test.describe('widget', () => {
 
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('filter users by roles', async ({ page }) => {
@@ -913,7 +874,7 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     await page.route(apiPath('user', 'search'), async (route) => {
       const { roleNames } = route.request().postDataJSON();
@@ -928,11 +889,7 @@ test.describe('widget', () => {
         }),
       });
     });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const searchResponsePromise = page.waitForResponse(
       (response) =>
@@ -964,7 +921,7 @@ test.describe('widget', () => {
 
     await expect(
       page.locator(`text=${mockUsers[0]['loginIds'][0]}`).first(),
-    ).toBeHidden({ timeout: 20000 });
+    ).toBeHidden();
   });
 
   test('clearing the filter sends a search with no filter fields', async ({
@@ -976,20 +933,16 @@ test.describe('widget', () => {
       route.fulfill({ body: rootMockWithFilter }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
-    await page.route(apiPath('user', 'search'), async (route) => {
-      return route.fulfill({
+    await page.route(apiPath('user', 'search'), async (route) =>
+      route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ users: mockUsers }),
-      });
-    });
-
-    await page.waitForTimeout(STATE_TIMEOUT);
-
+      }),
+    );
     const filter = page.locator('descope-filter').first();
-    await filter.waitFor({ state: 'attached' });
 
     const clearResponsePromise = page.waitForResponse(
       (response) =>
@@ -1012,6 +965,17 @@ test.describe('widget', () => {
   });
 
   test('close notification', async ({ page }) => {
+    // Uses an error notification on purpose: a success one self-dismisses
+    // after 3s, so clicking its close button races that timer and the
+    // "closed" assertion would pass on the timer alone. Error notifications
+    // have duration 0. Success is covered by the 'delete users' test.
+    await page.route(apiPath('user', 'deleteBatch'), async (route) =>
+      route.fulfill({
+        status: 400,
+        json: { errorDescription: 'could not delete users' },
+      }),
+    );
+
     const deleteUserTrigger = page.getByTestId('delete-users-trigger').first();
     const deleteUserModalButton = page
       .getByTestId('delete-users-modal-submit')
@@ -1021,8 +985,7 @@ test.describe('widget', () => {
     const selectAll = await getTableHeadCellContentLocatorByIndex(page, 0);
     await selectAll.click();
 
-    const lastUser = await getTableBodyCellContentLocatorByIndex(page, 3, 0);
-    await lastUser.click();
+    await clickTableBodyCellByIndex(page, 3, 0);
 
     // delete users
     await deleteUserTrigger.click();
@@ -1034,21 +997,17 @@ test.describe('widget', () => {
     // click modal delete button
     await deleteUserModalButton.click();
 
-    // wait for modal to close
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
-    // show notification
-    await expect(
-      page.locator(`text=${mockUsers.length - 1} users deleted successfully`),
-    ).toBeVisible();
+    // Address the close icon by slot name, not a positional getByRole('img').
+    // It sits outside descope-notification and the vaadin card, because the
+    // component renders its content into a separate overlay.
+    const closeIcon = page.locator('[slot="close"]').last();
+    await expect(closeIcon).toBeVisible();
 
     // click close button
-    await page.getByRole('img').nth(1).click();
+    await closeIcon.click();
 
     // notification closed
-    await expect(
-      page.locator(`text=${mockUsers.length} users deleted successfully`),
-    ).toBeHidden();
+    await expect(closeIcon).toBeHidden();
   });
 
   test('generic flow buttons - initial state and enable modes', async ({
@@ -1098,14 +1057,7 @@ test.describe('widget', () => {
       .first();
 
     // Select one user
-    const firstUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await firstUserCheckbox.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
+    await clickTableBodyCellByIndex(page, 0, 0);
     // Test state with one user selected
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await expect(genericFlowButtonOneOrMore).toBeEnabled();
@@ -1118,14 +1070,7 @@ test.describe('widget', () => {
     }
 
     // Select second user (multiple users selected)
-    const secondUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      1,
-      0,
-    );
-    await secondUserCheckbox.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
+    await clickTableBodyCellByIndex(page, 1, 0);
     // Test state with multiple users selected
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await expect(genericFlowButtonOneOrMore).toBeEnabled();
@@ -1152,19 +1097,10 @@ test.describe('widget', () => {
       .first();
 
     // Select a user first to enable the button
-    const firstUserCheckbox = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await firstUserCheckbox.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
+    await clickTableBodyCellByIndex(page, 0, 0);
     // Test clicking button opens modal
     if ((await genericFlowButtonOneOrMore.count()) > 0) {
       await genericFlowButtonOneOrMore.click();
-      await page.waitForTimeout(MODAL_TIMEOUT);
-
       // Check that modal opens
       const modal = page.locator('[data-id="generic-flow-modal"]');
       await expect(modal).toBeVisible();
@@ -1175,7 +1111,6 @@ test.describe('widget', () => {
 
       // Test modal close functionality
       await page.keyboard.press('Escape');
-      await page.waitForTimeout(MODAL_TIMEOUT);
       await expect(modal).toBeHidden();
     }
   });
@@ -1190,9 +1125,8 @@ test.describe('widget', () => {
       }),
     );
     await page.goto(`http://localhost:${widgetPort}`);
-    await page.waitForLoadState('networkidle');
-    // let the widget finish init and wire the generic-flow button
-    await page.waitForTimeout(STATE_TIMEOUT);
+    // `ready` fires once init has wired the generic-flow button
+    await waitForWidgetReady(page);
 
     // a consumer sets client/form on the widget element; the widget reads them
     // lazily when it opens a flow
@@ -1208,12 +1142,10 @@ test.describe('widget', () => {
     const flowButton = page.locator('[data-generic-flow-button-id]').first();
     await expect(flowButton).toBeEnabled();
     await flowButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     const descopeWc = page
       .locator('descope-modal[data-id="generic-flow-modal"]')
       .locator('descope-wc');
-    await expect(descopeWc).toBeAttached({ timeout: 10000 });
+    await expect(descopeWc).toBeAttached();
 
     // caller form is forwarded into the flow as-is
     await expect(descopeWc).toHaveAttribute(
@@ -1230,7 +1162,6 @@ test.describe('widget', () => {
     page,
   }) => {
     // mockUsers[0]: roleNames=['Tenant Admin','Role 2'], userTenants[0].roleNames=['Role 1','Role 2'] — mismatch
-    await page.waitForTimeout(STATE_TIMEOUT);
     await expect(page.locator('text=Multiple roles').first()).toBeVisible();
   });
 
@@ -1238,7 +1169,6 @@ test.describe('widget', () => {
     page,
   }) => {
     // mockUsers[1] has no userTenants, so only top-level roleNames — always "same"
-    await page.waitForTimeout(STATE_TIMEOUT);
     await expect(
       page.locator(`text=${mockUsers[1].roleNames.join(', ')}`).first(),
     ).toBeVisible();
@@ -1254,7 +1184,9 @@ test.describe('widget', () => {
     });
 
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     await page.getByLabel('Login Id').first().fill('someLoginId@test.com');
     await page
@@ -1274,8 +1206,6 @@ test.describe('widget', () => {
       .first();
 
     await openAddUserModalButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
     ).toBeVisible();
@@ -1290,14 +1220,19 @@ test.describe('widget', () => {
       route.fulfill({ json: { roles: [] } }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await waitForWidgetReady(page);
 
     const openAddUserModalButton = page
       .getByTestId('create-user-trigger')
       .first();
 
     await openAddUserModalButton.click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // The modal has to be open before "the section is hidden" means anything -
+    // while it is still closed the section is hidden no matter what the widget
+    // does, so the assertion below would pass even on a regression.
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
@@ -1307,33 +1242,27 @@ test.describe('widget', () => {
   test('edit user - sub-tenant displays tenant name, not tenant id', async ({
     page,
   }) => {
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
-    ).toBeVisible({ timeout: 8000 });
+    ).toBeVisible();
 
     // The data attribute should map tenantId → { label: tenantName, options: roleNames }
     // so the component receives 'Sub Tenant One' as the display label for 'sub-tenant-1'
-    const dataAttr = await page
-      .locator('[data-id="sub-tenant-mappings"]')
-      .nth(1)
-      .getAttribute('data', { timeout: 8000 });
-    const parsedData = JSON.parse(dataAttr || '{}');
-    expect(parsedData['sub-tenant-1']).toHaveProperty(
-      'label',
-      'Sub Tenant One',
-    );
+    // Poll rather than read once: the attribute is written after the modal
+    // renders, so a single getAttribute can catch it empty.
+    await expect
+      .poll(async () => {
+        const dataAttr = await page
+          .locator('[data-id="sub-tenant-mappings"]')
+          .nth(1)
+          .getAttribute('data');
+        return JSON.parse(dataAttr || '{}')['sub-tenant-1'];
+      })
+      .toMatchObject({ label: 'Sub Tenant One' });
   });
 
   test('edit user - sub-tenant section is hidden when no sub-tenants', async ({
@@ -1343,31 +1272,26 @@ test.describe('widget', () => {
       route.fulfill({ json: { roles: [] } }),
     );
     await page.reload();
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await waitForWidgetReady(page);
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // Same reason as the create-user case above: wait for the modal to actually
+    // open, otherwise "hidden" is true simply because nothing is on screen yet.
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     // Both create and edit modals are in the DOM; edit modal's elements are at index 1
     await expect(
       page.locator('[data-id="sub-tenant-section"]').nth(1),
-    ).toBeHidden({ timeout: 8000 });
+    ).toBeHidden();
   });
 
   test('create user - sub-tenant values reset after cancel', async ({
     page,
   }) => {
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     // Sub-tenant section is present on first open
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
@@ -1379,12 +1303,14 @@ test.describe('widget', () => {
       .getByTestId('create-user-modal-cancel')
       .first()
       .click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
 
-    // Reopen the modal — sub-tenant section should still be visible (not broken by reset)
+    // the modal has to close before it can be reopened
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeHidden();
+
+    // Reopen the modal — sub-tenant section should still be visible (notbroken by reset)
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
-
     await expect(
       page.locator('[data-id="sub-tenant-section"]').first(),
     ).toBeVisible();
@@ -1401,17 +1327,12 @@ test.describe('widget', () => {
       return route.fulfill({ json: { user: mockUsers[0] } });
     });
 
-    await page.waitForTimeout(STATE_TIMEOUT);
-
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
 
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     const responsePromise = page.waitForResponse(apiPath('user', 'update'));
     await page
@@ -1446,12 +1367,13 @@ test.describe('widget', () => {
     });
 
     await page.reload();
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(STATE_TIMEOUT);
+    await waitForWidgetReady(page);
 
     // Open create modal — should not trigger the API either
     await page.getByTestId('create-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     // Close create modal
     await page
@@ -1459,17 +1381,23 @@ test.describe('widget', () => {
       .getByTestId('create-user-modal-cancel')
       .first()
       .click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+    // The create modal has to finish closing before the edit modal is asked to
+    // open. Both are built at init, and opening one while the other is still
+    // animating out leaves the edit modal's submit button attached but hidden.
+    await expect(
+      page.getByTestId('create-user-modal-submit').first(),
+    ).toBeHidden();
 
     // Open edit modal — should not trigger the API either
-    const cellContentLocator = await getTableBodyCellContentLocatorByIndex(
-      page,
-      0,
-      0,
-    );
-    await cellContentLocator.click();
+    await clickTableBodyCellByIndex(page, 0, 0);
     await page.getByTestId('edit-user-trigger').first().click();
-    await page.waitForTimeout(MODAL_TIMEOUT);
+
+    // You cannot wait for the absence of a call, so anchor on a positive event
+    // that must happen after it would have: once the edit modal is open, every
+    // action that could have triggered getSubTenantRoles has run.
+    await expect(
+      page.getByTestId('edit-user-modal-submit').first(),
+    ).toBeVisible({ timeout: MODAL_OPEN_TIMEOUT });
 
     expect(subTenantRolesCallCount).toBe(0);
   });

@@ -1,6 +1,6 @@
 {
   "name": "@descope/e2e-helpers",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Descope Team <info@descope.com>",
   "main": "src/index.ts",
   "private": true,

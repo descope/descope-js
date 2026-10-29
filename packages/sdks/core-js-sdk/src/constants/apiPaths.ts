@@ -30,6 +30,7 @@ export default {
     session: '/v1/auth/enchantedlink/pending-session',
     update: {
       email: '/v1/auth/enchantedlink/update/email',
+      phone: '/v1/auth/enchantedlink/update/phone',
     },
     signUpOrIn: '/v1/auth/enchantedlink/signup-in',
   },
@@ -105,5 +106,6 @@ export default {
   flow: {
     start: '/v1/flow/start',
     next: '/v1/flow/next',
+    event: '/v1/flow/event',
   },
 };

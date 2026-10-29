@@ -2,6 +2,48 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.77.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.76.0...core-js-sdk-2.77.0) (2026-10-17)
+
+
+### Features
+
+* **core-js-sdk:** add provisioning tenant fields to UserResponse ([#1516](https://github.com/descope/descope-js/issues/1516)) ([d477da5](https://github.com/descope/descope-js/commit/d477da5c529aef352634af6ea93e3f6e5465b7e6))
+
+## [2.76.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.75.0...core-js-sdk-2.76.0) (2026-10-12)
+
+
+### Features
+
+* **core-js-sdk:** expose cf-ray as traceId on response errors RELEASE ([#1512](https://github.com/descope/descope-js/issues/1512)) ([8c09ede](https://github.com/descope/descope-js/commit/8c09ede7e09ea552a6090a7296a4f2e633b31508))
+
+## [2.75.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.74.0...core-js-sdk-2.75.0) (2026-10-06)
+
+
+### Features
+
+* **core-js-sdk:** add lock fields to UserResponse ([#1507](https://github.com/descope/descope-js/issues/1507)) ([e3b90e1](https://github.com/descope/descope-js/commit/e3b90e15786e55eaf6c2252fcad1dcc1882df446)), closes [descope/node-sdk#813](https://github.com/descope/node-sdk/issues/813) [#1505](https://github.com/descope/descope-js/issues/1505)
+
+## [2.74.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.73.0...core-js-sdk-2.74.0) (2026-09-27)
+
+
+### Features
+
+* **core-js-sdk:** add family fields to UserResponse ([#1498](https://github.com/descope/descope-js/issues/1498)) ([7e814cd](https://github.com/descope/descope-js/commit/7e814cdba88fbb5926880d919658424915f0f05c)), closes [descope/node-sdk#793](https://github.com/descope/node-sdk/issues/793)
+
+## [2.73.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.72.0...core-js-sdk-2.73.0) (2026-09-17)
+
+
+### Features
+
+* **core-js-sdk:** support enchanted link over SMS ([#1483](https://github.com/descope/descope-js/issues/1483)) ([53a292d](https://github.com/descope/descope-js/commit/53a292d53894bd5c01506f8e22fb4349dcf5412b)), closes [descope/etc#18315](https://github.com/descope/etc/issues/18315)
+
+## [2.72.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.71.0...core-js-sdk-2.72.0) (2026-09-16)
+
+
+### Features
+
+* **web-component:** track client-side form validation errors RELEASE ([#1482](https://github.com/descope/descope-js/issues/1482)) ([4846b6b](https://github.com/descope/descope-js/commit/4846b6b72a0e1a9e90e2dbe3600ac2d10d5ad675)), closes [descope/etc#15181](https://github.com/descope/etc/issues/15181) [descope/etc#15181](https://github.com/descope/etc/issues/15181)
+
 ## [2.71.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.70.1...core-js-sdk-2.71.0) (2026-09-10)
 
 

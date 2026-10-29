@@ -7,11 +7,15 @@ export const attributesObserver = (
 
   const observer = new MutationObserver((mutationsList) => {
     mutationsList.forEach((mutation) => {
-      if (mutation.type === 'attributes') {
+      // setAttribute with the current value still emits a mutation, skip it
+      if (
+        mutation.type === 'attributes' &&
+        mutation.oldValue !== ele.getAttribute(mutation.attributeName)
+      ) {
         callback(mutation.attributeName);
       }
     });
   });
 
-  observer.observe(ele, { attributes: true });
+  observer.observe(ele, { attributes: true, attributeOldValue: true });
 };
