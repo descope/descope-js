@@ -2,6 +2,44 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.28.27](https://github.com/descope/descope-js/compare/angular-sdk-0.28.26...angular-sdk-0.28.27) (2026-10-29)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.21.9`
+* `user-profile-widget` updated to version `0.20.3`
+* `tenant-profile-widget` updated to version `0.11.12`
+* `web-component` updated to version `4.6.1`
+## [0.28.26](https://github.com/descope/descope-js/compare/angular-sdk-0.28.25...angular-sdk-0.28.26) (2026-10-28)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.15`
+* `audit-management-widget` updated to version `0.9.15`
+* `role-management-widget` updated to version `0.10.15`
+* `user-management-widget` updated to version `0.21.8`
+* `user-profile-widget` updated to version `0.20.2`
+* `tenant-profile-widget` updated to version `0.11.11`
+* `applications-portal-widget` updated to version `0.9.15`
+* `web-component` updated to version `4.6.0`
+## [0.28.25](https://github.com/descope/descope-js/compare/angular-sdk-0.28.24...angular-sdk-0.28.25) (2026-10-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.14`
+* `audit-management-widget` updated to version `0.9.14`
+* `role-management-widget` updated to version `0.10.14`
+* `user-management-widget` updated to version `0.21.7`
+* `user-profile-widget` updated to version `0.20.1`
+* `tenant-profile-widget` updated to version `0.11.10`
+* `applications-portal-widget` updated to version `0.9.14`
+* `web-component` updated to version `4.5.2`
+## [0.28.24](https://github.com/descope/descope-js/compare/angular-sdk-0.28.23...angular-sdk-0.28.24) (2026-10-23)
+
+## [0.28.23](https://github.com/descope/descope-js/compare/angular-sdk-0.28.22...angular-sdk-0.28.23) (2026-10-22)
+
+## [0.28.22](https://github.com/descope/descope-js/compare/angular-sdk-0.28.21...angular-sdk-0.28.22) (2026-10-22)
+
 ## [0.28.21](https://github.com/descope/descope-js/compare/angular-sdk-0.28.20...angular-sdk-0.28.21) (2026-10-20)
 
 ### Dependency Updates

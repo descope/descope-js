@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.4.7](https://github.com/descope/descope-js/compare/react-sdk-3.4.6...react-sdk-3.4.7) (2026-10-29)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.7.18`
+* `tenant-profile-widget` updated to version `0.11.12`
+* `user-management-widget` updated to version `0.21.9`
+* `user-profile-widget` updated to version `0.20.3`
+* `web-component` updated to version `4.6.1`
+## [3.4.6](https://github.com/descope/descope-js/compare/react-sdk-3.4.5...react-sdk-3.4.6) (2026-10-28)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.15`
+* `applications-portal-widget` updated to version `0.9.15`
+* `audit-management-widget` updated to version `0.9.15`
+* `outbound-applications-widget` updated to version `0.7.17`
+* `role-management-widget` updated to version `0.10.15`
+* `tenant-profile-widget` updated to version `0.11.11`
+* `user-management-widget` updated to version `0.21.8`
+* `user-profile-widget` updated to version `0.20.2`
+* `web-component` updated to version `4.6.0`
+## [3.4.5](https://github.com/descope/descope-js/compare/react-sdk-3.4.4...react-sdk-3.4.5) (2026-10-24)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.14`
+* `applications-portal-widget` updated to version `0.9.14`
+* `audit-management-widget` updated to version `0.9.14`
+* `outbound-applications-widget` updated to version `0.7.16`
+* `role-management-widget` updated to version `0.10.14`
+* `tenant-profile-widget` updated to version `0.11.10`
+* `user-management-widget` updated to version `0.21.7`
+* `user-profile-widget` updated to version `0.20.1`
+* `web-component` updated to version `4.5.2`
+## [3.4.4](https://github.com/descope/descope-js/compare/react-sdk-3.4.3...react-sdk-3.4.4) (2026-10-22)
+
+## [3.4.3](https://github.com/descope/descope-js/compare/react-sdk-3.4.2...react-sdk-3.4.3) (2026-10-22)
+
+## [3.4.2](https://github.com/descope/descope-js/compare/react-sdk-3.4.1...react-sdk-3.4.2) (2026-10-22)
+
+## [3.4.1](https://github.com/descope/descope-js/compare/react-sdk-3.4.0...react-sdk-3.4.1) (2026-10-22)
+
 ## [3.4.0](https://github.com/descope/descope-js/compare/react-sdk-3.3.19...react-sdk-3.4.0) (2026-10-20)
 
 ### Dependency Updates
