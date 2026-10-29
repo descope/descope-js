@@ -66,6 +66,7 @@ import {
   setNOTPVariable,
   setComponentsAutoDetectByGeo,
   setComponentsAutoDetectByLocale,
+  syncPasswordPolicyEmail,
 } from '../helpers/templates';
 import {
   ClientScript,
@@ -1899,6 +1900,9 @@ class DescopeWc extends BaseDescopeWc {
 
         // we need to wait for all components to render before we can set its value
         updateScreenFromScreenState(rootElement, screenState);
+
+        // after input values are set, so it starts from the pre-filled email
+        syncPasswordPolicyEmail(rootElement);
 
         // Runs after updateScreenFromScreenState so the realtime layer reads the
         // populated .value / .checked properties rather than the unpopulated DOM
