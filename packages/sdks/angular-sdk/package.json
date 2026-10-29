@@ -2,7 +2,7 @@
   "name": "@descope/angular-sdk",
   "version": "0.28.27",
   "peerDependencies": {
-    "@angular/common": ">=16.0.0",
+    "@angular/common": ">=20.0.0",
     "@angular/core": ">=16.0.0"
   },
   "license": "MIT",
@@ -61,7 +61,7 @@
     "@angular-eslint/template-parser": "19.0.2",
     "@angular/animations": "19.2.25",
     "@angular/cli": "^19.0.0",
-    "@angular/common": "19.2.25",
+    "@angular/common": "20.0.0",
     "@angular/compiler": "19.2.25",
     "@angular/compiler-cli": "19.2.25",
     "@angular/core": "19.2.25",
