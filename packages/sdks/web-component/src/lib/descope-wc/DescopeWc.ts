@@ -334,66 +334,80 @@ class DescopeWc extends BaseDescopeWc {
     this.loggerWrapper.debug(
       `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
     );
-    const promises = Promise.all(
-      scripts?.map(async (script) => {
-        const scriptElement = this.shadowRoot.querySelector(
-          `[data-script-id="${script.id}"]`,
-        ) as ScriptElement;
-        if (scriptElement) {
-          this.loggerWrapper.debug('Script already loaded', script.id);
-          const { moduleRes } = scriptElement;
-          moduleRes?.start?.();
-          return moduleRes;
-        }
-        if (!globalThis.descope?.[script.id]) {
-          await this.injectNpmLib(
-            '@descope/flow-scripts',
-            '1.0.20', // currently using a fixed version when loading scripts
-            `dist/${script.id}.js`,
+    const loadScript = async (script: ClientScript) => {
+      const scriptElement = this.shadowRoot.querySelector(
+        `[data-script-id="${script.id}"]`,
+      ) as ScriptElement;
+      if (scriptElement) {
+        this.loggerWrapper.debug('Script already loaded', script.id);
+        const { moduleRes } = scriptElement;
+        moduleRes?.start?.();
+        return moduleRes;
+      }
+      if (!globalThis.descope?.[script.id]) {
+        await this.injectNpmLib(
+          '@descope/flow-scripts',
+          '1.0.20', // currently using a fixed version when loading scripts
+          `dist/${script.id}.js`,
+        );
+      }
+      const module = globalThis.descope?.[script.id];
+      return new Promise((resolve, reject) => {
+        try {
+          // call the module loading function
+          const moduleRes = module(
+            script.initArgs as any,
+            { baseUrl: this.baseUrl, ref: this },
+            createScriptCallback(script, resolve),
+            this.loggerWrapper,
           );
-        }
-        const module = globalThis.descope?.[script.id];
-        return new Promise((resolve, reject) => {
-          try {
-            // call the module loading function
-            const moduleRes = module(
-              script.initArgs as any,
-              { baseUrl: this.baseUrl, ref: this },
-              createScriptCallback(script, resolve),
-              this.loggerWrapper,
-            );
-            // some modules do not return a ScriptModule object
-            if (moduleRes) {
-              const newScriptElement = document.createElement(
-                'div',
-              ) as ScriptElement;
-              newScriptElement.setAttribute('data-script-id', script.id);
-              newScriptElement.moduleRes = moduleRes;
-              this.shadowRoot.appendChild(newScriptElement);
-              const subscriptionToken = this.nextRequestStatus.subscribe(() => {
-                this.loggerWrapper.debug('Stopping script', script.id);
-                // if the script is stopped successfully, we want to remove it from the DOM
-                // to allow the script element to be re-created on the next request
-                if (moduleRes.stop?.()) {
-                  this.nextRequestStatus.unsubscribe(subscriptionToken);
-                  this.loggerWrapper.debug('Removing script', script.id);
-                  this.shadowRoot.removeChild(newScriptElement);
-                }
-              });
-              // Modules that implement `present` mint their token when presented
-              // (awaited before the next call), not while loading, so they never
-              // invoke the callback here. Consider them loaded once constructed,
-              // otherwise loading always races SDK_SCRIPTS_LOAD_TIMEOUT and the
-              // first submit is delayed by the remainder of that timeout.
-              if (typeof moduleRes.present === 'function') {
-                resolve(script.id);
+          // some modules do not return a ScriptModule object
+          if (moduleRes) {
+            const newScriptElement = document.createElement(
+              'div',
+            ) as ScriptElement;
+            newScriptElement.setAttribute('data-script-id', script.id);
+            newScriptElement.moduleRes = moduleRes;
+            this.shadowRoot.appendChild(newScriptElement);
+            const subscriptionToken = this.nextRequestStatus.subscribe(() => {
+              this.loggerWrapper.debug('Stopping script', script.id);
+              // if the script is stopped successfully, we want to remove it from the DOM
+              // to allow the script element to be re-created on the next request
+              if (moduleRes.stop?.()) {
+                this.nextRequestStatus.unsubscribe(subscriptionToken);
+                this.loggerWrapper.debug('Removing script', script.id);
+                this.shadowRoot.removeChild(newScriptElement);
               }
+            });
+            // Modules that implement `present` mint their token when presented
+            // (awaited before the next call), not while loading, so they never
+            // invoke the callback here. Consider them loaded once constructed,
+            // otherwise loading always races SDK_SCRIPTS_LOAD_TIMEOUT and the
+            // first submit is delayed by the remainder of that timeout.
+            if (typeof moduleRes.present === 'function') {
+              resolve(script.id);
             }
-          } catch (e) {
-            reject(e);
           }
-        });
-      }),
+        } catch (e) {
+          reject(e);
+        }
+      });
+    };
+
+    const promises = Promise.all(
+      (scripts ?? []).map((script) =>
+        // One blocked script must not cut the batch short. Promise.all rejects on
+        // the first failure, which would settle the whole load while healthy
+        // scripts are still downloading, so those never get refreshed and their
+        // results never reach the first submit.
+        loadScript(script).catch((e) => {
+          this.loggerWrapper.warn(
+            `Sdk script ${script.id} failed to load, continuing without it`,
+            (e as Error)?.message,
+          );
+          return null;
+        }),
+      ),
     );
 
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -405,9 +419,22 @@ class DescopeWc extends BaseDescopeWc {
     });
 
     // clear the timer once scripts load, otherwise the timeout warning is logged even on success
-    return Promise.race([promises, toPromise]).finally(() =>
-      clearTimeout(timeoutId),
-    );
+    return Promise.race([promises, toPromise])
+      .finally(() => clearTimeout(timeoutId))
+      .catch((e) => {
+        // Last resort. Each script already carries its own catch above, so this
+        // should not fire - but a rejection here would be unrecoverable. Callers
+        // either await this through `#sdkScriptsLoading` before a submit, where a
+        // rejection leaves the submit button stuck in its loading state with no
+        // way back, or do not await it at all, where it becomes an unhandled
+        // rejection. Carry on without the scripts: the backend already handles a
+        // missing token.
+        this.loggerWrapper.warn(
+          'Sdk scripts failed to load, continuing without them',
+          (e as Error)?.message,
+        );
+        return null;
+      });
   }
 
   get isDismissScreenErrorOnInput() {
