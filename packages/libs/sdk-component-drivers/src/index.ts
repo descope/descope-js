@@ -7,6 +7,7 @@ export * from './GenericFlowButtonDriver';
 export * from './gridDrivers/GridDriver';
 export * from './LinkDriver';
 export * from './ModalDriver';
+export * from './FlowPopupDriver';
 export * from './MultiLineMappingsDriver';
 export * from './MultiSelectDriver';
 export * from './NotificationDriver';

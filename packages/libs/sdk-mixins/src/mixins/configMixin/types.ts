@@ -81,6 +81,11 @@ export type WidgetConfig = {
   allowSubTenants?: boolean;
   version?: number;
   targetLocales?: string[];
+  // Where this widget runs its flows. Absent or 'modal' keeps them in a modal
+  // on the app's own page; 'popup' runs them on the project's auth domain, so a
+  // passkey is bound there and works from every app that signs in through it.
+  // The backend only writes it when set, so absent means modal.
+  flowTarget?: 'modal' | 'popup';
 };
 
 // RUM debug-telemetry config. The backend ships this inside the project's
@@ -119,6 +124,12 @@ export type ProjectConfiguration = {
     [key: string]: WidgetConfig; // dynamic key names for widgets
   };
   styles: Record<string, Style>;
+  // Base url of the project's hosted auth page, e.g. https://auth.acme.com/login.
+  // Only present when the project has its OWN custom domain - the backend
+  // deliberately omits it otherwise rather than publishing the shared Descope
+  // host, which would make the passkey relying party a host shared across
+  // customers. Absent means popup mode cannot be used.
+  hostedPageBaseUrl?: string;
   // The backend ships RUM debug-telemetry config nested here in config.json.
   telemetry?: TelemetryConfig;
 };

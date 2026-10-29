@@ -1,69 +1,31 @@
-import {
-  FlowDriver,
-  ModalDriver,
-  UserAttributeDriver,
-} from '@descope/sdk-component-drivers';
+import { UserAttributeDriver } from '@descope/sdk-component-drivers';
 import {
   compose,
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import {
-  localeMixin,
-  cookieConfigMixin,
-  loggerMixin,
-  flowModalMixin,
-  flowInputMixin,
-} from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin } from '@descope/sdk-mixins';
 import { getUserBuiltinAttrs } from '../../../state/selectors';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initUserBuiltinAttributesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class UserBuiltinAttributesMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
-      cookieConfigMixin,
-      flowModalMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
       // field name (e.g. `givenName`) -> driver wrapping the matching descope-user-attribute
       #drivers: Record<string, UserAttributeDriver> = {};
 
       // flow Id is key in all maps
-      #editModals: Record<string, ModalDriver> = {};
+      #editRunners: Record<string, FlowRunner | undefined> = {};
 
-      #editFlows: Record<string, FlowDriver> = {};
-
-      #deleteModals: Record<string, ModalDriver> = {};
-
-      #deleteFlows: Record<string, FlowDriver> = {};
-
-      #initEditModalContent(flowId: string) {
-        this.#editModals[flowId]?.setContent(
-          this.createFlowTemplate({ flowId }),
-        );
-        this.#editFlows[flowId]?.onSuccess(() => {
-          this.#editModals[flowId]?.close();
-          this.actions.getMe();
-        });
-      }
-
-      // have 2 init functions for edit and delete modals in order to keep the same standards as the email/phone/name mixin
-      #initDeleteModalContent(flowId: string) {
-        this.#deleteModals[flowId]?.setContent(
-          this.createFlowTemplate({ flowId }),
-        );
-        this.#deleteFlows[flowId]?.onSuccess(() => {
-          this.#deleteModals[flowId]?.close();
-          this.actions.getMe();
-        });
-      }
+      #deleteRunners: Record<string, FlowRunner | undefined> = {};
 
       #initEditFlow(
         nodeEle: Element,
@@ -73,25 +35,18 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
         const editFlowId = nodeEle.getAttribute('edit-flow-id');
         if (!editFlowId) return;
 
-        this.#editModals[editFlowId] = this.createFlowModal({
-          'data-id': `edit-${field}`,
-          'close-on-outside-click': 'true',
+        this.#editRunners[editFlowId] = this.createFlowRunner({
+          dataId: `edit-${field}`,
+          flowId: editFlowId,
+          onSuccess: () => this.actions.getMe(),
         });
-
-        this.#editFlows[editFlowId] = new FlowDriver(
-          () => this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#editModals[editFlowId].afterClose =
-          this.#initEditModalContent.bind(this, editFlowId);
 
         driver.onEditClick(() => {
-          this.#editModals?.[editFlowId]?.open();
+          this.#editRunners?.[editFlowId]?.open();
         });
-
-        this.syncFlowTheme(this.#editFlows[editFlowId]);
       }
 
+      // kept separate from the edit path to match the email/phone/name mixins
       #initDeleteFlow(
         nodeEle: Element,
         field: string,
@@ -100,24 +55,15 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
         const deleteFlowId = nodeEle.getAttribute('delete-flow-id');
         if (!deleteFlowId) return;
 
-        this.#deleteModals[deleteFlowId] = this.createFlowModal({
-          'data-id': `delete-${field}`,
-          'close-on-outside-click': 'true',
+        this.#deleteRunners[deleteFlowId] = this.createFlowRunner({
+          dataId: `delete-${field}`,
+          flowId: deleteFlowId,
+          onSuccess: () => this.actions.getMe(),
         });
-
-        this.#deleteFlows[deleteFlowId] = new FlowDriver(
-          () =>
-            this.#deleteModals[deleteFlowId]?.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#deleteModals[deleteFlowId].afterClose =
-          this.#initDeleteModalContent.bind(this, deleteFlowId);
 
         driver.onDeleteClick(() => {
-          this.#deleteModals?.[deleteFlowId]?.open();
+          this.#deleteRunners?.[deleteFlowId]?.open();
         });
-
-        this.syncFlowTheme(this.#deleteFlows[deleteFlowId]);
       }
 
       #initBuiltinUserAttrs() {
@@ -139,18 +85,15 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
         });
       }
 
-      // (Re)build each modal's preloaded flow whenever a value changes. The
-      // first (seeding) call preloads it; a later change (e.g. a delete) rebuilds
-      // it so the flow re-fetches fresh data instead of the value it captured
-      // before. Skip a modal that is open - rebuilding would drop the flow the
-      // user is interacting with.
-      #refreshModalsContent() {
-        Object.entries(this.#editModals).forEach(([flowId, modal]) => {
-          if (modal.isClosed) this.#initEditModalContent(flowId);
-        });
-        Object.entries(this.#deleteModals).forEach(([flowId, modal]) => {
-          if (modal.isClosed) this.#initDeleteModalContent(flowId);
-        });
+      // (Re)build each preloaded flow whenever a value changes. The first
+      // (seeding) call preloads it; a later change (e.g. a delete) rebuilds it
+      // so the flow re-fetches fresh data instead of the value it captured
+      // before. A flow that is open is left alone - see FlowRunner.refresh.
+      #refreshFlowsContent() {
+        Object.values(this.#editRunners).forEach((runner) => runner?.refresh());
+        Object.values(this.#deleteRunners).forEach(
+          (runner) => runner?.refresh(),
+        );
       }
 
       #onValueUpdate = withMemCache(
@@ -160,7 +103,7 @@ export const initUserBuiltinAttributesMixin = createSingletonMixin(
               userBuiltinAttributes[field] || ''
             ).toString();
           });
-          this.#refreshModalsContent();
+          this.#refreshFlowsContent();
         },
       );
 
