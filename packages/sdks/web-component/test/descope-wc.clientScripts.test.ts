@@ -477,6 +477,82 @@ describe('web-component', () => {
       );
     });
 
+    it('should still submit when a client script fails to load', async () => {
+      // A script that cannot load - blocked by an extension, a strict CSP, a CDN
+      // outage - rejects the loading promise. The submit must carry on without it
+      // rather than leaving the button stuck in its loading state.
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      const explodingScript = jest.fn(() => {
+        throw new Error('script blocked');
+      });
+      window.descope = { exploding: explodingScript };
+
+      fixtures.configContent = {
+        flows: {
+          'sign-in': {
+            startScreenId: 'screen-0',
+            sdkScripts: [{ id: 'exploding', initArgs: {}, resultKey: 'x' }],
+          },
+        },
+      };
+
+      fixtures.pageContent = `<descope-button type="button" id="interactionId">Click</descope-button>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-cdn-url="https://localhost" base-url="http://base.url"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('Click'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      await waitFor(() => expect(explodingScript).toHaveBeenCalled());
+
+      fireEvent.click(screen.getByShadowText('Click'));
+
+      // The proof: the flow request goes out anyway. Before the guard in
+      // loadSdkScripts this rejection propagated through next() and startMock
+      // was never reached.
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const startInput = startMock.mock.calls[0][6];
+      expect(
+        Object.keys(startInput).some((k) => k.startsWith('sdkScriptsResults.')),
+      ).toBe(false);
+    });
+
+    it('returns a promise that resolves when a client script fails to load', async () => {
+      // The guard sits inside loadSdkScripts, not at the await site, because one
+      // caller never awaits the promise at all. A rejection there is an
+      // unhandled rejection, which some hosts treat as a fatal error.
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      window.descope = {
+        exploding2: jest.fn(() => {
+          throw new Error('script blocked');
+        }),
+      };
+
+      fixtures.configContent = {
+        flows: {
+          'sign-in': { startScreenId: 'screen-0' },
+        },
+      };
+
+      fixtures.pageContent = `<descope-button type="button" id="interactionId">Click</descope-button>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" base-cdn-url="https://localhost" base-url="http://base.url"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('Click'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const wc = document.getElementsByTagName('descope-wc')[0] as any;
+
+      await expect(
+        wc.loadSdkScripts([{ id: 'exploding2', initArgs: {}, resultKey: 'x' }]),
+      ).resolves.toBeNull();
+    });
+
     it('should skip npm lib injection when script is already available in globalThis.descope', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       const mockForterScript = jest.fn(() => ({

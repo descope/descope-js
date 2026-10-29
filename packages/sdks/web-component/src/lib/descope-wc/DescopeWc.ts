@@ -374,7 +374,19 @@ class DescopeWc extends BaseDescopeWc {
       }, SDK_SCRIPTS_LOAD_TIMEOUT);
     });
 
-    return Promise.race([promises, toPromise]);
+    return Promise.race([promises, toPromise]).catch((e) => {
+      // A script that fails to load - blocked by an extension, a strict CSP, a
+      // CDN outage - must never reject here. Callers either await this through
+      // `#sdkScriptsLoading` before a submit, where a rejection leaves the submit
+      // button stuck in its loading state with no way back, or do not await it at
+      // all, where it becomes an unhandled rejection. Carry on without the
+      // script instead: the backend already handles a missing token.
+      this.loggerWrapper.warn(
+        'Sdk scripts failed to load, continuing without them',
+        (e as Error)?.message,
+      );
+      return null;
+    });
   }
 
   get isDismissScreenErrorOnInput() {
