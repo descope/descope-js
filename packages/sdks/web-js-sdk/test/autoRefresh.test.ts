@@ -2,7 +2,7 @@ import createSdk from '../src/index';
 import { authInfo } from './mocks';
 import { createMockReturnValue, getFutureSessionToken } from './testUtils';
 import logger from '../src/enhancers/helpers/logger';
-import { MAX_TIMEOUT } from '../src/constants';
+import { MAX_TIMEOUT, REFRESH_THRESHOLD } from '../src/constants';
 import { jwtDecode } from 'jwt-decode';
 
 jest.mock('../src/enhancers/helpers/logger', () => ({
@@ -90,12 +90,10 @@ describe('autoRefresh', () => {
     );
   });
 
-  it('should not refresh token after interval when the session expiration is too close', async () => {
+  it('should refresh token when the session expires if the session expiration is too close', async () => {
     const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-    const loggerDebugMock = logger.debug as jest.Mock;
 
-    const sessionExpiration = Math.floor(Date.now() / 1000) + 10; // 10 seconds from now
+    const sessionExpiration = Math.floor(Date.now() / 1000) + 30; // 30 seconds from now
     const mockFetch = jest.fn().mockReturnValue(
       createMockReturnValue({
         ...authInfo,
@@ -110,14 +108,41 @@ describe('autoRefresh', () => {
       .spyOn(sdk, 'refresh')
       .mockReturnValue(new Promise(() => {}));
     await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
 
-    // ensure logger called
-    expect(loggerDebugMock).not.toHaveBeenCalledWith(
-      expect.stringMatching(/^Setting refresh timer for/),
+    // refresh is scheduled for the session expiration itself, not 20 seconds before it
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+    const [timeoutFn, timeoutTimer] = setTimeoutSpy.mock.calls[0];
+    expect(timeoutTimer).toBeGreaterThan(29 * 1000);
+    expect(timeoutTimer).toBeLessThanOrEqual(30 * 1000);
+    timeoutFn();
+    expect(refreshSpy).toHaveBeenCalledWith(authInfo.refreshJwt);
+
+    // a session that is already expired (e.g. client clock is ahead of the server) is still
+    // refreshed no sooner than the threshold, so the same response cannot cause a tight loop
+    mockFetch.mockReturnValue(
+      createMockReturnValue({
+        ...authInfo,
+        sessionJwt: undefined,
+        sessionExpiration: Math.floor(Date.now() / 1000) - 10,
+      }),
     );
-    loggerDebugMock.mockClear();
+    await sdk.httpClient.get('1/2/3');
+    await new Promise(process.nextTick);
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(2);
+    expect(setTimeoutSpy.mock.calls[1][1]).toBe(REFRESH_THRESHOLD);
 
-    expect(setTimeoutSpy).not.toHaveBeenCalled();
+    // invalidate this sdk so its visibilitychange listener (expired session) does not interfere with later tests
+    const unauthMock = {
+      clone: () => unauthMock,
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve('{}'),
+      url: new URL('http://example.com'),
+      headers: new Headers(),
+    };
+    mockFetch.mockReturnValue(unauthMock);
+    await sdk.httpClient.get('/v1/auth/refresh');
   });
 
   it('should refresh token after interval if only sessionToken was returned', async () => {
