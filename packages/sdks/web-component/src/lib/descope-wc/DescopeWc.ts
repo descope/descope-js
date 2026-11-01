@@ -51,6 +51,12 @@ import {
 import { getABTestingKey } from '../helpers/abTestingKey';
 import { calculateCondition, calculateConditions } from '../helpers/conditions';
 import {
+  clearEmailVerificationInput,
+  hasEmailVerificationField,
+  injectEmailVerificationInput,
+  readEmailVerificationToken,
+} from '../helpers/emailVerification';
+import {
   clearInFlightLastAuth,
   getInFlightLastUsedPerScreen,
   getLastAuth,
@@ -556,6 +562,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#resetPollingTimeout();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
+    this.#clearEmailVerification();
 
     window.removeEventListener(
       'visibilitychange',
@@ -1355,6 +1362,10 @@ class DescopeWc extends BaseDescopeWc {
   };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
+    if (isCustomScreen) {
+      this.#clearEmailVerification();
+    }
+
     const toggleVisibility = () => {
       this.contentRootElement.classList.toggle('hidden', isCustomScreen);
       this.slotElement.classList.toggle('hidden', !isCustomScreen);
@@ -1810,6 +1821,50 @@ class DescopeWc extends BaseDescopeWc {
     this.#dispatch('screen-updated', { screenName: stepName });
   }
 
+  // the nonce request of the current screen, used to drop nonces that
+  // resolve after the screen changed
+  #evpNonce?: Promise<string | undefined>;
+
+  #clearEmailVerification() {
+    this.#evpNonce = undefined;
+    clearEmailVerificationInput(this);
+  }
+
+  // the browser needs a form owning the email field to verify it, so only
+  // fetch a nonce (single use, so one per screen) when there is one
+  #startEmailVerification(fragment: DocumentFragment) {
+    if (!hasEmailVerificationField(fragment) || !this.closest('form')) {
+      return undefined;
+    }
+
+    this.#evpNonce = this.sdk.emailVerification
+      .start()
+      .then((res) => {
+        if (!res.ok || !res.data?.nonce) {
+          this.loggerWrapper.warn(
+            'Email verification start failed',
+            res.error?.errorDescription,
+          );
+          return undefined;
+        }
+        return res.data.nonce;
+      })
+      .catch((e) => {
+        this.loggerWrapper.warn('Email verification start failed', e?.message);
+        return undefined;
+      });
+
+    return this.#evpNonce;
+  }
+
+  #mountEmailVerification(evpNonce?: Promise<string | undefined>) {
+    evpNonce?.then((nonce) => {
+      if (nonce && this.#evpNonce === evpNonce) {
+        injectEmailVerificationInput(this, nonce);
+      }
+    });
+  }
+
   async onStepChange(currentState: StepState, prevState: StepState) {
     const {
       htmlFilename,
@@ -1821,6 +1876,8 @@ class DescopeWc extends BaseDescopeWc {
     } = currentState;
 
     this.loggerWrapper.debug('Rendering a flow screen');
+
+    this.#clearEmailVerification();
 
     this.updateScreenUser(screenState?.user);
 
@@ -1864,6 +1921,9 @@ class DescopeWc extends BaseDescopeWc {
     // state (otherwise the user briefly sees unhidden/enabled components).
     this.applyComponentsState(clone, screenState?.componentsState);
 
+    // not awaited, so the nonce fetch does not delay the screen render
+    const evpNonce = this.#startEmailVerification(clone);
+
     // set auto-detect attributes (country code from geo, lang from locale)
     const { geo } = (await this.getExecutionContext()) ?? {};
     setComponentsAutoDetectByGeo(clone, geo);
@@ -1882,6 +1942,8 @@ class DescopeWc extends BaseDescopeWc {
       setCssVars(rootElement, clone, screenState.cssVars, this.loggerWrapper);
 
       rootElement.replaceChildren(clone);
+
+      this.#mountEmailVerification(evpNonce);
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlFilename;
@@ -2263,6 +2325,8 @@ class DescopeWc extends BaseDescopeWc {
 
           this.nextRequestStatus.update({ isLoading: true });
 
+          const evpToken = readEmailVerificationToken(this);
+
           const actionArgs = {
             ...eleDescopeAttrs,
             ...formData,
@@ -2271,6 +2335,7 @@ class DescopeWc extends BaseDescopeWc {
             // is performed in the native app, so a custom origin needs to be injected
             // into the webauthn request data.
             origin: this.#origin,
+            ...(evpToken && { evpToken }),
           };
 
           const res = await next(submitterId, actionArgs);

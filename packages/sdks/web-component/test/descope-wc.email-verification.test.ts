@@ -1,0 +1,209 @@
+/* eslint-disable import/order */
+// @ts-nocheck
+
+import {
+  setupWebComponentTestEnv,
+  teardownWebComponentTestEnv,
+  startMock,
+  nextMock,
+  emailVerificationStartMock,
+  fixtures,
+  WAIT_TIMEOUT,
+} from './descope-wc.test-harness';
+
+import '@testing-library/jest-dom';
+import { waitFor, fireEvent } from '@testing-library/dom';
+import { screen } from 'shadow-dom-testing-library';
+
+import '../src/lib/descope-wc';
+
+import { generateSdkResponse } from './testUtils';
+
+const evpPage =
+  '<descope-email-field email-verification="true"></descope-email-field><descope-button id="submitterId">click</descope-button><span>It works!</span>';
+const plainPage =
+  '<descope-email-field></descope-email-field><descope-button id="submitterId">click</descope-button><span>It works!</span>';
+
+const wcInForm = `<form><descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc></form>`;
+const wcNoForm = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+const getEvpInput = () =>
+  document.querySelector('descope-wc [data-evp-token]') as HTMLInputElement;
+
+const renderFirstScreen = async (html: string) => {
+  document.body.innerHTML = html;
+  await waitFor(() => screen.getByShadowText('It works!'), {
+    timeout: WAIT_TIMEOUT,
+  });
+};
+
+const lastNextInputs = () => nextMock.mock.calls.at(-1)[5];
+
+describe('web-component email verification', () => {
+  beforeEach(() => {
+    setupWebComponentTestEnv();
+    startMock.mockReturnValue(generateSdkResponse());
+  });
+
+  afterEach(() => {
+    teardownWebComponentTestEnv();
+  });
+
+  it('does not fetch a nonce when the email field has no email-verification attribute', async () => {
+    fixtures.pageContent = plainPage;
+
+    await renderFirstScreen(wcInForm);
+
+    expect(emailVerificationStartMock).not.toHaveBeenCalled();
+    expect(getEvpInput()).toBeNull();
+  });
+
+  it('does not fetch a nonce when there is no owning form', async () => {
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcNoForm);
+
+    expect(emailVerificationStartMock).not.toHaveBeenCalled();
+    expect(getEvpInput()).toBeNull();
+  });
+
+  it('injects a hidden token input with the nonce into the host light DOM', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(emailVerificationStartMock).toHaveBeenCalledTimes(1);
+    const input = getEvpInput();
+    expect(input.parentElement).toBe(document.querySelector('descope-wc'));
+    expect(input.type).toBe('hidden');
+    expect(input).toHaveAttribute('autocomplete', 'email-verification-token');
+    expect(input).toHaveAttribute('nonce', 'n0nce');
+    expect(input).toHaveAttribute('data-exclude-field', 'true');
+  });
+
+  it('skips email verification and keeps the flow working when the nonce fetch fails', async () => {
+    emailVerificationStartMock.mockRejectedValue(new Error('boom'));
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    // set the logger before connecting, the fetch fails during the first render
+    const warn = jest.fn();
+    document.body.innerHTML = '<form></form>';
+    const wc = document.createElement('descope-wc');
+    wc.setAttribute('flow-id', 'otpSignInEmail');
+    wc.setAttribute('project-id', '1');
+    wc.logger = { error: jest.fn(), warn, info: jest.fn(), debug: jest.fn() };
+    document.querySelector('form').appendChild(wc);
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    await waitFor(
+      () =>
+        expect(warn).toHaveBeenCalledWith(
+          'Email verification start failed',
+          'boom',
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+    expect(getEvpInput()).toBeNull();
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(lastNextInputs()).not.toHaveProperty('evpToken');
+  });
+
+  it('removes the token input when the screen changes', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fixtures.pageContent =
+      '<descope-button id="submitterId">click</descope-button><span>Second screen</span>';
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => screen.getByShadowText('Second screen'), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(getEvpInput()).toBeNull();
+    expect(emailVerificationStartMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('submits the form and sends the token the browser wrote on submit', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    // simulate the browser: the token is written only during submit dispatch
+    let submitEvent: Event;
+    const form = document.querySelector('form');
+    form.addEventListener(
+      'submit',
+      (e) => {
+        submitEvent = e;
+        getEvpInput().value = 'evp-token';
+      },
+      true,
+    );
+    const bubbleListener = jest.fn();
+    form.addEventListener('submit', bubbleListener);
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(lastNextInputs()).toEqual(
+      expect.objectContaining({ evpToken: 'evp-token' }),
+    );
+    expect(submitEvent.defaultPrevented).toBe(true);
+    expect(bubbleListener).not.toHaveBeenCalled();
+  });
+
+  it('does not send a token when the browser wrote none', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(lastNextInputs()).not.toHaveProperty('evpToken');
+  });
+});
