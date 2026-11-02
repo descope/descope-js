@@ -32,6 +32,7 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
       debug,
       widgetId,
       onLogout,
+      onFlowPopupUnauthenticated,
       styleId,
       onReady,
       client,
@@ -74,6 +75,23 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
       }
       return undefined;
     }, [innerRef, handleLogout]);
+
+    // Forwarded only. Unlike logout, the app's own session is still valid here:
+    // it is the auth domain that does not know the user, so clearing the
+    // session state would sign them out of an app they are signed in to.
+    useEffect(() => {
+      const ele = innerRef;
+      if (!ele || !onFlowPopupUnauthenticated) return undefined;
+      ele.addEventListener(
+        'flow-popup-unauthenticated',
+        onFlowPopupUnauthenticated,
+      );
+      return () =>
+        ele.removeEventListener(
+          'flow-popup-unauthenticated',
+          onFlowPopupUnauthenticated,
+        );
+    }, [innerRef, onFlowPopupUnauthenticated]);
 
     useEffect(() => {
       const ele = innerRef;
