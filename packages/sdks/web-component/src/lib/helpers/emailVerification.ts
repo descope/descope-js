@@ -45,16 +45,21 @@ export const readEmailVerificationToken = (host: HTMLElement): string => {
   if (!input || !form) return '';
 
   let token = '';
+  // on window in the capture phase, so no page listener can stop the event
+  // before it is cancelled and the form submits for real
   const onSubmit = (e: Event) => {
+    if (e.target !== form) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     token = input.value;
+    // single use, so it is not left readable in the page
+    input.value = '';
   };
-  form.addEventListener('submit', onSubmit, true);
+  window.addEventListener('submit', onSubmit, true);
   try {
     form.requestSubmit();
   } finally {
-    form.removeEventListener('submit', onSubmit, true);
+    window.removeEventListener('submit', onSubmit, true);
   }
   return token;
 };

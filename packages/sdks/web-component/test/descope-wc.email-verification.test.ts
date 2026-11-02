@@ -160,17 +160,20 @@ describe('web-component email verification', () => {
       timeout: WAIT_TIMEOUT,
     });
 
-    // simulate the browser: the token is written only during submit dispatch
-    let submitEvent: Event;
+    // simulate the browser: the token is written right before the submit event is dispatched
     const form = document.querySelector('form');
-    form.addEventListener(
-      'submit',
-      (e) => {
-        submitEvent = e;
-        getEvpInput().value = 'evp-token';
-      },
-      true,
-    );
+    const requestSubmit = form.requestSubmit.bind(form);
+    let submitEvent: Event;
+    jest.spyOn(form, 'requestSubmit').mockImplementation(() => {
+      getEvpInput().value = 'evp-token';
+      requestSubmit();
+    });
+    // a page listener that stops the event must not keep it from being cancelled
+    const pageListener = jest.fn((e: Event) => {
+      submitEvent = e;
+      e.stopPropagation();
+    });
+    document.addEventListener('submit', pageListener, true);
     const bubbleListener = jest.fn();
     form.addEventListener('submit', bubbleListener);
 
@@ -182,8 +185,13 @@ describe('web-component email verification', () => {
     expect(lastNextInputs()).toEqual(
       expect.objectContaining({ evpToken: 'evp-token' }),
     );
-    expect(submitEvent.defaultPrevented).toBe(true);
+    expect(form.requestSubmit).toHaveBeenCalled();
+    expect(pageListener).not.toHaveBeenCalled();
     expect(bubbleListener).not.toHaveBeenCalled();
+    expect(submitEvent).toBeUndefined();
+    // the token is not left in the page after it was read
+    expect(getEvpInput().value).toBe('');
+    document.removeEventListener('submit', pageListener, true);
   });
 
   it('does not send a token when the browser wrote none', async () => {
