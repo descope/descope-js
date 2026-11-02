@@ -194,6 +194,44 @@ describe('web-component email verification', () => {
     document.removeEventListener('submit', pageListener, true);
   });
 
+  it('reads the token even when an unrelated app form control is invalid', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(
+      `<form><input name="app" required /><descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc></form>`,
+    );
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const form = document.querySelector('form');
+    const requestSubmit = form.requestSubmit.bind(form);
+    jest.spyOn(form, 'requestSubmit').mockImplementation(() => {
+      getEvpInput().value = 'evp-token';
+      requestSubmit();
+    });
+    const invalid = jest.fn();
+    form
+      .querySelector('input[name="app"]')
+      .addEventListener('invalid', invalid);
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(lastNextInputs()).toEqual(
+      expect.objectContaining({ evpToken: 'evp-token' }),
+    );
+    expect(invalid).not.toHaveBeenCalled();
+    expect(form.noValidate).toBe(false);
+  });
+
   it('does not send a token when the browser wrote none', async () => {
     emailVerificationStartMock.mockResolvedValue({
       ok: true,

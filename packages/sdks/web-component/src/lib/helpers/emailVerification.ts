@@ -35,8 +35,7 @@ export const injectEmailVerificationInput = (
 
 // Submits the host form so the browser writes the token, and captures the
 // submit event so the page never navigates. Returns '' when there is no
-// token input, no form, or the form did not dispatch submit (e.g. a
-// customer form that failed constraint validation)
+// token input, no form, or the form did not dispatch submit
 export const readEmailVerificationToken = (host: HTMLElement): string => {
   const input = host.querySelector<HTMLInputElement>(
     `[${EVP_TOKEN_ATTRIBUTE}]`,
@@ -56,9 +55,13 @@ export const readEmailVerificationToken = (host: HTMLElement): string => {
     input.value = '';
   };
   window.addEventListener('submit', onSubmit, true);
+  // not a real submit, so unrelated controls of an app form are not validated
+  const { noValidate } = form;
+  form.noValidate = true;
   try {
     form.requestSubmit();
   } finally {
+    form.noValidate = noValidate;
     window.removeEventListener('submit', onSubmit, true);
   }
   return token;
