@@ -127,6 +127,41 @@ describe('buildFlowPopupUrl', () => {
     expect(params.get('flow')).toBe('f');
   });
 
+  it('drops an object input rather than sending "[object Object]"', () => {
+    const onUnsupportedValue = jest.fn();
+
+    const params = new URL(
+      buildFlowPopupUrl(
+        HOSTED_BASE,
+        flowEle({
+          'flow-id': 'f',
+          form: JSON.stringify({ externalId: 'u1', address: { city: 'TLV' } }),
+        }),
+        undefined,
+        undefined,
+        onUnsupportedValue,
+      ),
+    ).searchParams;
+
+    expect(onUnsupportedValue).toHaveBeenCalledWith('form', 'address');
+    expect(params.get('form.address')).toBeNull();
+    // the inputs that can travel still do, so the flow is not lost over one
+    expect(params.get('form.externalId')).toBe('u1');
+  });
+
+  it('still sends the values a url can carry', () => {
+    const params = paramsOf(
+      flowEle({
+        'flow-id': 'f',
+        form: JSON.stringify({ count: 3, enabled: false, missing: null }),
+      }),
+    );
+
+    expect(params.get('form.count')).toBe('3');
+    expect(params.get('form.enabled')).toBe('false');
+    expect(params.get('form.missing')).toBe('null');
+  });
+
   it('tolerates a missing flow element', () => {
     expect(() => buildFlowPopupUrl(HOSTED_BASE, null)).not.toThrow();
   });

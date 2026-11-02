@@ -100,6 +100,15 @@ const OBJECT_ATTRS = ['client', 'form'];
 export const POPUP_URL_MAX_CHARS = 2000;
 
 /**
+ * The auth domain does not know this user, so the app should sign them in.
+ *
+ * Deliberately not `logout`: that one means this window's tokens were cleared,
+ * and here they are untouched. Only the auth domain is missing a session, which
+ * is the normal state for an app that signs in with an embedded flow.
+ */
+export const FLOW_POPUP_UNAUTHENTICATED_EVENT = 'flow-popup-unauthenticated';
+
+/**
  * Turns the flow template's `<descope-wc>` into an auth-hosting url:
  * `<hostedPageBaseUrl>/<projectId>?flow=...`.
  *
@@ -116,6 +125,7 @@ export const buildFlowPopupUrl = (
   flowEle: Element | null,
   onParseError?: (attr: string, raw: string) => void,
   onTooLong?: (length: number) => void,
+  onUnsupportedValue?: (attr: string, key: string) => void,
 ): string => {
   const projectId = flowEle?.getAttribute('project-id') || '';
   // auth-hosting reads the project from the last path segment
@@ -131,6 +141,14 @@ export const buildFlowPopupUrl = (
     if (!raw) return;
     try {
       Object.entries(JSON.parse(raw)).forEach(([key, value]) => {
+        // A url carries text, and auth-hosting reads these back as text too,
+        // so an object cannot survive the trip. `String(value)` would make it
+        // "[object Object]" and the flow would run on nonsense, so it is
+        // dropped and reported instead. The modal path takes objects fine.
+        if (value !== null && typeof value === 'object') {
+          onUnsupportedValue?.(attr, key);
+          return;
+        }
         url.searchParams.set(`${attr}.${key}`, String(value));
       });
     } catch (e) {
@@ -249,6 +267,10 @@ export const flowRunnerMixin = createSingletonMixin(
             this.logger?.error(
               `The flow popup url is ${length} characters, past the ${POPUP_URL_MAX_CHARS} that is safe everywhere, so the popup may be refused before the flow starts. Pass identifiers in form and client inputs rather than data.`,
             ),
+          (attr, key) =>
+            this.logger?.error(
+              `The flow ${attr} input "${key}" is an object, and a popup flow can only take text, so it was not sent. Pass an id instead.`,
+            ),
         );
       }
 
@@ -267,27 +289,38 @@ export const flowRunnerMixin = createSingletonMixin(
         // The popup does not sign anyone in - it cannot choose how, since it
         // runs the project's own sign-in flow, which may send a link and strand
         // the user in another tab. Login belongs to the app, whose OIDC
-        // redirect re-establishes the session on the auth domain too. Routed
-        // through the existing logout event, which host apps already handle.
+        // redirect re-establishes the session on the auth domain too.
+        //
+        // Its own event, not `logout`. `logout` means the tokens are gone, and
+        // here they are not: an app that signs in with an embedded flow has a
+        // perfectly good session of its own and simply none on the auth domain,
+        // so a handler that routes `logout` to the login page would see a live
+        // session and send the user straight back.
         popup.onUnauthenticated(() => {
           this.logger?.info(
             'The auth domain does not recognise this user; asking the app to sign in again',
           );
-          this.dispatchEvent(new CustomEvent('logout'));
+          this.dispatchEvent(new CustomEvent(FLOW_POPUP_UNAUTHENTICATED_EVENT));
         });
-        popup.onDone(() => {
+        // The popup cannot always tell us it finished: when the opener is not
+        // approved it stays silent, so a passkey really was added and we never
+        // hear it. Every path therefore refreshes the same things, and a
+        // cancelled flow costs one extra fetch.
+        const recheckEverything = () => {
           onSuccess?.();
           recheckSession();
-        });
+        };
+
+        popup.onDone(recheckEverything);
         // the flow may have changed the user before the window went away, so
-        // the parent re-checks its session on every close, not just on success
-        popup.onClosed(recheckSession);
+        // the parent re-checks on every close, not just on success
+        popup.onClosed(recheckEverything);
         // A flow can finish where this popup cannot hear it - the tab an
         // emailed link opens, or that link opened on a phone. Nothing can
         // report back from there, so re-check when the person returns to the
         // app. Once per open, so it costs one extra check, not one per
         // alt-tab.
-        popup.onParentFocus(recheckSession);
+        popup.onParentFocus(recheckEverything);
 
         return {
           // no awaiting before open() - the browser blocks a popup that is not

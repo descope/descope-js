@@ -86,6 +86,39 @@ describe('flowPopupSessionMixin', () => {
     expect(ele.actions.getMe).not.toHaveBeenCalled();
   });
 
+  // The app gets focus back the moment the popup window goes away, while the
+  // close poll only notices up to a second later, so one close reports twice.
+  it('collapses two reports of the same close into one refresh', async () => {
+    let release: (v: any) => void = () => {};
+    const refresh = jest.fn(
+      () =>
+        new Promise((resolve) => {
+          release = resolve;
+        }),
+    );
+    const ele = createEle(refresh as any);
+
+    const first = ele.onFlowPopupClosed();
+    const second = ele.onFlowPopupClosed();
+    release(ok);
+    await Promise.all([first, second]);
+
+    // two refreshes at once race on a rotating refresh token, and the one that
+    // loses looks like a signed-out user
+    expect(refresh).toHaveBeenCalledTimes(1);
+    expect(ele.actions.getMe).toHaveBeenCalledTimes(1);
+  });
+
+  it('checks again on the next close, rather than only ever once', async () => {
+    const refresh = jest.fn(async () => ok);
+    const ele = createEle(refresh);
+
+    await ele.onFlowPopupClosed();
+    await ele.onFlowPopupClosed();
+
+    expect(refresh).toHaveBeenCalledTimes(2);
+  });
+
   it('treats a thrown refresh the same as a failed one', async () => {
     const refresh = jest.fn().mockRejectedValue(new Error('offline'));
     const ele = createEle(refresh);

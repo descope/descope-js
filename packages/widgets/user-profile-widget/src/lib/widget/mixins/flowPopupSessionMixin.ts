@@ -42,7 +42,21 @@ export const flowPopupSessionMixin = createSingletonMixin(
         }
       }
 
+      // One close can report twice: the app gets focus back the moment the
+      // popup window goes away, while the close poll only notices up to a
+      // second later. Two refreshes running at once race on a rotating refresh
+      // token, and the one that loses looks like a signed-out user, so a
+      // second call joins the first rather than starting its own.
+      #recheck: Promise<void> | null = null;
+
       async onFlowPopupClosed() {
+        this.#recheck ??= this.#recheckSession().finally(() => {
+          this.#recheck = null;
+        });
+        return this.#recheck;
+      }
+
+      async #recheckSession() {
         let outcome = await this.#refreshSession();
 
         // one retry, for the transient case only

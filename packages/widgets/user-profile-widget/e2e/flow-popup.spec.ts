@@ -197,16 +197,26 @@ test.describe('flows in a popup', () => {
       page,
     }) => {
       // a binding rather than a flag on window: the app navigates away to its
-      // login page when it hears `logout`, which would wipe any page state
-      let sawLogout: () => void;
-      const logoutHeard = new Promise<void>((resolve) => {
-        sawLogout = resolve;
+      // login page when it hears this, which would wipe any page state
+      let sawSignInRequest: () => void;
+      const signInRequested = new Promise<void>((resolve) => {
+        sawSignInRequest = resolve;
       });
-      await page.exposeFunction('reportLogout', () => sawLogout());
+      let sawLogout = false;
+      await page.exposeFunction('reportSignInRequest', () =>
+        sawSignInRequest(),
+      );
+      await page.exposeFunction('reportLogout', () => {
+        sawLogout = true;
+      });
       await page.evaluate(() => {
-        document
-          .querySelector('descope-user-profile-widget')
-          .addEventListener('logout', () => (window as any).reportLogout());
+        const widget = document.querySelector('descope-user-profile-widget');
+        widget.addEventListener('flow-popup-unauthenticated', () =>
+          (window as any).reportSignInRequest(),
+        );
+        // the app still has a valid session of its own, so this must not look
+        // like a sign-out
+        widget.addEventListener('logout', () => (window as any).reportLogout());
       });
 
       const popupPromise = page.waitForEvent('popup');
@@ -219,7 +229,8 @@ test.describe('flows in a popup', () => {
         (window as any).report('widget-flow-unauthenticated'),
       );
 
-      await logoutHeard;
+      await signInRequested;
+      expect(sawLogout).toBe(false);
     });
   });
 
