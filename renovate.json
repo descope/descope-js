@@ -6,7 +6,7 @@
   ],
   "packageRules": [
     {
-      "dependencyType": "peerDependencies",
+      "matchDepTypes": ["peerDependencies"],
       "enabled": false
     }
   ]

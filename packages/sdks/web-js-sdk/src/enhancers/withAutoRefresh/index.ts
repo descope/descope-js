@@ -12,6 +12,7 @@ import {
   getTokenExpiration,
   getAutoRefreshTimeout,
   createActivityTracker,
+  millisecondsUntilDate,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
@@ -71,10 +72,7 @@ export const withAutoRefresh =
           new Date() > sessionExpirationDate
         ) {
           logger.debug('Expiration time passed, refreshing session');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshToken);
+          refreshSession();
         }
       });
     }
@@ -87,6 +85,8 @@ export const withAutoRefresh =
       if (isInvalidSessionResponse(req, res)) {
         logger.debug('Session invalidated, canceling all timers');
         clearAllTimers();
+        // so the visibilitychange handler will not keep refreshing an invalid session
+        sessionExpirationDate = undefined;
       } else if (sessionJwt || sessionExpiration) {
         sessionExpirationDate = getTokenExpiration(
           sessionJwt,
@@ -99,7 +99,7 @@ export const withAutoRefresh =
         refreshToken = refreshJwt;
         // Updated on each server response — may change if server starts/stops returning nextRefreshSeconds
         hasInactivityTimeout = nextRefreshSeconds > 0;
-        const timeout = getAutoRefreshTimeout(
+        let timeout = getAutoRefreshTimeout(
           sessionExpirationDate,
           nextRefreshSeconds,
         );
@@ -109,12 +109,14 @@ export const withAutoRefresh =
           /*
             When receiving a session with very short expiration - it means that the refresh token is also close to expiration
             This happens because session expiration cannot be more than the refresh expiration
-            In this case - the user is going to be logged out soon, so we don't want to set a refresh timer
+            In this case we refresh when the session expires (refreshing before that would just return the same short session)
+            If the refresh token expired as well, the refresh fails with 401, which clears the session and notifies subscribers
+            We never refresh sooner than the threshold, so a client clock that is ahead of the server does not cause a tight loop
           */
-          logger.debug(
-            'Session is too close to expiration, not setting refresh timer',
+          timeout = Math.max(
+            millisecondsUntilDate(sessionExpirationDate),
+            REFRESH_THRESHOLD,
           );
-          return;
         }
 
         const refreshTimeStr = new Date(
@@ -149,15 +151,20 @@ export const withAutoRefresh =
           }
 
           logger.debug('Refreshing session due to timer');
-          // We prefer the persisted refresh token over the one from the response
-          // for a case that the token was refreshed from another tab, this mostly relevant
-          // when the project uses token rotation
-          sdk.refresh(getRefreshToken() || refreshJwt);
+          refreshSession();
         }, timeout);
       }
     };
 
     const sdk = createSdk(addHooks(config, { afterRequest }));
+
+    // Background refreshes are fire-and-forget, catch so a transport failure (e.g. offline)
+    // does not escape as an unhandled rejection
+    // We prefer the persisted refresh token, in case it was rotated from another tab
+    const refreshSession = () =>
+      sdk.refresh(getRefreshToken() || refreshToken).catch((err: unknown) => {
+        logger.warn('Automatic session refresh failed', err);
+      });
 
     const wrapper: SdkFnWrapper<{}> =
       (fn) =>
@@ -187,7 +194,7 @@ export const withAutoRefresh =
                 );
                 refreshWasSkipped = false;
                 clearAllTimers(); // Prevent race condition with pending timer
-                sdk.refresh(getRefreshToken() || refreshToken);
+                refreshSession();
               }
             }
           : () => {

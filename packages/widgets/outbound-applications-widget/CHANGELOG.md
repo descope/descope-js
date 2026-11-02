@@ -2,6 +2,57 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.18](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.17...outbound-applications-widget-0.7.18) (2026-10-29)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.6.1`
+## [0.7.17](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.16...outbound-applications-widget-0.7.17) (2026-10-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.29.0`
+* `web-component` updated to version `4.6.0`
+## [0.7.16](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.15...outbound-applications-widget-0.7.16) (2026-10-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.28.1`
+* `web-component` updated to version `4.5.2`
+## [0.7.15](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.14...outbound-applications-widget-0.7.15) (2026-10-20)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.28.0`
+* `web-component` updated to version `4.5.1`
+## [0.7.14](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.13...outbound-applications-widget-0.7.14) (2026-10-19)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.5.0`
+## [0.7.13](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.12...outbound-applications-widget-0.7.13) (2026-10-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.4`
+* `web-component` updated to version `4.4.12`
+## [0.7.12](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.11...outbound-applications-widget-0.7.12) (2026-10-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.3`
+* `web-component` updated to version `4.4.11`
+## [0.7.11](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.10...outbound-applications-widget-0.7.11) (2026-10-15)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.4.10`
+## [0.7.10](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.9...outbound-applications-widget-0.7.10) (2026-10-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.2`
+* `web-component` updated to version `4.4.9`
 ## [0.7.9](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.8...outbound-applications-widget-0.7.9) (2026-10-06)
 
 ### Dependency Updates

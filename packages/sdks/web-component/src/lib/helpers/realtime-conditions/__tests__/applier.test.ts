@@ -1,5 +1,10 @@
 import '@testing-library/jest-dom';
-import { apply, applyAction, clearAction } from '../applier';
+import {
+  apply,
+  applyAction,
+  clearAction,
+  isHiddenByCondition,
+} from '../applier';
 
 function mkEl(id: string, tag = 'div'): HTMLElement {
   const el = document.createElement(tag);
@@ -116,5 +121,85 @@ describe('apply', () => {
     expect(a1).not.toHaveClass('hidden');
     expect(a2).not.toHaveClass('hidden');
     expect(a3).not.toHaveClass('hidden');
+  });
+});
+
+// Regression for descope/etc#19151. A condition can target a container rather
+// than the input, and then the input keeps a clean class list while being
+// invisible. Callers that decide whether to validate need to see that.
+describe('isHiddenByCondition', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  // Build `root > ...chain > input` and return both ends.
+  const build = (depth: number) => {
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    let cursor: HTMLElement = root;
+    const chain: HTMLElement[] = [];
+    for (let i = 0; i < depth; i += 1) {
+      const box = document.createElement('div');
+      cursor.appendChild(box);
+      chain.push(box);
+      cursor = box;
+    }
+    const input = document.createElement('input');
+    input.name = 'zip';
+    cursor.appendChild(input);
+    return { root, chain, input };
+  };
+
+  it('is false when nothing is hidden', () => {
+    const { root, input } = build(1);
+    expect(isHiddenByCondition(input, root)).toBe(false);
+  });
+
+  it('is true when the element itself is hidden', () => {
+    const { root, input } = build(1);
+    applyAction(input, 'hide');
+    expect(isHiddenByCondition(input, root)).toBe(true);
+  });
+
+  it('is true when the container around it is hidden', () => {
+    const { root, chain, input } = build(1);
+    applyAction(chain[0], 'hide');
+    expect(input).not.toHaveClass('hidden');
+    expect(isHiddenByCondition(input, root)).toBe(true);
+  });
+
+  it('is true for a hidden container several levels up', () => {
+    const { root, chain, input } = build(3);
+    applyAction(chain[0], 'hide');
+    expect(isHiddenByCondition(input, root)).toBe(true);
+  });
+
+  // The screen root gets the same class while a custom screen is showing.
+  // Treating that as "hidden" would switch off validation for the whole form,
+  // so the ancestor walk deliberately stops before it.
+  it('is false when only the root itself is hidden', () => {
+    const { root, input } = build(1);
+    applyAction(root, 'hide');
+    expect(isHiddenByCondition(input, root)).toBe(false);
+  });
+
+  // An element that carries the class itself still counts even when it sits
+  // outside the root, so the pre-existing behaviour is unchanged.
+  it('is true for a self-hidden element outside the root', () => {
+    const { root } = build(1);
+    const outside = document.createElement('input');
+    outside.name = 'stray';
+    document.body.appendChild(outside);
+    applyAction(outside, 'hide');
+    expect(isHiddenByCondition(outside, root)).toBe(true);
+  });
+
+  // A hidden element that is not an ancestor must not leak across the tree.
+  it('ignores a hidden sibling subtree', () => {
+    const { root, input } = build(1);
+    const sibling = document.createElement('div');
+    root.appendChild(sibling);
+    applyAction(sibling, 'hide');
+    expect(isHiddenByCondition(input, root)).toBe(false);
   });
 });

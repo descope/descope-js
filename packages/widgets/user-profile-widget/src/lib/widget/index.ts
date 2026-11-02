@@ -1,4 +1,5 @@
 import { compose } from '@descope/sdk-helpers';
+import type { CookieConfig } from '@descope/web-js-sdk';
 import { initMixin } from './mixins/initMixin/initMixin';
 
 declare const BUILD_VERSION: string;
@@ -10,7 +11,11 @@ const rootMixin = (superclass: CustomElementConstructor) =>
   // deep type inference; runtime behavior is unchanged.
   class RootMixinClass extends (initMixin(superclass) as unknown as new (
     ...args: any[]
-  ) => HTMLElement & { init?(): Promise<void> }) {
+  ) => HTMLElement & {
+    init?(): Promise<void>;
+    sessionTokenViaCookie?: CookieConfig;
+    refreshTokenViaCookie?: CookieConfig;
+  }) {
     async init() {
       await super.init?.();
 
@@ -20,11 +25,20 @@ const rootMixin = (superclass: CustomElementConstructor) =>
           (module) => module.default,
         ));
 
+      const widget = this;
       WebComponent.sdkConfigOverrides = {
         baseHeaders: {
           'x-descope-widget-type': 'user-profile-widget',
           'x-descope-widget-id': this.getAttribute('widget-id'),
           'x-descope-widget-version': BUILD_VERSION,
+        },
+        // inner flows read and write tokens with the same cookie config as the widget sdk.
+        // getters, so a flow created after the attributes change gets the current config
+        get sessionTokenViaCookie() {
+          return widget.sessionTokenViaCookie;
+        },
+        get refreshTokenViaCookie() {
+          return widget.refreshTokenViaCookie;
         },
       };
     }

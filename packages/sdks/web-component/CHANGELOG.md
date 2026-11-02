@@ -2,6 +2,77 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.6.1](https://github.com/descope/descope-js/compare/web-component-4.6.0...web-component-4.6.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* **web-component:** load @descope/flow-scripts 1.0.21 ([#1545](https://github.com/descope/descope-js/issues/1545)) ([84d8026](https://github.com/descope/descope-js/commit/84d80264e8f636c6d40435ce41402407c560a328)), closes [descope/content#2463](https://github.com/descope/content/issues/2463) [descope/etc#19463](https://github.com/descope/etc/issues/19463) [descope/content#2483](https://github.com/descope/content/issues/2483)
+
+## [4.6.0](https://github.com/descope/descope-js/compare/web-component-4.5.2...web-component-4.6.0) (2026-10-28)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.29.0`
+
+### Features
+
+* **web-component:** load tenant font files from the tenant theme ([#1522](https://github.com/descope/descope-js/issues/1522)) ([3ba19c8](https://github.com/descope/descope-js/commit/3ba19c892054af0341e56e19de2b932ce0d44b67)), closes [descope/etc#19225](https://github.com/descope/etc/issues/19225)
+
+## [4.5.2](https://github.com/descope/descope-js/compare/web-component-4.5.1...web-component-4.5.2) (2026-10-24)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.28.1`
+## [4.5.1](https://github.com/descope/descope-js/compare/web-component-4.5.0...web-component-4.5.1) (2026-10-20)
+
+### Dependency Updates
+
+* `sdk-mixins` updated to version `0.28.0`
+
+### Bug Fixes
+
+* **web-component:** send the page origin when starting a flow and resuming from a redirect ([#1520](https://github.com/descope/descope-js/issues/1520)) ([a096220](https://github.com/descope/descope-js/commit/a0962209ec9f95b055926c83cf6d918ff3c5a313))
+
+## [4.5.0](https://github.com/descope/descope-js/compare/web-component-4.4.12...web-component-4.5.0) (2026-10-19)
+
+
+### Features
+
+* **web-component:** expose password reuse amount in context.data.passwordPolicy ([#1517](https://github.com/descope/descope-js/issues/1517)) ([2810c91](https://github.com/descope/descope-js/commit/2810c91c1d409168be715e52a9035643b6139ab1)), closes [descope/etc#18963](https://github.com/descope/etc/issues/18963)
+
+## [4.4.12](https://github.com/descope/descope-js/compare/web-component-4.4.11...web-component-4.4.12) (2026-10-18)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.4`
+
+### Bug Fixes
+
+* **web-component:** keep OIDC context across a login page refresh RELEASE ([#1514](https://github.com/descope/descope-js/issues/1514)) ([20ffa18](https://github.com/descope/descope-js/commit/20ffa189cbc760e4489ba116187751b8a9f10860)), closes [#460](https://github.com/descope/descope-js/issues/460)
+
+## [4.4.11](https://github.com/descope/descope-js/compare/web-component-4.4.10...web-component-4.4.11) (2026-10-17)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.3`
+## [4.4.10](https://github.com/descope/descope-js/compare/web-component-4.4.9...web-component-4.4.10) (2026-10-15)
+
+
+### Bug Fixes
+
+* **web-component:** skip hidden components when validating and focusing RELEASE ([#1515](https://github.com/descope/descope-js/issues/1515)) ([cc6c90b](https://github.com/descope/descope-js/commit/cc6c90b2ebcc001954ba6f0bda8e2135997a877a))
+
+## [4.4.9](https://github.com/descope/descope-js/compare/web-component-4.4.8...web-component-4.4.9) (2026-10-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.2`
+
+### Bug Fixes
+
+* **web-component:** do not block submit on named elements without checkValidity ([#1511](https://github.com/descope/descope-js/issues/1511)) ([7675dd3](https://github.com/descope/descope-js/commit/7675dd30e73fc49f0e0bafff393dd25544f8027f))
+
 ## [4.4.8](https://github.com/descope/descope-js/compare/web-component-4.4.7...web-component-4.4.8) (2026-10-06)
 
 ### Dependency Updates

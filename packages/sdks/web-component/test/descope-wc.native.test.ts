@@ -387,6 +387,89 @@ describe('web-component', () => {
     });
   });
 
+  describe('native origin', () => {
+    afterEach(() => {
+      delete (window as any).descopeBridge;
+    });
+
+    const startNativeFlow = async () => {
+      (window as any).descopeBridge = {};
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+      const wcEle = document.getElementsByTagName('descope-wc')[0] as any;
+      await waitFor(
+        () => expect(wcEle.lazyInit).toEqual(expect.any(Function)),
+        { timeout: WAIT_TIMEOUT },
+      );
+      wcEle.nativeOptions = {
+        platform: 'android',
+        bridgeVersion: 1,
+        origin: 'android:apk-key-hash:abc',
+      };
+      wcEle.lazyInit();
+    };
+
+    it('Should call start with the native origin', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      await startNativeFlow();
+
+      await waitFor(
+        () =>
+          expect(startMock).toHaveBeenCalledWith(
+            'otpSignInEmail',
+            expect.any(Object),
+            undefined,
+            '',
+            '1.2.3',
+            expect.any(Object),
+            expect.objectContaining({ origin: 'android:apk-key-hash:abc' }),
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
+    it('Should not send the native origin in the start options', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+
+      await startNativeFlow();
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startMock.mock.calls[0][1].nativeOptions).toEqual({
+        platform: 'android',
+        bridgeVersion: 1,
+      });
+    });
+
+    it('Should call next with the native origin when submitting a screen', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValueOnce(generateSdkResponse());
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><span>It works!</span>';
+
+      await startNativeFlow();
+
+      fireEvent.click(
+        await screen.findByShadowText('click', {}, { timeout: WAIT_TIMEOUT }),
+      );
+
+      await waitFor(
+        () =>
+          expect(nextMock).toHaveBeenCalledWith(
+            '0',
+            '0',
+            'submitterId',
+            1,
+            '1.2.3',
+            expect.objectContaining({ origin: 'android:apk-key-hash:abc' }),
+            false,
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+  });
+
   describe('native bridge v3 - multi-component registerFlow/unregisterFlow', () => {
     afterEach(() => {
       delete (window as any).descopeBridge;

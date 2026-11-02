@@ -409,6 +409,53 @@ describe('web-component', () => {
       expect(startMock).toHaveBeenCalled();
     });
 
+    it('should not log the load timeout when scripts load in time', async () => {
+      const warnMock = jest.fn();
+
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          'sign-in': {
+            startScreenId: 'screen-0',
+            clientScripts: [
+              {
+                id: 'grecaptcha',
+                initArgs: {
+                  enterprise: true,
+                  siteKey: 'SITE_KEY',
+                },
+                resultKey: 'riskToken',
+              },
+            ],
+          },
+        },
+      };
+      fixtures.pageContent = '<span>hey</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+      document.querySelector('descope-wc').logger = { warn: warnMock };
+
+      await waitFor(() => screen.findByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      scriptMock.onload();
+      await waitFor(() => expect(mockClientScript).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      // let the race settle and clear its timer before the timeout elapses
+      for (let i = 0; i < 50; i += 1) {
+        await Promise.resolve(); // eslint-disable-line no-await-in-loop
+      }
+
+      jest.advanceTimersByTime(SDK_SCRIPTS_LOAD_TIMEOUT + 1);
+
+      expect(warnMock).not.toHaveBeenCalledWith(
+        'SDK scripts loading timeout',
+        expect.anything(),
+      );
+    });
+
     it('should load sdk script when flow configured with sdk script', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       const mockForterScript = jest.fn(() => ({

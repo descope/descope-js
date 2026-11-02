@@ -81,7 +81,7 @@ describe('web-component start options', () => {
           otpSignInEmail: 1,
           'versioned-flow': 1,
         },
-        {},
+        { origin: 'http://localhost' },
       ),
     );
   });
@@ -128,7 +128,54 @@ describe('web-component start options', () => {
           'form.fullName': 'dn',
           displayName: 'dn',
           fullName: 'dn',
+          origin: 'http://localhost',
         },
+      ),
+    );
+  });
+
+  it('should call start with the page origin', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    fixtures.pageContent = '<span>hey</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: 20000,
+    });
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        expect.any(Object),
+        undefined,
+        '',
+        '1.2.3',
+        expect.any(Object),
+        expect.objectContaining({ origin: 'http://localhost' }),
+      ),
+    );
+  });
+
+  it('should call start with the form origin when provided', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    fixtures.pageContent = '<span>hey</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" form='{"origin": "https://custom.example.com"}'></descope-wc>`;
+
+    await waitFor(() => screen.findByShadowText('hey'), {
+      timeout: 20000,
+    });
+
+    await waitFor(() =>
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        expect.any(Object),
+        undefined,
+        '',
+        '1.2.3',
+        expect.any(Object),
+        expect.objectContaining({ origin: 'https://custom.example.com' }),
       ),
     );
   });
@@ -162,7 +209,7 @@ describe('web-component start options', () => {
         {
           'sign-in': 1,
         },
-        {},
+        { origin: 'http://localhost' },
       ),
     );
   });

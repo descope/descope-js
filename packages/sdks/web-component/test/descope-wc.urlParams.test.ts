@@ -118,6 +118,7 @@ describe('web-component urlParams', () => {
       () =>
         expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
           token: 'token1',
+          origin: 'http://localhost',
         }),
       { timeout: WAIT_TIMEOUT },
     );
@@ -135,12 +136,35 @@ describe('web-component urlParams', () => {
       () =>
         expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 0, '1.2.3', {
           exchangeCode: 'code1',
+          origin: 'http://localhost',
         }),
       { timeout: WAIT_TIMEOUT },
     );
     await waitFor(() => screen.findByShadowText('It works!'), {
       timeout: WAIT_TIMEOUT,
     });
+  });
+
+  it('should call next with the page origin when resuming from a redirect', async () => {
+    nextMock.mockReturnValueOnce(generateSdkResponse());
+
+    fixtures.pageContent = '<span>It works!</span>';
+
+    window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=0_0&${URL_CODE_PARAM_NAME}=code1`;
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="flow-1" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(nextMock).toHaveBeenCalledWith(
+          '0',
+          '0',
+          'submit',
+          0,
+          '1.2.3',
+          expect.objectContaining({ origin: 'http://localhost' }),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('should call next with exchangeError when url contains "err" query param', async () => {
@@ -155,6 +179,7 @@ describe('web-component urlParams', () => {
       () =>
         expect(nextMock).toHaveBeenCalledWith('0', '0', 'submit', 1, '1.2.3', {
           exchangeError: 'err1',
+          origin: 'http://localhost',
         }),
       { timeout: WAIT_TIMEOUT },
     );
