@@ -7,6 +7,7 @@ export const URL_TOKEN_PARAM_NAME = 't';
 export const URL_CODE_PARAM_NAME = 'code';
 export const URL_REDIRECT_MODE_PARAM_NAME = 'redirect_mode';
 export const URL_ERR_PARAM_NAME = 'err';
+export const URL_POPUP_OPENER_ORIGIN_PARAM_NAME = 'popup_opener_origin';
 export const URL_REDIRECT_AUTH_CHALLENGE_PARAM_NAME = 'ra-challenge';
 export const URL_REDIRECT_AUTH_CALLBACK_PARAM_NAME = 'ra-callback';
 export const URL_REDIRECT_AUTH_BACKUP_CALLBACK_PARAM_NAME =
