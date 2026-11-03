@@ -147,6 +147,63 @@ describe('web-component email verification', () => {
     expect(emailVerificationStartMock).toHaveBeenCalledTimes(1);
   });
 
+  it('drops a nonce that resolves after the screen changed', async () => {
+    let resolveStart: (value: unknown) => void;
+    emailVerificationStartMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolveStart = resolve;
+      }),
+    );
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+    await waitFor(
+      () => expect(emailVerificationStartMock).toHaveBeenCalledTimes(1),
+      { timeout: WAIT_TIMEOUT },
+    );
+
+    fixtures.pageContent =
+      '<descope-button id="submitterId">click</descope-button><span>Second screen</span>';
+    fireEvent.click(screen.getByShadowText('click'));
+    await waitFor(() => screen.getByShadowText('Second screen'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    resolveStart({ ok: true, data: { nonce: 'late-n0nce' } });
+    // timers are faked, so let the nonce promise chain settle directly
+    for (let i = 0; i < 10; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.resolve();
+    }
+    expect(getEvpInput()).toBeNull();
+  });
+
+  it('does not read the token for a button that skips validation', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent =
+      '<descope-email-field email-verification="true"></descope-email-field><descope-button id="backId" formnovalidate="true">back</descope-button><span>It works!</span>';
+
+    await renderFirstScreen(wcInForm);
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    const form = document.querySelector('form');
+    jest.spyOn(form, 'requestSubmit');
+
+    fireEvent.click(screen.getByShadowText('back'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(lastNextInputs()).not.toHaveProperty('evpToken');
+    expect(form.requestSubmit).not.toHaveBeenCalled();
+  });
+
   it('submits the form and sends the token the browser wrote on submit', async () => {
     emailVerificationStartMock.mockResolvedValue({
       ok: true,
