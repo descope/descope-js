@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.54.5](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.4...web-js-sdk-1.54.5) (2026-11-03)
+
+
+### Bug Fixes
+
+* **web-js-sdk:** invalidate session when refresh token expires in an open tab ([#1538](https://github.com/descope/descope-js/issues/1538)) ([40eeb94](https://github.com/descope/descope-js/commit/40eeb94c6574b50663a4c3da5e46df50e7b54cae))
+
 ## [1.54.4](https://github.com/descope/descope-js/compare/web-js-sdk-1.54.3...web-js-sdk-1.54.4) (2026-10-18)
 
 
