@@ -280,6 +280,22 @@ export const themeMixin = createSingletonMixin(
         } else {
           this.logger.debug('No fonts to load');
         }
+        this.#loadTenantFonts();
+      }
+
+      // Project fonts come from the config, which has no tenant fonts; a tenant theme
+      // that overrides fonts carries their URLs, in the same shape as the config fonts
+      async #loadTenantFonts() {
+        if (!this.tenantId) return;
+        const tenantTheme = await this.#tenantThemeResource;
+        const fonts: Record<string, { url?: string } | null> | undefined =
+          tenantTheme?.[this.theme]?.fonts;
+        Object.values(fonts || {}).forEach((font) => {
+          if (font?.url) {
+            this.logger.debug(`Loading tenant font from URL "${font.url}"`);
+            loadFont(font.url);
+          }
+        });
       }
 
       async #applyTheme() {
@@ -329,6 +345,7 @@ export const themeMixin = createSingletonMixin(
           this.#_tenantThemeResource = null;
           this.#loadTenantStyle();
           this.#loadComponentsStyle();
+          this.#loadTenantFonts();
         });
 
         this.observeAttributes(['style-id'], () => {

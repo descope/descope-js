@@ -50,6 +50,8 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
       baseStaticUrl,
       baseCdnUrl,
       refreshCookieName,
+      sessionTokenViaCookie,
+      refreshTokenViaCookie,
       setSession,
       setUser,
       setIsAuthenticated,
@@ -119,6 +121,8 @@ const UserProfile = React.forwardRef<HTMLElement, UserProfileProps>(
             'debug.attr': debug,
             'styleId.attr': styleId,
             'refreshCookieName.attr': refreshCookieName,
+            'sessionTokenViaCookie.attr': sessionTokenViaCookie,
+            'refreshTokenViaCookie.attr': refreshTokenViaCookie,
             'client.attr': client,
             'form.attr': form,
             // props

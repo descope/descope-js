@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-shadow */
+import { escapeHtml } from '@descope/sdk-helpers';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Sdk } from '../../api/sdk';
 import { FirstParameter, State, ThunkConfigExtraApi } from '../types';
@@ -34,7 +35,7 @@ const reducer = buildAsyncReducer(action)(
       return `
       <div>
         <div>Failed to update role</div>
-        ${errorMsg}
+        ${escapeHtml(errorMsg)}
       </div>`;
     },
   }),

@@ -711,7 +711,7 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
       ssoQueryParams,
-    } = handleUrlParams(this.flowId, this.loggerWrapper);
+    } = handleUrlParams(this.flowId, this.projectId, this.loggerWrapper);
 
     // we want to update the state when user clicks on back in the browser
     window.addEventListener('popstate', this.#eventsCbRefs.popstate);

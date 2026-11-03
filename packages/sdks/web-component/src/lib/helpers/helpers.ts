@@ -29,6 +29,7 @@ import {
   URL_REDIRECT_MODE_PARAM_NAME,
 } from '../constants';
 import { EXCLUDED_STATE_KEYS } from '../constants/customScreens';
+import { isHiddenByCondition } from './realtime-conditions/applier';
 import {
   AutoFocusOptions,
   ComponentsConfig,
@@ -39,6 +40,13 @@ import {
   SSOQueryParams,
   StepState,
 } from '../types';
+import {
+  dropStaleSsoQueryParams,
+  hasAnySsoQueryParam,
+  restoreSsoQueryParams,
+  storeSsoQueryParams,
+  markScopeFirstInit,
+} from './oidcSession';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
 
@@ -395,6 +403,7 @@ export const getFlowConfig = (config: Record<string, any>, flowId: string) =>
 
 export const handleUrlParams = (
   flowId: string,
+  projectId: string,
   logger: { debug: (...data: any[]) => void },
 ) => {
   const { executionId, stepId, executionFlowId } = getRunIdsFromUrl(flowId);
@@ -514,6 +523,52 @@ export const handleUrlParams = (
 
   const idpInitiatedVal = descopeIdpInitiated === 'true';
 
+  const ssoQueryParams = {
+    oidcIdpStateId,
+    samlIdpStateId,
+    wsfedIdpStateId,
+    samlIdpUsername,
+    descopeIdpInitiated: idpInitiatedVal,
+    ssoAppId,
+    customAppId,
+    oidcLoginHint,
+    oidcPrompt,
+    oidcErrorRedirectUri,
+    oidcResource,
+    thirdPartyAppId,
+    thirdPartyAppStateId,
+    applicationScopes,
+  };
+
+  // The params above have just been stripped from the URL, so a refresh would
+  // lose the OIDC context and the user would never be redirected back to the
+  // app that sent them here. Keep a tab-scoped copy and hand it back, but only
+  // on a genuine reload. See oidcSession.ts for why that guard is the whole
+  // security argument.
+  // `executionFlowId` means a flow is already in progress, which is not the
+  // empty-URL refresh this is for. It is read above, before the run ids are
+  // cleared from the URL, which is why this has to live here and not at the
+  // call site.
+  // Taken on EVERY init, including the one that stores, so that a first load
+  // carrying the params cannot leave a credit behind for a later remount.
+  const firstInitForScope = markScopeFirstInit(projectId, flowId);
+
+  let effectiveSsoQueryParams: Partial<SSOQueryParams> = ssoQueryParams;
+  if (hasAnySsoQueryParam(ssoQueryParams)) {
+    storeSsoQueryParams(ssoQueryParams, projectId, flowId);
+  } else if (!executionFlowId) {
+    const restored = firstInitForScope
+      ? restoreSsoQueryParams(projectId, flowId)
+      : null;
+    if (restored) {
+      logger.debug('Restored SSO query params after a page reload');
+      effectiveSsoQueryParams = restored;
+    } else {
+      // not a reload of this page, so anything stored for it is abandoned
+      dropStaleSsoQueryParams(projectId, flowId);
+    }
+  }
+
   return {
     executionId,
     stepId,
@@ -525,22 +580,7 @@ export const handleUrlParams = (
     redirectAuthCallbackUrl,
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
-    ssoQueryParams: {
-      oidcIdpStateId,
-      samlIdpStateId,
-      wsfedIdpStateId,
-      samlIdpUsername,
-      descopeIdpInitiated: idpInitiatedVal,
-      ssoAppId,
-      customAppId,
-      oidcLoginHint,
-      oidcPrompt,
-      oidcErrorRedirectUri,
-      oidcResource,
-      thirdPartyAppId,
-      thirdPartyAppStateId,
-      applicationScopes,
-    },
+    ssoQueryParams: effectiveSsoQueryParams,
   };
 };
 
@@ -590,10 +630,14 @@ export const handleAutoFocus = (
     autoFocus === true ||
     (autoFocus === 'skipFirstScreen' && !isFirstScreen)
   ) {
-    // focus the first visible input
-    const firstVisibleInput: HTMLInputElement = ele.querySelector(
-      FOCUSABLE_INPUTS_SELECTOR,
-    );
+    // Focus the first visible input. A condition can hide the container
+    // holding the first match, and the selector cannot see that, so skip
+    // those here rather than focusing something the user cannot see. In a
+    // real browser focusing a display:none element silently does nothing,
+    // which left the screen with no focus at all.
+    const firstVisibleInput = Array.from(
+      ele.querySelectorAll<HTMLInputElement>(FOCUSABLE_INPUTS_SELECTOR),
+    ).find((input) => !isHiddenByCondition(input, ele));
     setTimeout(() => {
       firstVisibleInput?.focus();
     });
@@ -609,6 +653,13 @@ export const handleReportValidityOnBlur = (
 ) => {
   rootEle.querySelectorAll('*[name]').forEach((ele: HTMLInputElement) => {
     ele.addEventListener('blur', () => {
+      // Checked here and not when the listener is attached: a real-time rule
+      // can hide the field later, and hiding a focused field is exactly what
+      // fires this blur. Reporting then puts an error on something the user
+      // cannot see.
+      if (isHiddenByCondition(ele, rootEle)) {
+        return;
+      }
       const onBlur = () => {
         // reportValidity also focus the element if it's invalid
         // in order to prevent this we need to override the focus method
@@ -750,8 +801,9 @@ export const showFirstScreenOnExecutionInit = (
   !thirdPartyAppStateId &&
   !applicationScopes;
 
-// Use DOM APIs to set values safely - these are server-provided values (raw XML,
-// base64, opaque relay state) that would break innerHTML interpolation
+// DOM APIs only, never innerHTML: these values are attacker-controllable
+// (SAML RelayState), so interpolating them into markup is HTML injection.
+// Do not escape either - they must round-trip byte for byte.
 const createHiddenInput = (name: string, value: string, role?: string) => {
   const input = document.createElement('input');
   input.type = 'hidden';
@@ -780,13 +832,6 @@ export const injectSamlIdpForm = (
     createHiddenInput('RelayState', relayState, 'saml-relay-state'),
   );
 
-  const submitBtn = document.createElement('input');
-  submitBtn.type = 'submit';
-  submitBtn.id = 'SAMLSubmitButton';
-  submitBtn.value = 'Continue';
-  submitBtn.style.display = 'none';
-  formEle.appendChild(submitBtn);
-
   document.body.appendChild(formEle);
 
   submitCallback(formEle);
@@ -805,13 +850,6 @@ export const injectWsFedIdpForm = (
   formEle.appendChild(createHiddenInput('wa', 'wsignin1.0'));
   formEle.appendChild(createHiddenInput('wresult', wresult));
   formEle.appendChild(createHiddenInput('wctx', wctx));
-
-  const submitBtn = document.createElement('input');
-  submitBtn.type = 'submit';
-  submitBtn.id = 'WSFedSubmitButton';
-  submitBtn.value = 'Continue';
-  submitBtn.style.display = 'none';
-  formEle.appendChild(submitBtn);
 
   document.body.appendChild(formEle);
 
@@ -867,6 +905,7 @@ const PASSWORD_POLICY_KEYS: Record<string, string> = {
   strength: 'data-password-policy-value-passwordstrength',
   disallowedChars: 'data-password-policy-value-disallowedchars',
   email: 'data-password-policy-value-email',
+  reuse: 'data-password-policy-value-reuse',
   activePolicies: 'active-policies',
   availablePolicies: 'available-policies',
 };

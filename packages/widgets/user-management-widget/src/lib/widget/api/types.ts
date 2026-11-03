@@ -18,6 +18,13 @@ export enum CustomAttributeTypeMap {
 
 type UserStatus = 'enabled' | 'disabled' | 'invited';
 
+// Auth method that triggered brute-force protection on a user
+export type LockReason =
+  | 'password'
+  | 'totp'
+  | 'recovery_codes'
+  | 'security_questions';
+
 export type HttpClient = Sdk['httpClient'];
 
 export type AssociatedTenant = {
@@ -60,6 +67,10 @@ export type User = {
   givenName: string;
   middleName: string;
   familyName: string;
+  // Brute-force protection state: the method that locked the user ('' when none), and the
+  // unix-seconds end of a temporary lock (0 when none)
+  lockReason?: LockReason | '';
+  tempLockExpiration?: number;
 };
 
 export type Role = {
@@ -126,6 +137,8 @@ export type SearchUsersConfig = {
   totp?: boolean;
   webauthn?: boolean;
   scim?: boolean;
+  lockReasons?: LockReason[];
+  tempLockReasons?: LockReason[];
 };
 
 export type UpdateUserConfig = {

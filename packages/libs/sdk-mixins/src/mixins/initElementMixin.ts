@@ -31,6 +31,9 @@ export const initElementMixin = createSingletonMixin(
               position: relative;
               height: fit-content;
             }
+            #${ROOT_ID}:has(> #${CONTENT_ROOT_ID} > #ROOT[st-host-height="100%"]) {
+              height: 100%;
+            }
           `);
 
         this.contentRootElement =

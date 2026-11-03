@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { compose } from '@descope/sdk-helpers';
+import { compose, escapeHtml } from '@descope/sdk-helpers';
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 import {
   addOnResize,
@@ -197,10 +197,10 @@ class Debugger extends BaseClass {
       ${icon}
       <div class="msg_content">
         <div class="msg_title">
-          ${message.title}
+          ${escapeHtml(message.title)}
         </div>
         <div class="msg_desc">
-          ${message.description}
+          ${escapeHtml(message.description)}
         </div>
       </div>
       <div class="chevron"></div>

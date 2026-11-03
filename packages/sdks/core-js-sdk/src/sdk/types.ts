@@ -68,15 +68,25 @@ export type UserResponse = User & {
   picture?: string;
   roleNames?: string[];
   userTenants?: UserTenant[];
+  userFamilies?: UserFamily[];
+  dependent?: boolean;
   createdTime: number;
   TOTP: boolean;
   SAML: boolean;
   SCIM: boolean;
+  /** The tenant whose SCIM connection provisioned the user. Omitted when none or ambiguous. */
+  scimTenantId?: string;
+  /** The tenant whose SAML SSO created the user or merged the user's login into it. Omitted when none or ambiguous. */
+  samlTenantId?: string;
+  /** The tenant whose OIDC SSO created the user or merged the user's login into it. Omitted when none or ambiguous. */
+  oidcTenantId?: string;
   password: boolean;
   OAuth?: Record<string, boolean>;
   customAttributes?: Record<string, any>;
   status: string;
   test: boolean;
+  lockReason?: string;
+  tempLockExpiration?: number;
 };
 
 export type Tenant = {
@@ -103,6 +113,14 @@ export type UserTenant = {
   roleNames?: string[];
   permissions?: string[];
   tenantName: string;
+};
+
+/** A family association mapping */
+export type UserFamily = {
+  familyId: string;
+  roleNames?: string[];
+  permissions?: string[];
+  familyScopedAttributes?: Record<string, any>;
 };
 
 export type TemplateOptions = Record<string, string>; // for providing messaging template options (templates that are being sent via email / text message)
@@ -409,6 +427,7 @@ export type SdkResponse<T extends ResponseData> = {
     errorDescription: string;
     errorMessage?: string;
     retryAfter?: string;
+    traceId?: string;
   };
   data?: T;
 };

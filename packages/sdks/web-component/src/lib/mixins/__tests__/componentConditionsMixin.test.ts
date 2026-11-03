@@ -542,7 +542,7 @@ describe('componentConditionsMixin', () => {
     const { host, root } = mountHost();
     const chk = mkComponent(root, '_chk');
     chk.classList.add('hidden'); // baseline
-    const phone = mkInput(root, 'phone', '');
+    mkInput(root, 'phone', '');
 
     host.initRealtimeConditions(root, {
       form: { phone: '' },
@@ -565,13 +565,16 @@ describe('componentConditionsMixin', () => {
       ],
     });
 
-    // Re-init with a different condition group (different component).
+    // Next screen, rendered the way DescopeWc does it: the content root keeps
+    // its identity but its children are replaced wholesale. Different
+    // condition group, different component.
+    root.replaceChildren();
     const chk2 = mkComponent(root, '_other');
-    const newRoot = root; // same root for simplicity
+    const phone2 = mkInput(root, 'phone', '');
     // Pre-hide _other to simulate baseline.
     chk2.classList.add('hidden');
 
-    host.initRealtimeConditions(newRoot, {
+    host.initRealtimeConditions(root, {
       form: { phone: 'unused' },
       componentsState: { _other: 'hide' },
       realtimeComponentsConditions: [
@@ -592,16 +595,14 @@ describe('componentConditionsMixin', () => {
       ],
     });
 
-    // Typing into phone should NO longer trigger any change for either
-    // component, because the new condition doesn't reference form.phone.
-    dispatchInput(phone, '+1');
+    // Typing into the new screen's phone triggers nothing, because the new
+    // condition doesn't reference form.phone.
+    dispatchInput(phone2, '+1');
     flushDebounce();
-
-    expect(chk).not.toHaveClass('hidden'); // initial baseline was cleared by the teardown
     expect(chk2).toHaveClass('hidden');
   });
 
-  it('reset on re-init clears previous owned state on the old DOM', () => {
+  it('re-init with no conditions leaves the new screen as the server painted it', () => {
     const { host, root } = mountHost();
     const chk = mkComponent(root, '_chk');
     chk.classList.add('hidden'); // baseline
@@ -629,9 +630,15 @@ describe('componentConditionsMixin', () => {
     });
     expect(chk).toHaveClass('hidden');
 
-    // Re-init with no conditions → cleans up previous applied state.
+    // Next screen reuses the same component id, but ships no realtime rules
+    // and the server does not hide it. The old runtime must not leak its hide
+    // onto the new element — nor strip anything the server did paint.
+    root.replaceChildren();
+    const chk2 = mkComponent(root, '_chk');
+    host.applyComponentsState(root, {});
+
     host.initRealtimeConditions(root, { form: {} });
-    expect(chk).not.toHaveClass('hidden');
+    expect(chk2).not.toHaveClass('hidden');
   });
 
   // Some descope custom inputs (notably descope-checkbox) emit `change` on
@@ -1085,13 +1092,9 @@ describe('componentConditionsMixin', () => {
     // Re-init with no conditions — should clean up the old timer too.
     host.initRealtimeConditions(root, { form: {} });
 
-    // Flush all timers — the old debounce must NOT fire against the new
-    // (empty) runtime. If it did, the applier would clear the hide.
-    // (Re-init's own teardown already cleared the baseline-applied hide,
-    // so the chk is now visible. The test is: this doesn't throw and
-    // no subsequent timer touches state.)
-    flushDebounce();
-    expect(chk).not.toHaveClass('hidden'); // cleared by re-init's teardown, not by a leaked timer
+    // Teardown must have dropped the pending timer outright, so nothing is
+    // left that could fire against the new (empty) runtime and clear the hide.
+    expect(jest.getTimerCount()).toBe(0);
   });
 
   // Re-init must unsubscribe the previous nextRequestStatus handler — the
@@ -1172,5 +1175,110 @@ describe('componentConditionsMixin', () => {
     flushDebounce();
     // Final value is non-empty → rule doesn't fire → hide cleared.
     expect(chk).not.toHaveClass('hidden');
+  });
+
+  // Regression for descope/etc#18750 and #18730. Models what
+  // DescopeWc.onStepChange really does when a server error brings the user back
+  // to the SAME screen:
+  //   1. server paints componentsState on the new fragment
+  //   2. replaceChildren swaps in fresh elements carrying the SAME ids
+  //   3. initRealtimeConditions runs (teardown first, then re-init)
+  // Both customer shapes are covered, because a boolean reads through
+  // `.checked` and a text value reads through `.value`.
+
+  it('keeps a server-painted hide across a same-screen re-render, checkbox (#18750)', () => {
+    const { host, root } = mountHost();
+    const condition: RealtimeComponentsCondition = {
+      componentIds: ['_phone'],
+      action: 'hide',
+      rules: [
+        {
+          atomicConditions: [
+            {
+              operator: 'is-false',
+              target: { kind: 'form', form: 'form.alerts' },
+            },
+          ],
+        },
+      ],
+    };
+
+    const mkCheckbox = (r: HTMLElement) => {
+      const cb = document.createElement('descope-checkbox');
+      cb.setAttribute('name', 'form.alerts');
+      (cb as unknown as { checked: boolean }).checked = false;
+      r.appendChild(cb);
+      return cb;
+    };
+
+    // --- first render: server painted nothing, client hides the phone.
+    const phone1 = mkComponent(root, '_phone');
+    mkCheckbox(root);
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: {},
+      realtimeComponentsConditions: [condition],
+    });
+    expect(phone1).toHaveClass('hidden');
+
+    // Error comes back on the same screen. Fresh elements, same ids, and this
+    // time the server DOES paint the hide, because it has the form value now.
+    root.replaceChildren();
+    const phone2 = mkComponent(root, '_phone');
+    mkCheckbox(root);
+    host.applyComponentsState(root, { _phone: 'hide' });
+    expect(phone2).toHaveClass('hidden'); // correct at first paint
+
+    // The server's verdict already matches what the client would compute, so
+    // the re-init has no diff to apply. The hide must survive anyway.
+    host.initRealtimeConditions(root, {
+      form: {},
+      componentsState: { _phone: 'hide' },
+      realtimeComponentsConditions: [condition],
+    });
+
+    expect(phone2).toHaveClass('hidden');
+  });
+
+  it('keeps a server-painted hide across a same-screen re-render, text value (#18730)', () => {
+    const { host, root } = mountHost();
+    const condition: RealtimeComponentsCondition = {
+      componentIds: ['_zip'],
+      action: 'hide',
+      rules: [
+        {
+          atomicConditions: [
+            {
+              operator: 'equal',
+              target: { kind: 'form', form: 'form.customerClass' },
+              predicate: { kind: 'value', value: 'Residential' },
+            },
+          ],
+        },
+      ],
+    };
+
+    const zip1 = mkComponent(root, '_zip');
+    mkInput(root, 'customerClass', 'Residential');
+    host.initRealtimeConditions(root, {
+      form: { customerClass: 'Residential' },
+      componentsState: {},
+      realtimeComponentsConditions: [condition],
+    });
+    expect(zip1).toHaveClass('hidden');
+
+    root.replaceChildren();
+    const zip2 = mkComponent(root, '_zip');
+    mkInput(root, 'customerClass', 'Residential');
+    host.applyComponentsState(root, { _zip: 'hide' });
+    expect(zip2).toHaveClass('hidden');
+
+    host.initRealtimeConditions(root, {
+      form: { customerClass: 'Residential' },
+      componentsState: { _zip: 'hide' },
+      realtimeComponentsConditions: [condition],
+    });
+
+    expect(zip2).toHaveClass('hidden');
   });
 });

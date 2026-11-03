@@ -86,6 +86,7 @@ describe('transformStepStateForCustomScreen — data', () => {
           'data-password-policy-value-passwordstrength': 'strong',
           'data-password-policy-value-disallowedchars': '$',
           'data-password-policy-value-email': 'true',
+          'data-password-policy-value-reuse': '3',
           'active-policies': 'a',
           'available-policies': 'b',
         },
@@ -102,6 +103,7 @@ describe('transformStepStateForCustomScreen — data', () => {
       strength: 'strong',
       disallowedChars: '$',
       email: 'true',
+      reuse: '3',
       activePolicies: 'a',
       availablePolicies: 'b',
     });

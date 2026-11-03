@@ -46,6 +46,7 @@ export type {
   SdkResponse,
   TOTPResponse,
   URLResponse,
+  UserFamily,
   UserHistoryResponse,
   UserResponse,
 } from './sdk/types';

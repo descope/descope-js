@@ -88,6 +88,11 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
   // if oidc config is enabled, we attempt to finish the login, so we start as loading
   const [isOidcLoading, setIsOidcLoading] = useState(!!oidcConfig);
+  // flips once when the first session fetch settles - unlike isSessionLoading, this change
+  // can't be lost if React batches the loading true/false updates into a single render
+  const [isSessionFetchCompleted, setIsSessionFetchCompleted] = useState(false);
+  // same as isSessionFetchCompleted, for the user fetch
+  const [isUserFetchCompleted, setIsUserFetchCompleted] = useState(false);
   const isOidcFinishedLogin = useRef(false);
 
   const sdk = useSdk({
@@ -124,8 +129,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     return undefined;
   }, [sdk]);
 
-  const isSessionFetched = useRef(false);
-  const isUserFetched = useRef(false);
+  const isSessionFetchStarted = useRef(false);
+  const isUserFetchStarted = useRef(false);
 
   // if oidc config is enabled, and we have oidc params in the url
   // we will finish the login (this should run only once)
@@ -134,8 +139,10 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       isOidcFinishedLogin.current = true;
       sdk.oidc.finishLoginIfNeed().finally(() => {
         setIsOidcLoading(false);
-        // We want that the session will fetched only once
-        isSessionFetched.current = true;
+        // finishing the OIDC login already fetched the session, so mark the fetch as both
+        // started (fetchSession won't run again) and completed, even though it never ran
+        isSessionFetchStarted.current = true;
+        setIsSessionFetchCompleted(true);
       });
     }
   }, []);
@@ -145,24 +152,17 @@ const AuthProvider: FC<IAuthProviderProps> = ({
     if (isDescopeBridge()) return;
 
     // We want that the session will fetched only once
-    if (isSessionFetched.current) return;
-    isSessionFetched.current = true;
+    if (isSessionFetchStarted.current) return;
+    isSessionFetchStarted.current = true;
 
     setIsSessionLoading(true);
     const stopSessionLoading = () => {
-      // Defer to a separate render pass so React doesn't batch this with
-      // the setIsSessionLoading(true) above when refresh() short-circuits
-      // synchronously - downstream consumers (e.g. useSession) need to
-      // observe the false→true→false loading transition (#1393)
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          setIsSessionLoading(false);
-        }, 0);
-      });
+      setIsSessionLoading(false);
+      setIsSessionFetchCompleted(true);
     };
     // Clear the loading state on both fulfilment and rejection. A rejected
     // refresh (e.g. a transient network failure on the proactive refresh) must
-    // still clear `isSessionLoading` - `isSessionFetched` is already set so
+    // still clear `isSessionLoading` - `isSessionFetchStarted` is already set so
     // `fetchSession` never re-runs, and consumers (e.g. useSession) would
     // otherwise hang on "loading" forever despite a valid session.
     withValidation(sdk?.refresh)(undefined, true).then(
@@ -173,13 +173,16 @@ const AuthProvider: FC<IAuthProviderProps> = ({
 
   const fetchUser = useCallback(() => {
     // We want that the user will fetched only once
-    if (isUserFetched.current) return;
-    isUserFetched.current = true;
+    if (isUserFetchStarted.current) return;
+    isUserFetchStarted.current = true;
 
     setIsUserLoading(true);
     // Clear the loading state on both fulfilment and rejection so a failed
     // `me()` doesn't leave `isUserLoading` stuck `true` (see fetchSession).
-    const stopUserLoading = () => setIsUserLoading(false);
+    const stopUserLoading = () => {
+      setIsUserLoading(false);
+      setIsUserFetchCompleted(true);
+    };
     withValidation(sdk.me)().then(stopUserLoading, stopUserLoading);
   }, [sdk]);
 
@@ -188,13 +191,15 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
-      isUserFetched: isUserFetched.current,
+      isUserFetchStarted: isUserFetchStarted.current,
+      isUserFetchCompleted,
       fetchSession,
       session,
       isAuthenticated,
       isSessionLoading,
       isOidcLoading,
-      isSessionFetched: isSessionFetched.current,
+      isSessionFetchStarted: isSessionFetchStarted.current,
+      isSessionFetchCompleted,
       projectId,
       baseUrl,
       baseStaticUrl,
@@ -202,6 +207,8 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       storeLastAuthenticatedUser,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
+      sessionTokenViaCookie,
+      refreshTokenViaCookie,
       customStorage,
       setUser,
       setSession,
@@ -213,19 +220,24 @@ const AuthProvider: FC<IAuthProviderProps> = ({
       fetchUser,
       user,
       isUserLoading,
-      isUserFetched.current,
+      isUserFetchStarted.current,
+      isUserFetchCompleted,
       fetchSession,
       session,
       isAuthenticated,
       isSessionLoading,
       isOidcLoading,
-      isSessionFetched.current,
+      isSessionFetchStarted.current,
+      isSessionFetchCompleted,
       projectId,
       baseUrl,
       baseStaticUrl,
       baseCdnUrl,
       keepLastAuthenticatedUserAfterLogout,
       refreshCookieName,
+      // stringified so inline object literals don't create a new context value on every render
+      JSON.stringify(sessionTokenViaCookie),
+      JSON.stringify(refreshTokenViaCookie),
       customStorage,
       setUser,
       setSession,
