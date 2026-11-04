@@ -10,6 +10,8 @@ import {
 const createdKeys: AccessKey[] = [];
 // statuses set by the mock activate / deactivate, so the list reload keeps them
 const statusOverrides: Record<string, string> = {};
+// ids removed by the mock delete, so the list reload does not bring them back
+const deletedIds = new Set<string>();
 // mock ids and secrets come from a counter: they are fake, and a counter never collides with the static keys
 let mockCounter = 0;
 
@@ -54,8 +56,9 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
     resolve(
       keys.filter(
         (key) =>
-          key.name.toLowerCase().includes(text.toLowerCase()) ||
-          key.createdBy.toLowerCase().includes(text.toLowerCase()),
+          !deletedIds.has(key.id) &&
+          (key.name.toLowerCase().includes(text.toLowerCase()) ||
+            key.createdBy.toLowerCase().includes(text.toLowerCase())),
       ),
     );
   });
@@ -103,7 +106,13 @@ const deactivate = async (ids: string[]) => {
   });
 };
 
-const deleteBatch = async () => {};
+const deleteBatch = async (ids: string[]) => {
+  ids.forEach((id) => {
+    deletedIds.add(id);
+    const idx = createdKeys.findIndex((key) => key.id === id);
+    if (idx !== -1) createdKeys.splice(idx, 1);
+  });
+};
 
 const rotate: (
   config: RotateAccessKeyConfig,

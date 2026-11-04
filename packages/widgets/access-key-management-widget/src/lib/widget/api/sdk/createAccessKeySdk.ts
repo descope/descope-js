@@ -52,7 +52,7 @@ export const createAccessKeySdk = ({
 
   const deleteBatch = async (ids: string[]) => {
     if (mock) {
-      return accessKey.deleteBatch();
+      return accessKey.deleteBatch(ids);
     }
     const res = await httpClient.post(
       apiPaths.accesskey.deleteBatch,

@@ -326,6 +326,27 @@ describe('access-key-management-widget', () => {
       await sdk.accesskey.activate(['access-key-id-2']);
       expect(await getStatus('access-key-id-2')).toBe('active');
     });
+
+    it('search leaves out keys removed by deleteBatch', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, true);
+      const { key } = await sdk.accesskey.create({
+        name: 'Mock Deleted Key',
+        expiration: '30',
+        roleNames: [],
+        userId: '',
+        permittedIps: [],
+      });
+      const getIds = async () =>
+        (await sdk.accesskey.search({ text: '', sort: [] })).map((k) => k.id);
+
+      await sdk.accesskey.deleteBatch([key.id, 'access-key-id-9']);
+      await sdk.accesskey.deactivate(['access-key-id-8']);
+
+      const ids = await getIds();
+      expect(ids).not.toContain(key.id);
+      expect(ids).not.toContain('access-key-id-9');
+      expect(ids).toContain('access-key-id-8');
+    });
   });
 
   describe('utils', () => {
