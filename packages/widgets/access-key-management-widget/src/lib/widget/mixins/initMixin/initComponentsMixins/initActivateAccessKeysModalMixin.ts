@@ -51,12 +51,17 @@ export const initActivateAccessKeysModalMixin = createSingletonMixin(
             ),
           { logger: this.logger },
         );
-        submitButton.onClick(() => {
+        submitButton.onClick(async () => {
           const selectedAccessKeys = getSelectedAccessKeys(this.state);
-          this.actions.activateAccessKeys(
-            selectedAccessKeys?.map((accessKey) => accessKey.id),
-          );
           this.activateAccessKeysModal.close();
+          const res: Record<string, any> =
+            await this.actions.activateAccessKeys(
+              selectedAccessKeys?.map((accessKey) => accessKey.id),
+            );
+
+          if (!res?.error) {
+            this.actions.searchAccessKeys();
+          }
         });
 
         const description = new TextDriver(

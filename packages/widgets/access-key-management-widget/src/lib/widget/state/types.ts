@@ -35,6 +35,8 @@ export type State = {
   };
   searchParams: { text: string; sort: SortParams[] };
   selectedAccessKeysIds: string[];
+  // set on create, so the next list reload can show the new key first
+  createdAccessKeyId: string | null;
   notifications: Notification[];
 };
 

@@ -110,7 +110,7 @@ export const createAccessKeySdk = ({
 
   const activate = async (ids: string[]) => {
     if (mock) {
-      return accessKey.activate();
+      return accessKey.activate(ids);
     }
     const res = await httpClient.post(
       apiPaths.accesskey.activate,
@@ -130,7 +130,7 @@ export const createAccessKeySdk = ({
 
   const deactivate = async (ids: string[]) => {
     if (mock) {
-      return accessKey.deactivate();
+      return accessKey.deactivate(ids);
     }
     const res = await httpClient.post(
       apiPaths.accesskey.deactivate,

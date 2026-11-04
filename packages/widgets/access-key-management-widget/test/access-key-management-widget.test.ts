@@ -62,6 +62,9 @@ jest.mock('../src/lib/widget/api/sdk/createAccessKeySdk', () => {
   };
 });
 
+// svg imports map to fileMock; the notifications read the icons as elements
+jest.mock('./config/fileMock', () => () => document.createElement('span'));
+
 const themeContent = {};
 const configContent = {
   flows: {
@@ -72,6 +75,10 @@ const configContent = {
 
 const fetchMock: jest.Mock = jest.fn();
 global.fetch = fetchMock;
+
+// jsdom has no CSSStyleSheet.replaceSync, which injectStyleMixin calls from the
+// element constructor. Same stub the web-component tests use.
+global.CSSStyleSheet.prototype.replaceSync = jest.fn();
 
 describe('access-key-management-widget', () => {
   beforeEach(() => {
@@ -124,6 +131,7 @@ describe('access-key-management-widget', () => {
     document.getElementsByTagName('body')[0].innerHTML = '';
     document.body.append = origAppend;
     mockHttpClient.reset();
+    delete (globalThis as any).DescopeUI;
   });
 
   describe('sdk', () => {
@@ -282,6 +290,44 @@ describe('access-key-management-widget', () => {
     });
   });
 
+  describe('mock sdk', () => {
+    it('search returns keys made by create, ahead of the static keys', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, true);
+      const { key } = await sdk.accesskey.create({
+        name: 'Mock Created Key',
+        expiration: '30',
+        roleNames: [],
+        userId: '',
+        permittedIps: [],
+      });
+
+      const all = await sdk.accesskey.search({ text: '', sort: [] });
+      expect(all[0].id).toBe(key.id);
+      expect(all.length).toBeGreaterThan(1);
+
+      const filtered = await sdk.accesskey.search({
+        text: 'access key 1',
+        sort: [],
+      });
+      expect(filtered.map((k) => k.id)).not.toContain(key.id);
+    });
+
+    it('search keeps the status set by activate / deactivate', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, true);
+      const getStatus = async (id: string) =>
+        (await sdk.accesskey.search({ text: '', sort: [] })).find(
+          (k) => k.id === id,
+        )?.status;
+
+      await sdk.accesskey.deactivate(['access-key-id-2']);
+      expect(await getStatus('access-key-id-2')).toBe('inactive');
+      expect(await getStatus('access-key-id-3')).toBe('active');
+
+      await sdk.accesskey.activate(['access-key-id-2']);
+      expect(await getStatus('access-key-id-2')).toBe('active');
+    });
+  });
+
   describe('utils', () => {
     it('should pluralize messages', () => {
       expect(
@@ -310,6 +356,7 @@ describe('access-key-management-widget', () => {
       tenantRoles: { loading: false, error: null, data: [] },
       searchParams: { text: '', sort: [] },
       selectedAccessKeysIds: [],
+      createdAccessKeyId: null,
       notifications: [],
     };
 
@@ -526,6 +573,7 @@ describe('access-key-management-widget', () => {
       tenantRoles: { loading: false, error: null, data: [] },
       searchParams: { text: '', sort: [] },
       selectedAccessKeysIds: [],
+      createdAccessKeyId: null,
       notifications: [],
     };
 
@@ -620,6 +668,239 @@ describe('access-key-management-widget', () => {
       expect(errorNotifications[0].msg).toContain(
         'Failed to rotate access key',
       );
+    });
+  });
+
+  const okRes = (body: unknown) => ({
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve(body),
+    text: () => Promise.resolve(JSON.stringify(body)),
+  });
+
+  const errorRes = {
+    ok: false,
+    status: 400,
+    text: () => Promise.resolve(JSON.stringify({ errorDescription: 'boom' })),
+  };
+
+  const getPostCalls = (apiPath: string) =>
+    mockHttpClient.post.mock.calls.filter(([path]) => path === apiPath).length;
+
+  const getSearchCalls = () => getPostCalls(apiPaths.accesskey.search);
+
+  // mounts the widget and waits for the given modal and the first list load
+  const mountWidget = async (modalName: string) => {
+    // DescopeUI is not loaded in jsdom; an empty object skips loading
+    // the components instead of injecting a script
+    (globalThis as any).DescopeUI = {};
+    document.body.innerHTML = `<descope-access-key-management-widget project-id="${mockProjectId}" tenant="${mockTenant}" widget-id="wid"></descope-access-key-management-widget>`;
+    const widget: any = document.querySelector(
+      'descope-access-key-management-widget',
+    );
+
+    await waitFor(
+      () =>
+        expect(
+          widget[modalName]?.ele?.querySelector('[data-id="modal-submit"]'),
+        ).toBeTruthy(),
+      { timeout: 5000 },
+    );
+    await waitFor(() => expect(getSearchCalls()).toBe(1));
+    await waitFor(() =>
+      expect(widget.state.accessKeysList.loading).toBe(false),
+    );
+
+    return widget;
+  };
+
+  // lets a click handler finish after its request resolves
+  const flush = () =>
+    new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+
+  describe('create access key', () => {
+    const getCreateCalls = () => getPostCalls(apiPaths.accesskey.create);
+
+    // mounts the widget and clicks the create modal's submit button
+    const submitCreate = async () => {
+      const widget = await mountWidget('createAccessKeyModal');
+
+      // the form inputs are not real inputs in jsdom, so they cannot validate
+      jest.spyOn(widget, 'validateForm').mockReturnValue(true);
+      widget.setFormData(widget.createAccessKeyModal.ele, {
+        name: mockNewAccessKey.name,
+        expiration: mockNewAccessKey.expiration,
+      });
+
+      widget.createAccessKeyModal.ele
+        .querySelector('[data-id="modal-submit"]')
+        .click();
+
+      await waitFor(() => expect(getCreateCalls()).toBe(1));
+      await waitFor(() =>
+        expect(widget.state.createAccessKey.loading).toBe(false),
+      );
+      await flush();
+    };
+
+    it('reloads the list after a successful create', async () => {
+      mockHttpClient.post.mockImplementation((path: string) =>
+        Promise.resolve(
+          path === apiPaths.accesskey.create
+            ? okRes({ key: mockAccessKeys.keys[0], cleartext: 'secret' })
+            : okRes({ keys: mockAccessKeys.keys }),
+        ),
+      );
+
+      await submitCreate();
+
+      await waitFor(() => expect(getSearchCalls()).toBe(2));
+    });
+
+    const createdKey = { ...mockAccessKeys.keys[0], id: 'new-id', name: 'New' };
+
+    // the search returns the keys without the created key until it is created
+    const mockSearchAfterCreate = (keysAfterCreate: (typeof createdKey)[]) => {
+      let created = false;
+      mockHttpClient.post.mockImplementation((path: string) => {
+        if (path === apiPaths.accesskey.create) {
+          created = true;
+          return Promise.resolve(
+            okRes({ key: createdKey, cleartext: 'secret' }),
+          );
+        }
+        return Promise.resolve(
+          okRes({ keys: created ? keysAfterCreate : mockAccessKeys.keys }),
+        );
+      });
+    };
+
+    const getListState = () =>
+      (document.querySelector('descope-access-key-management-widget') as any)
+        .state.accessKeysList;
+
+    const getListIds = () =>
+      getListState().data.map((k: { id: string }) => k.id);
+
+    it('shows the created key first when the reload returns it', async () => {
+      mockSearchAfterCreate([...mockAccessKeys.keys, createdKey]);
+
+      await submitCreate();
+
+      await waitFor(() => expect(getSearchCalls()).toBe(2));
+      await waitFor(() =>
+        expect(getListIds()).toEqual([
+          'new-id',
+          ...mockAccessKeys.keys.map((k) => k.id),
+        ]),
+      );
+    });
+
+    it('does not show the created key when the reload does not return it', async () => {
+      mockSearchAfterCreate(mockAccessKeys.keys);
+
+      await submitCreate();
+
+      await waitFor(() => expect(getSearchCalls()).toBe(2));
+      await waitFor(() => expect(getListState().loading).toBe(false));
+      expect(getListIds()).toEqual(mockAccessKeys.keys.map((k) => k.id));
+    });
+
+    it('does not pin the created key on a later search when the reload fails', async () => {
+      const serverKeys = [...mockAccessKeys.keys, createdKey];
+      let created = false;
+      let searchesAfterCreate = 0;
+      mockHttpClient.post.mockImplementation((path: string) => {
+        if (path === apiPaths.accesskey.create) {
+          created = true;
+          return Promise.resolve(
+            okRes({ key: createdKey, cleartext: 'secret' }),
+          );
+        }
+        if (!created) {
+          return Promise.resolve(okRes({ keys: mockAccessKeys.keys }));
+        }
+        searchesAfterCreate += 1;
+        // the reload right after the create fails, the next search works
+        return Promise.resolve(
+          searchesAfterCreate === 1 ? errorRes : okRes({ keys: serverKeys }),
+        );
+      });
+
+      await submitCreate();
+
+      await waitFor(() => expect(getSearchCalls()).toBe(2));
+      await waitFor(() => expect(getListState().error).toBeTruthy());
+
+      const widget: any = document.querySelector(
+        'descope-access-key-management-widget',
+      );
+      await widget.actions.searchAccessKeys();
+
+      expect(getSearchCalls()).toBe(3);
+      expect(getListIds()).toEqual(serverKeys.map((k) => k.id));
+    });
+
+    it('does not reload the list when the create fails', async () => {
+      mockHttpClient.post.mockImplementation((path: string) =>
+        Promise.resolve(
+          path === apiPaths.accesskey.create
+            ? errorRes
+            : okRes({ keys: mockAccessKeys.keys }),
+        ),
+      );
+
+      await submitCreate();
+
+      expect(getSearchCalls()).toBe(1);
+    });
+  });
+
+  describe('activate / deactivate access keys', () => {
+    // clicks the modal's submit button with every listed key selected
+    const submitStatusChange = async (
+      modalName: string,
+      apiPath: string,
+      res: unknown,
+    ) => {
+      mockHttpClient.post.mockImplementation((path: string) =>
+        Promise.resolve(
+          path === apiPath ? res : okRes({ keys: mockAccessKeys.keys }),
+        ),
+      );
+
+      const widget = await mountWidget(modalName);
+      widget.actions.setSelectedAccessKeysIds(
+        mockAccessKeys.keys.map((k) => k.id),
+      );
+
+      widget[modalName].ele.querySelector('[data-id="modal-submit"]').click();
+
+      await waitFor(() => expect(getPostCalls(apiPath)).toBe(1));
+      await flush();
+    };
+
+    describe.each([
+      ['activate', 'activateAccessKeysModal', apiPaths.accesskey.activate],
+      [
+        'deactivate',
+        'deactivateAccessKeysModal',
+        apiPaths.accesskey.deactivate,
+      ],
+    ])('%s', (_, modalName, apiPath) => {
+      it('reloads the list after a success', async () => {
+        await submitStatusChange(modalName, apiPath, okRes({}));
+
+        await waitFor(() => expect(getSearchCalls()).toBe(2));
+      });
+
+      it('does not reload the list after a failure', async () => {
+        await submitStatusChange(modalName, apiPath, errorRes);
+
+        expect(getSearchCalls()).toBe(1);
+      });
     });
   });
 });

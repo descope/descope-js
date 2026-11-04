@@ -19,7 +19,7 @@ const action = createAsyncThunk<
 const reducer = buildAsyncReducer(action)(
   {
     onFulfilled: (state, action) => {
-      state.accessKeysList.data.unshift(action.payload.key);
+      state.createdAccessKeyId = action.payload?.key?.id ?? null;
     },
   },
   withRequestStatus((state: State) => state.createAccessKey),

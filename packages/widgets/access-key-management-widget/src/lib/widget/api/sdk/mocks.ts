@@ -6,12 +6,17 @@ import {
   SearchAccessKeyConfig,
 } from '../types';
 
+// keys made by the mock create, so the list reload after a create shows them
+const createdKeys: AccessKey[] = [];
+// statuses set by the mock activate / deactivate, so the list reload keeps them
+const statusOverrides: Record<string, string> = {};
+
 const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
   text,
   sort,
 } = {}) =>
   new Promise((resolve) => {
-    const keys: AccessKey[] = [];
+    const keys: AccessKey[] = [...createdKeys];
     const timeMock = new Date().getTime() / 1000 + 60 * 60 * 24 * 30;
     const timeMockFormatted = new Date(timeMock).toLocaleString();
     for (let i = 1; i < 10; i += 1) {
@@ -39,11 +44,17 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
       );
     });
     resolve(
-      keys.filter(
-        (key) =>
-          key.name.toLowerCase().includes(text.toLowerCase()) ||
-          key.createdBy.toLowerCase().includes(text.toLowerCase()),
-      ),
+      keys
+        .filter(
+          (key) =>
+            key.name.toLowerCase().includes(text.toLowerCase()) ||
+            key.createdBy.toLowerCase().includes(text.toLowerCase()),
+        )
+        .map((key) =>
+          statusOverrides[key.id]
+            ? { ...key, status: statusOverrides[key.id] }
+            : key,
+        ),
     );
   });
 
@@ -55,29 +66,39 @@ const create: (
   expireTime,
 ) => {
   const i = Math.random().toString(10).substring(15);
+  const key: AccessKey = {
+    id: `access-key-id-${i}`,
+    name: name || `Access Key ${i}`,
+    createdBy: userId || `User ${i}`,
+    editable: true,
+    expireTime,
+    createdTime: new Date().getTime() / 1000,
+    roleNames,
+    permittedIps,
+    status: 'active',
+    clientId: `Client ID ${i}`,
+    boundUserId: userId || `User ${i}`,
+  };
+  createdKeys.unshift(key);
   return new Promise((resolve) => {
     resolve({
       cleartext: Math.random().toString(20).substring(2),
-      key: {
-        id: `access-key-id-${i}`,
-        name: name || `Access Key ${i}`,
-        createdBy: userId || `User ${i}`,
-        editable: true,
-        expireTime,
-        createdTime: new Date().getTime() / 1000,
-        roleNames,
-        permittedIps,
-        status: 'active',
-        clientId: `Client ID ${i}`,
-        boundUserId: userId || `User ${i}`,
-      },
+      key,
     });
   });
 };
 
-const activate = async () => {};
+const activate = async (ids: string[]) => {
+  ids.forEach((id) => {
+    statusOverrides[id] = 'active';
+  });
+};
 
-const deactivate = async () => {};
+const deactivate = async (ids: string[]) => {
+  ids.forEach((id) => {
+    statusOverrides[id] = 'inactive';
+  });
+};
 
 const deleteBatch = async () => {};
 
