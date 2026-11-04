@@ -38,6 +38,12 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
         boundUserId: `User ${i}`,
       });
     }
+    // apply mock status changes before sorting, so a status sort sees them
+    keys.forEach((key, idx) => {
+      if (statusOverrides[key.id]) {
+        keys[idx] = { ...key, status: statusOverrides[key.id] };
+      }
+    });
     sort.forEach((s) => {
       keys.sort((a, b) =>
         !s.desc
@@ -46,17 +52,11 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
       );
     });
     resolve(
-      keys
-        .filter(
-          (key) =>
-            key.name.toLowerCase().includes(text.toLowerCase()) ||
-            key.createdBy.toLowerCase().includes(text.toLowerCase()),
-        )
-        .map((key) =>
-          statusOverrides[key.id]
-            ? { ...key, status: statusOverrides[key.id] }
-            : key,
-        ),
+      keys.filter(
+        (key) =>
+          key.name.toLowerCase().includes(text.toLowerCase()) ||
+          key.createdBy.toLowerCase().includes(text.toLowerCase()),
+      ),
     );
   });
 
