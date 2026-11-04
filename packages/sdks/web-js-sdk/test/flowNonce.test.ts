@@ -139,8 +139,10 @@ describe('flowNonce', () => {
     });
   });
 
-  describe('Component Data', () => {
-    it('adds the current nonce to component data requests', async () => {
+  describe('Data Sources', () => {
+    const DS_PATH = '/v1/flow/ds/impersonation-login-ids';
+
+    it('adds the current nonce to data source requests', async () => {
       const executionId = 'test-execution-id';
       const nonce = 'test-nonce-value';
 
@@ -149,37 +151,31 @@ describe('flowNonce', () => {
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.componentData(
-        `flow|#|${executionId}`,
-        'stepId',
-        'source',
-        'componentId',
-        'componentType',
-      );
+      await sdk.httpClient.post(DS_PATH, {
+        executionId: `flow|#|${executionId}`,
+        stepId: 'stepId',
+      });
 
       const [url, options] = mockFetch.mock.calls[0];
-      expect(url).toContain('flow/component/data');
+      expect(url).toContain(DS_PATH);
       expect(hasHeader(options, FLOW_NONCE_HEADER, nonce)).toBe(true);
     });
 
-    it('does not add a nonce to component data requests when none is stored', async () => {
+    it('does not add a nonce to data source requests when none is stored', async () => {
       const mockFetch = jest.fn().mockResolvedValue(createResponse());
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.componentData(
-        'flow|#|test-execution-id',
-        'stepId',
-        'source',
-        'componentId',
-        'componentType',
-      );
+      await sdk.httpClient.post(DS_PATH, {
+        executionId: 'flow|#|test-execution-id',
+        stepId: 'stepId',
+      });
 
       const [, options] = mockFetch.mock.calls[0];
       expect(hasHeader(options, FLOW_NONCE_HEADER)).toBe(false);
     });
 
-    it('does not rotate the stored nonce from component data responses', async () => {
+    it('does not rotate the stored nonce from data source responses', async () => {
       const executionId = 'test-execution-id';
       const nonce = 'test-nonce-value';
 
@@ -193,18 +189,15 @@ describe('flowNonce', () => {
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.componentData(
-        `flow|#|${executionId}`,
-        'stepId',
-        'source',
-        'componentId',
-        'componentType',
-      );
+      await sdk.httpClient.post(DS_PATH, {
+        executionId: `flow|#|${executionId}`,
+        stepId: 'stepId',
+      });
 
       expect(localStorage.getItem(key)).toBe(before);
     });
 
-    it('does not store a nonce from component data responses', async () => {
+    it('does not store a nonce from data source responses', async () => {
       const executionId = 'test-execution-id';
 
       const mockFetch = jest
@@ -213,20 +206,17 @@ describe('flowNonce', () => {
       global.fetch = mockFetch;
 
       const sdk = createSdk({ projectId: 'pid' });
-      await sdk.flow.componentData(
-        `flow|#|${executionId}`,
-        'stepId',
-        'source',
-        'componentId',
-        'componentType',
-      );
+      await sdk.httpClient.post(DS_PATH, {
+        executionId: `flow|#|${executionId}`,
+        stepId: 'stepId',
+      });
 
       expect(
         localStorage.getItem(`${FLOW_NONCE_PREFIX}${executionId}`),
       ).toBeNull();
     });
 
-    it('sends the nonce rotated by next on a later component data request', async () => {
+    it('sends the nonce rotated by next on a later data source request', async () => {
       const executionId = 'test-execution-id';
 
       setupNonce(executionId, 'old-nonce', 3600 * 1000);
@@ -240,16 +230,13 @@ describe('flowNonce', () => {
 
       const sdk = createSdk({ projectId: 'pid' });
       await sdk.flow.next(`flow|#|${executionId}`, 'stepId', 'interactionId');
-      await sdk.flow.componentData(
-        `flow|#|${executionId}`,
-        'stepId',
-        'source',
-        'componentId',
-        'componentType',
-      );
+      await sdk.httpClient.post(DS_PATH, {
+        executionId: `flow|#|${executionId}`,
+        stepId: 'stepId',
+      });
 
       const [url, options] = mockFetch.mock.calls[1];
-      expect(url).toContain('flow/component/data');
+      expect(url).toContain(DS_PATH);
       expect(hasHeader(options, FLOW_NONCE_HEADER, 'new-nonce')).toBe(true);
     });
   });

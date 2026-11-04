@@ -81,6 +81,7 @@ import {
   StepState,
   FlowJWTResponse,
 } from '../types';
+import { createDataSources, DATA_SOURCE_EVENT } from '../helpers/dataSources';
 import BaseDescopeWc from './BaseDescopeWc';
 
 // Resolved with, not thrown: timeoutPromise rejects with a plain Error, which
@@ -152,56 +153,21 @@ class DescopeWc extends BaseDescopeWc {
 
   #eventsCbRefs = {
     visibilitychange: this.#syncStateWithVisibility.bind(this),
-    componentData: this.#handleComponentData.bind(this),
+    dataSource: (e: CustomEvent) => this.#dataSources.handleEvent(e),
   };
 
-  // A screen component asks the host for server data from a `source`.
-  // preventDefault tells it a host is answering; without it the component
-  // answers on its own. The SDK forwards source and params as is, identifies
-  // the component by the id and tag of the element that raised the event, and knows
-  // nothing about the component or the shape of the data.
-  #handleComponentData(
-    e: CustomEvent<{
-      source: string;
-      params?: Record<string, string>;
-      respond: (res: { data?: unknown; error?: unknown }) => void;
-    }>,
-  ) {
-    const { source, params, respond } = e.detail || ({} as typeof e.detail);
-    // composed events are retargeted to the screen element (the shadow host);
-    // its id and tag identify the component to the backend
-    const component = e.target as Element | null;
-    const componentId = component?.id;
-    const componentType = component?.localName;
-    if (
-      typeof respond !== 'function' ||
-      typeof source !== 'string' ||
-      !componentId
-    )
-      return;
-    e.preventDefault();
-
-    const { executionId, stepId } = this.flowState.current;
-    Promise.resolve()
-      .then(() =>
-        this.sdk.flow.componentData(
-          executionId,
-          stepId,
-          source,
-          componentId,
-          componentType,
-          params,
-        ),
-      )
-      .then((res) =>
-        respond(
-          res?.ok
-            ? { data: res.data?.data }
-            : { error: res?.error || 'Failed to fetch component data' },
-        ),
-      )
-      .catch((err) => respond({ error: err?.message || err }));
-  }
+  // Screen components get data from data sources (@descope/components-data-sources) by
+  // name; the SDK loads them and knows nothing about what they fetch.
+  #dataSources = createDataSources({
+    injectNpmLib: (libName, version, filePath, overrides) =>
+      this.injectNpmLib(libName, version, filePath, overrides),
+    getVersion: async () =>
+      (await this.getProjectConfig())?.componentsDataSourcesVersion,
+    getFlowState: () => this.flowState.current,
+    post: (path, body) =>
+      this.sdk.httpClient.post(path, body, { disableRetry: true }),
+    logger: this.loggerWrapper,
+  });
 
   #syncStateWithVisibility() {
     if (!document.hidden) {
@@ -588,8 +554,8 @@ class DescopeWc extends BaseDescopeWc {
       // contentRootElement outlives screen changes, so one delegated listener
       // serves every render; the stable ref makes a re-init a no-op
       this.contentRootElement.addEventListener(
-        'descope-component-data',
-        this.#eventsCbRefs.componentData,
+        DATA_SOURCE_EVENT,
+        this.#eventsCbRefs.dataSource,
       );
     }
     await super.init?.();
@@ -618,8 +584,8 @@ class DescopeWc extends BaseDescopeWc {
       this.#eventsCbRefs.visibilitychange,
     );
     this.contentRootElement.removeEventListener(
-      'descope-component-data',
-      this.#eventsCbRefs.componentData,
+      DATA_SOURCE_EVENT,
+      this.#eventsCbRefs.dataSource,
     );
   }
 
@@ -1942,6 +1908,7 @@ class DescopeWc extends BaseDescopeWc {
       setCssVars(rootElement, clone, screenState.cssVars, this.loggerWrapper);
 
       rootElement.replaceChildren(clone);
+      this.#dataSources.preload(rootElement);
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlFilename;

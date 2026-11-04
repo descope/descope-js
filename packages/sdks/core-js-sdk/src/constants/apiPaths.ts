@@ -107,6 +107,5 @@ export default {
     start: '/v1/flow/start',
     next: '/v1/flow/next',
     event: '/v1/flow/event',
-    componentData: '/v1/flow/component/data',
   },
 };
