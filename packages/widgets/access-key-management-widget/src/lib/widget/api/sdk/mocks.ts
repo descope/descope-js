@@ -10,6 +10,8 @@ import {
 const createdKeys: AccessKey[] = [];
 // statuses set by the mock activate / deactivate, so the list reload keeps them
 const statusOverrides: Record<string, string> = {};
+// mock ids and secrets come from a counter: they are fake, and a counter never collides with the static keys
+let mockCounter = 0;
 
 const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
   text,
@@ -65,7 +67,8 @@ const create: (
   { name, roleNames, userId, permittedIps },
   expireTime,
 ) => {
-  const i = Math.random().toString(10).substring(15);
+  mockCounter += 1;
+  const i = `new-${mockCounter}`;
   const key: AccessKey = {
     id: `access-key-id-${i}`,
     name: name || `Access Key ${i}`,
@@ -82,7 +85,7 @@ const create: (
   createdKeys.unshift(key);
   return new Promise((resolve) => {
     resolve({
-      cleartext: Math.random().toString(20).substring(2),
+      cleartext: `mock-secret-${i}`,
       key,
     });
   });
@@ -107,7 +110,7 @@ const rotate: (
 ) => Promise<{ cleartext: string; key: AccessKey }> = async ({ id }) =>
   new Promise((resolve) => {
     resolve({
-      cleartext: Math.random().toString(20).substring(2),
+      cleartext: `mock-secret-rotated-${id}`,
       key: {
         id,
         name: `Access Key ${id}`,
