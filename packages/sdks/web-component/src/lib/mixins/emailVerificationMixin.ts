@@ -9,9 +9,23 @@ import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
 // it only while that form's submit event is being dispatched
 
 const EVP_TOKEN_ATTRIBUTE = 'data-evp-token';
+const EVP_FIELD_SELECTOR = 'descope-email-field[email-verification="true"]';
+
+// Chrome starts issuing the token when the email field blurs, and a submit
+// before the token is ready gets none. Nothing tells the page it is ready,
+// so the first submit waits this long
+const EVP_ISSUANCE_WAIT_MS = 900;
 
 const hasEmailVerificationField = (root: ParentNode) =>
-  !!root.querySelector('descope-email-field[email-verification="true"]');
+  !!root.querySelector(EVP_FIELD_SELECTOR);
+
+// pressing Enter submits with the email field still focused, and Chrome only
+// starts issuing on blur
+const blurFocusedInput = () => {
+  let ele = document.activeElement;
+  while (ele?.shadowRoot?.activeElement) ele = ele.shadowRoot.activeElement;
+  if (ele instanceof HTMLInputElement) ele.blur();
+};
 
 const clearEmailVerificationInput = (host: HTMLElement) => {
   host
@@ -149,10 +163,19 @@ export const emailVerificationMixin = createSingletonMixin(
 
       // buttons that skip validation (back, social login) don't submit the
       // email, so they don't use up its single use token
-      emailVerificationToken(submitter: HTMLElement) {
-        if (submitter.getAttribute('formnovalidate') === 'true') {
+      async emailVerificationToken(submitter: HTMLElement) {
+        if (
+          submitter.getAttribute('formnovalidate') === 'true' ||
+          !this.querySelector(`[${EVP_TOKEN_ATTRIBUTE}]`) ||
+          !this.shadowRoot?.querySelector<HTMLInputElement>(EVP_FIELD_SELECTOR)
+            ?.value
+        ) {
           return '';
         }
+        blurFocusedInput();
+        await new Promise((resolve) => {
+          setTimeout(resolve, EVP_ISSUANCE_WAIT_MS);
+        });
         return readEmailVerificationToken(this);
       }
     };

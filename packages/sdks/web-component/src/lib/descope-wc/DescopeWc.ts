@@ -2275,7 +2275,7 @@ class DescopeWc extends BaseDescopeWc {
 
           this.nextRequestStatus.update({ isLoading: true });
 
-          const evpToken = this.emailVerificationToken(submitter);
+          const evpToken = await this.emailVerificationToken(submitter);
 
           const actionArgs = {
             ...eleDescopeAttrs,

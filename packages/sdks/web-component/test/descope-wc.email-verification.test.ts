@@ -39,6 +39,13 @@ const renderFirstScreen = async (html: string) => {
 
 const lastNextInputs = () => nextMock.mock.calls.at(-1)[5];
 
+// the token is read only once the user typed an email
+const typeEmail = () => {
+  document
+    .querySelector('descope-wc')
+    .shadowRoot.querySelector('descope-email-field').value = 'user@example.com';
+};
+
 describe('web-component email verification', () => {
   beforeEach(() => {
     setupWebComponentTestEnv();
@@ -233,6 +240,7 @@ describe('web-component email verification', () => {
     document.addEventListener('submit', pageListener, true);
     const bubbleListener = jest.fn();
     form.addEventListener('submit', bubbleListener);
+    typeEmail();
 
     fireEvent.click(screen.getByShadowText('click'));
 
@@ -276,6 +284,7 @@ describe('web-component email verification', () => {
     form
       .querySelector('input[name="app"]')
       .addEventListener('invalid', invalid);
+    typeEmail();
 
     fireEvent.click(screen.getByShadowText('click'));
 
@@ -287,6 +296,65 @@ describe('web-component email verification', () => {
     );
     expect(invalid).not.toHaveBeenCalled();
     expect(form.noValidate).toBe(false);
+  });
+
+  it('blurs the focused field and waits for the browser before reading the token', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    const form = document.querySelector('form');
+    jest.spyOn(form, 'requestSubmit');
+    // like pressing Enter in the email field, focus is still in an input
+    const focused = document.createElement('input');
+    form.appendChild(focused);
+    focused.focus();
+    typeEmail();
+
+    fireEvent.click(screen.getByShadowText('click'));
+    for (let i = 0; i < 10; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.resolve();
+    }
+    expect(focused).not.toHaveFocus();
+    expect(form.requestSubmit).not.toHaveBeenCalled();
+    expect(nextMock).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(900);
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(form.requestSubmit).toHaveBeenCalled();
+  });
+
+  it('does not wait or read the token when no email was typed', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    nextMock.mockReturnValue(generateSdkResponse({ screenId: '1' }));
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+    await waitFor(() => expect(getEvpInput()).not.toBeNull(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    const form = document.querySelector('form');
+    jest.spyOn(form, 'requestSubmit');
+
+    fireEvent.click(screen.getByShadowText('click'));
+
+    await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
+      timeout: WAIT_TIMEOUT,
+    });
+    expect(form.requestSubmit).not.toHaveBeenCalled();
   });
 
   it('does not send a token when the browser wrote none', async () => {
@@ -302,6 +370,7 @@ describe('web-component email verification', () => {
       timeout: WAIT_TIMEOUT,
     });
 
+    typeEmail();
     fireEvent.click(screen.getByShadowText('click'));
 
     await waitFor(() => expect(nextMock).toHaveBeenCalled(), {
