@@ -1872,7 +1872,7 @@ class DescopeWc extends BaseDescopeWc {
     this.applyComponentsState(clone, screenState?.componentsState);
 
     // not awaited, so the nonce fetch does not delay the screen render
-    const evpNonce = this.startEmailVerification(clone);
+    this.startEmailVerification(clone);
 
     // set auto-detect attributes (country code from geo, lang from locale)
     const { geo } = (await this.getExecutionContext()) ?? {};
@@ -1892,8 +1892,6 @@ class DescopeWc extends BaseDescopeWc {
       setCssVars(rootElement, clone, screenState.cssVars, this.loggerWrapper);
 
       rootElement.replaceChildren(clone);
-
-      this.mountEmailVerification(evpNonce);
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlFilename;
