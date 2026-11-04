@@ -191,6 +191,11 @@ export type AuditManagementProps = WidgetProps;
 
 export type UserProfileProps = Omit<WidgetProps, 'tenant'> & {
   onLogout?: (e: CustomEvent) => void;
+  /**
+   * The auth domain does not know this user, so the app should sign them in.
+   * Not a logout: this app's own session is untouched.
+   */
+  onFlowPopupUnauthenticated?: (e: CustomEvent) => void;
 };
 
 export type ApplicationsPortalProps = Omit<WidgetProps, 'tenant'> & {

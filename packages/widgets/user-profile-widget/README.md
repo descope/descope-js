@@ -37,6 +37,25 @@ DESCOPE_THEME=      # "light" / "dark" / "os", default: "light"
 </script>
 ```
 
+### Flows that run in a popup
+
+When the project runs widget flows on its own auth domain, the flow opens in a
+popup rather than a modal. If that domain has no session for the user, the
+widget fires `flow-popup-unauthenticated` and the app should sign them in
+again, for example by starting its usual login redirect.
+
+This is not `logout`. The app's own session is untouched, only the auth domain
+is missing one, so an app that signs its users in with an embedded flow will
+see this on every popup. Handle it, or the flow button does nothing.
+
+```html
+<script>
+  descopeWidgetEle.addEventListener('flow-popup-unauthenticated', () => {
+    window.location.assign('/login');
+  });
+</script>
+```
+
 ### Authenticate
 
 In order to work with the widget, you must be logged in

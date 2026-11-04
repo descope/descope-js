@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserProfileComponent } from './user-profile.component';
 import createSdk from '@descope/web-js-sdk';
 import { DescopeAuthConfig } from '../../types/types';
+import { DescopeAuthService } from '../../services/descope-auth.service';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   EventEmitter,
@@ -93,6 +94,28 @@ describe('DescopeUserProfileComponent', () => {
       expect(e.detail).toHaveBeenCalledWith(event.detail);
     });
     webComponentHtml.dispatchEvent(new CustomEvent('logout', event));
+  });
+
+  // Not logout: the app's own session is still valid, only the auth domain does
+  // not know the user, so the session state must survive.
+  it('should emit flowPopupUnauthenticated without clearing the session', async () => {
+    const html: HTMLElement = fixture.nativeElement;
+    const webComponentHtml = html.querySelector('descope-user-profile-widget')!;
+    const spy = jest.fn();
+    component.flowPopupUnauthenticated.subscribe(spy);
+    const auth = TestBed.inject(DescopeAuthService);
+    const setSession = jest.spyOn(auth, 'setSession');
+    const setIsAuthenticated = jest.spyOn(auth, 'setIsAuthenticated');
+    const setUser = jest.spyOn(auth, 'setUser');
+
+    webComponentHtml.dispatchEvent(
+      new CustomEvent('flow-popup-unauthenticated')
+    );
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(setSession).not.toHaveBeenCalled();
+    expect(setIsAuthenticated).not.toHaveBeenCalled();
+    expect(setUser).not.toHaveBeenCalled();
   });
 
   it('should emit ready event when web component dispatches ready', async () => {

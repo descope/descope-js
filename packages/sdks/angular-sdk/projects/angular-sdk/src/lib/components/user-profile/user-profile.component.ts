@@ -32,6 +32,13 @@ export class UserProfileComponent extends BaseLazyWidgetComponent {
 
   @Output() logout: EventEmitter<CustomEvent> = new EventEmitter<CustomEvent>();
 
+  /**
+   * The auth domain does not know this user, so the app should sign them in.
+   * Not a logout: this app's own session is untouched.
+   */
+  @Output() flowPopupUnauthenticated: EventEmitter<CustomEvent> =
+    new EventEmitter<CustomEvent>();
+
   @Output() ready: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
@@ -100,6 +107,14 @@ export class UserProfileComponent extends BaseLazyWidgetComponent {
       this.descopeAuthService.setIsAuthenticated(false);
       this.descopeAuthService.setUser(null);
     });
+    // Emitted only. The app's own session is still valid here, so the session
+    // state must not be cleared the way the logout handler above does.
+    this.webComponent.addEventListener(
+      'flow-popup-unauthenticated',
+      (e: Event) => {
+        this.flowPopupUnauthenticated?.emit(e as CustomEvent);
+      }
+    );
     if (this.ready) {
       this.webComponent.addEventListener('ready', () => {
         this.ready?.emit();
