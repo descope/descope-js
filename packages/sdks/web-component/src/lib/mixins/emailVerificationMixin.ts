@@ -191,8 +191,9 @@ export const emailVerificationMixin = createSingletonMixin(
           });
         }
         const token = readEmailVerificationToken(this);
-        // read once per screen, a later submit there neither waits nor reads
-        clearEmailVerificationInput(this);
+        // single use, so a later submit on this screen doesn't read it again.
+        // An empty read keeps the input, so a fixed email can still get one
+        if (token) clearEmailVerificationInput(this);
         return token;
       }
     };

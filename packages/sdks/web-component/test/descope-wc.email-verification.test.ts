@@ -402,7 +402,7 @@ describe('web-component email verification', () => {
     typeEmail();
     getEmailField().focus();
 
-    fireEvent.click(screen.getByShadowText('click'));
+    fireEvent.keyDown(getEmailField(), { key: 'Enter' });
     await flushMicrotasks();
     expect(getEmailField()).not.toHaveFocus();
     // the blur just started the issuance, so the read waits the full time
@@ -439,7 +439,7 @@ describe('web-component email verification', () => {
     expect(form.requestSubmit).not.toHaveBeenCalled();
   });
 
-  it('does not send a token when the browser wrote none', async () => {
+  it('does not send a token when the browser wrote none, and keeps the input', async () => {
     emailVerificationStartMock.mockResolvedValue({
       ok: true,
       data: { nonce: 'n0nce' },
@@ -459,5 +459,7 @@ describe('web-component email verification', () => {
       timeout: WAIT_TIMEOUT,
     });
     expect(lastNextInputs()).not.toHaveProperty('evpToken');
+    // a later submit on this screen can still get a token
+    expect(getEvpInput()).not.toBeNull();
   });
 });
