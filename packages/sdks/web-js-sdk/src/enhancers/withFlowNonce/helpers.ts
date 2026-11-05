@@ -8,6 +8,7 @@ import {
   setLocalStorage,
 } from '../helpers';
 import {
+  FLOW_DATA_SOURCE_PATH_PREFIX,
   FLOW_NEXT_PATH,
   FLOW_NEXT_TTL,
   FLOW_NONCE_HEADER,
@@ -154,7 +155,11 @@ const extractFlowNonce = async (
 
 // Get execution ID from request object
 const getExecutionIdFromRequest = (req: RequestConfig): string | null => {
-  if (req.path === FLOW_NEXT_PATH && req.body?.executionId) {
+  if (
+    (req.path === FLOW_NEXT_PATH ||
+      req.path?.startsWith(FLOW_DATA_SOURCE_PATH_PREFIX)) &&
+    req.body?.executionId
+  ) {
     return extractExecId(req.body.executionId);
   }
 

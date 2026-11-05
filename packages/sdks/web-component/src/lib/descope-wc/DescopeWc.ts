@@ -82,6 +82,7 @@ import {
   StepState,
   FlowJWTResponse,
 } from '../types';
+import { createDataSources, DATA_SOURCE_EVENT } from '../helpers/dataSources';
 import BaseDescopeWc from './BaseDescopeWc';
 
 // Resolved with, not thrown: timeoutPromise rejects with a plain Error, which
@@ -153,7 +154,17 @@ class DescopeWc extends BaseDescopeWc {
 
   #eventsCbRefs = {
     visibilitychange: this.#syncStateWithVisibility.bind(this),
+    dataSource: (e: CustomEvent) => this.#dataSources.handleEvent(e),
   };
+
+  // Screen components get data through the data sources they ship with
+  // (@descope/components-data-sources); the SDK runs them and knows nothing about what they fetch.
+  #dataSources = createDataSources({
+    getFlowState: () => this.flowState.current,
+    post: (path, body) =>
+      this.sdk.httpClient.post(path, body, { disableRetry: true }),
+    logger: this.loggerWrapper,
+  });
 
   #syncStateWithVisibility() {
     if (!document.hidden) {
@@ -536,6 +547,13 @@ class DescopeWc extends BaseDescopeWc {
         'visibilitychange',
         this.#eventsCbRefs.visibilitychange,
       );
+
+      // contentRootElement outlives screen changes, so one delegated listener
+      // serves every render; the stable ref makes a re-init a no-op
+      this.contentRootElement.addEventListener(
+        DATA_SOURCE_EVENT,
+        this.#eventsCbRefs.dataSource,
+      );
     }
     await super.init?.();
   }
@@ -561,6 +579,10 @@ class DescopeWc extends BaseDescopeWc {
     window.removeEventListener(
       'visibilitychange',
       this.#eventsCbRefs.visibilitychange,
+    );
+    this.contentRootElement.removeEventListener(
+      DATA_SOURCE_EVENT,
+      this.#eventsCbRefs.dataSource,
     );
   }
 
@@ -2051,6 +2073,26 @@ class DescopeWc extends BaseDescopeWc {
         value: input.value,
       })),
     );
+
+    // Each input sends one value under its name. An input that needs to send more
+    // (e.g. the login ID suggest sends impersonateTenantId with the picked login ID)
+    // exposes them as `extraFormValues`, a { name: string } object merged into the
+    // form. Values that aren't strings are ignored.
+    inputs.forEach((input) => {
+      const { extraFormValues } = input as unknown as {
+        extraFormValues?: unknown;
+      };
+      if (
+        !extraFormValues ||
+        typeof extraFormValues !== 'object' ||
+        Array.isArray(extraFormValues)
+      ) {
+        return;
+      }
+      Object.entries(extraFormValues).forEach(([name, value]) => {
+        if (typeof value === 'string') values.push({ name, value });
+      });
+    });
 
     // reduce to object
     return values.reduce(
