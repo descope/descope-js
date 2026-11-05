@@ -21,25 +21,6 @@ import '../src/lib/descope-wc';
 const PAGE =
   '<descope-data-input name="field" data-testid="input" data-descope-ds="cars"></descope-data-input><descope-button id="submitterId">click</descope-button><span>It works!</span>';
 
-// what a component ships and hands the SDK
-const cars = {
-  name: 'cars',
-  endpoint: '/v1/flow/ds/cars',
-  methods: {
-    // a plain function: the harness resets every jest.fn between tests
-    list: async (ctx, params) => {
-      const res = await ctx.request({
-        executionId: ctx.executionId,
-        stepId: ctx.stepId,
-        componentId: ctx.componentId,
-        componentType: ctx.componentType,
-        ...params,
-      });
-      return res.data;
-    },
-  },
-};
-
 const renderScreen = async () => {
   startMock.mockReturnValueOnce(
     generateSdkResponse({ executionId: 'exec-1', stepId: 'step-1' }),
@@ -60,11 +41,11 @@ const renderScreen = async () => {
   return ele;
 };
 
-// mirrors the event a screen component dispatches to hand over its data source
-const getDataSource = (ele: HTMLElement, dataSource = cars) => {
+// mirrors the event a screen component dispatches to ask for a data source
+const getDataSource = (ele: HTMLElement, name = 'cars') => {
   const resolve = jest.fn();
   const event = new CustomEvent('descope-data-source', {
-    detail: { dataSource, resolve },
+    detail: { name, resolve },
     bubbles: true,
     composed: true,
     cancelable: true,
@@ -96,7 +77,7 @@ describe('web-component data sources', () => {
   });
 
   describe('descope-data-source', () => {
-    it('resolves a handle that calls the endpoint for the current step', async () => {
+    it('resolves a request to the endpoint for the current step', async () => {
       httpPostMock.mockResolvedValue(okResponse({ cars: ['volvo'] }));
       const ele = await renderScreen();
 
@@ -104,18 +85,19 @@ describe('web-component data sources', () => {
 
       expect(event.defaultPrevented).toBe(true);
       await waitFor(() => expect(resolve).toHaveBeenCalled());
-      const handle = resolve.mock.calls[0][0];
-      await expect(handle.list({ make: 'vol' })).resolves.toEqual({
+      const request = resolve.mock.calls[0][0];
+      await expect(request({ make: 'vol' })).resolves.toEqual({
+        ok: true,
         data: { cars: ['volvo'] },
       });
       expect(httpPostMock).toHaveBeenCalledWith(
         '/v1/flow/ds/cars',
         {
+          make: 'vol',
           executionId: 'exec-1',
           stepId: 'step-1',
           componentId: 'comp-1',
           componentType: 'descope-data-input',
-          make: 'vol',
         },
         { disableRetry: true },
       );
@@ -132,7 +114,7 @@ describe('web-component data sources', () => {
       const { resolve } = getDataSource(inner);
 
       await waitFor(() => expect(resolve).toHaveBeenCalled());
-      await resolve.mock.calls[0][0].list();
+      await resolve.mock.calls[0][0]({});
       expect(httpPostMock.mock.calls[0][1]).toEqual(
         expect.objectContaining({
           componentId: 'comp-1',
@@ -144,26 +126,10 @@ describe('web-component data sources', () => {
     it('does not answer for a data source the component did not declare', async () => {
       const ele = await renderScreen();
 
-      const { event, resolve } = getDataSource(ele, {
-        ...cars,
-        name: 'other',
-        endpoint: '/v1/flow/ds/other',
-      });
+      const { event, resolve } = getDataSource(ele, 'other');
 
       expect(event.defaultPrevented).toBe(false);
       expect(resolve).not.toHaveBeenCalled();
-    });
-
-    it('does not answer for a data source with an endpoint outside /v1/flow/ds/', async () => {
-      const ele = await renderScreen();
-
-      const { event } = getDataSource(ele, {
-        ...cars,
-        endpoint: '/v1/mgmt/user/search',
-      });
-
-      expect(event.defaultPrevented).toBe(false);
-      expect(httpPostMock).not.toHaveBeenCalled();
     });
 
     it('does not answer an event from an element without an id', async () => {
@@ -175,7 +141,7 @@ describe('web-component data sources', () => {
       expect(event.defaultPrevented).toBe(false);
     });
 
-    it('keeps one handle valid across screens', async () => {
+    it('keeps one request valid across screens', async () => {
       httpPostMock.mockResolvedValue(okResponse({}));
       nextMock.mockReturnValueOnce(
         generateSdkResponse({
@@ -187,14 +153,14 @@ describe('web-component data sources', () => {
       const ele = await renderScreen();
       const { resolve } = getDataSource(ele);
       await waitFor(() => expect(resolve).toHaveBeenCalled());
-      const handle = resolve.mock.calls[0][0];
+      const request = resolve.mock.calls[0][0];
 
       fixtures.pageContent = PAGE.replace('It works!', 'Next screen');
       fireEvent.click(screen.getByShadowText('click'));
       await waitFor(() => screen.getByShadowText('Next screen'), {
         timeout: WAIT_TIMEOUT,
       });
-      await handle.list();
+      await request({});
 
       expect(httpPostMock.mock.calls[0][1]).toEqual(
         expect.objectContaining({ stepId: 'step-2' }),

@@ -2073,8 +2073,10 @@ class DescopeWc extends BaseDescopeWc {
       })),
     );
 
-    // an input may carry more values besides its own, e.g. an id that goes
-    // with its selected option
+    // Each input sends one value under its name. An input that needs to send more
+    // (e.g. the login ID suggest sends impersonateTenantId with the picked login ID)
+    // exposes them as `extraFormValues`, a { name: string } object merged into the
+    // form. Values that aren't strings are ignored.
     inputs.forEach((input) => {
       const { extraFormValues } = input as unknown as {
         extraFormValues?: unknown;
