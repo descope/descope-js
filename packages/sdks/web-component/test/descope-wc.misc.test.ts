@@ -247,6 +247,56 @@ describe('web-component', () => {
       });
     });
 
+    it('should keep the new password email policy in sync with the email input', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      nextMock.mockReturnValue(
+        generateSdkResponse({
+          screenState: {
+            componentsConfig: {
+              newPassword: { 'active-policies': 'minlength,disallowemail' },
+            },
+          },
+        }),
+      );
+
+      fixtures.pageContent = `<descope-button>click</descope-button><div>Loaded</div><input class="descope-input" name="email" placeholder="email"><descope-new-password name="newPassword"></descope-new-password>`;
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-up" project-id="1"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('Loaded'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      const getNewPassword = () =>
+        document
+          .querySelector('descope-wc')
+          .shadowRoot.querySelector('descope-new-password');
+
+      await waitFor(
+        () =>
+          expect(getNewPassword()).toHaveAttribute(
+            'active-policies',
+            'minlength,disallowemail',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+
+      fireEvent.input(screen.getByShadowPlaceholderText('email'), {
+        target: { value: 'user@example.com' },
+      });
+
+      await waitFor(
+        () =>
+          expect(getNewPassword()).toHaveAttribute(
+            'data-password-policy-value-email',
+            'user@example.com',
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+    });
+
     it('should parse componentsAttrs values to screen components after next', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       nextMock.mockReturnValue(
