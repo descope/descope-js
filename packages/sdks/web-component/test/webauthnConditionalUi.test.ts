@@ -289,6 +289,7 @@ describe('webauthnConditionalUi', () => {
           {
             response: 'response',
             transactionId: 'transactionId',
+            origin: 'http://localhost',
           },
           false,
         ),

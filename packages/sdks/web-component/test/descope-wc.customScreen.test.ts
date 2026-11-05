@@ -286,6 +286,118 @@ describe('web-component', () => {
         },
       );
     });
+    const renderCustomStartScreen = async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: { 'sign-in': { version: 1, startScreenId: 'screen-0' } },
+      };
+      fixtures.pageContent = '<span>hey</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+      const onScreenUpdate = jest.fn(() => true);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      return onScreenUpdate.mock.calls[0][2];
+    };
+
+    const renderCustomScreen = async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      nextMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>hey</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+      const descopeWc = document.querySelector('descope-wc');
+      const onScreenUpdate = jest.fn(() => true);
+      descopeWc.onScreenUpdate = onScreenUpdate;
+
+      await waitFor(() => expect(startMock).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      await waitFor(() => expect(onScreenUpdate).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      return onScreenUpdate.mock.calls[0][2];
+    };
+
+    it('should call start with the page origin when a custom start screen calls next', async () => {
+      const next = await renderCustomStartScreen();
+
+      await next('interaction1', { email: 'test@example.com' });
+
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        expect.any(Object),
+        undefined,
+        'interaction1',
+        '1.2.3',
+        expect.any(Object),
+        expect.objectContaining({
+          email: 'test@example.com',
+          origin: 'http://localhost',
+        }),
+        true,
+      );
+    });
+
+    it('should call start with the origin passed by a custom start screen', async () => {
+      const next = await renderCustomStartScreen();
+
+      await next('interaction1', { origin: 'https://app.example.com' });
+
+      expect(startMock).toHaveBeenCalledWith(
+        'sign-in',
+        expect.any(Object),
+        undefined,
+        'interaction1',
+        '1.2.3',
+        expect.any(Object),
+        expect.objectContaining({ origin: 'https://app.example.com' }),
+        true,
+      );
+    });
+
+    it('should call next with the page origin when a custom screen calls next', async () => {
+      const next = await renderCustomScreen();
+
+      await next('interaction1', { email: 'test@example.com' });
+
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'interaction1',
+        1,
+        '1.2.3',
+        expect.objectContaining({
+          email: 'test@example.com',
+          origin: 'http://localhost',
+        }),
+        true,
+      );
+    });
+
+    it('should call next with the origin passed by a custom screen', async () => {
+      const next = await renderCustomScreen();
+
+      await next('interaction1', { origin: 'https://app.example.com' });
+
+      expect(nextMock).toHaveBeenCalledWith(
+        '0',
+        '0',
+        'interaction1',
+        1,
+        '1.2.3',
+        expect.objectContaining({ origin: 'https://app.example.com' }),
+        true,
+      );
+    });
+
     it('should call onScreenUpdate after "next" call, even if there is no state change', async () => {
       startMock.mockReturnValue(generateSdkResponse());
 

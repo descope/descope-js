@@ -1298,6 +1298,7 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           flowVersions,
           {
+            origin: this.#origin,
             ...this.formConfigValues,
             ...this.getComponentsContext(),
             ...transformScreenInputs(inputs),
@@ -1329,6 +1330,7 @@ class DescopeWc extends BaseDescopeWc {
           flowConfig.version,
           projectConfig.componentsVersion,
           {
+            origin: this.#origin,
             ...this.getComponentsContext(),
             ...transformScreenInputs(input),
           },
