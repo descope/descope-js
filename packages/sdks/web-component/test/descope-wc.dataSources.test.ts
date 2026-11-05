@@ -21,7 +21,7 @@ import '../src/lib/descope-wc';
 const PAGE =
   '<descope-data-input name="field" data-testid="input" data-descope-ds="cars"></descope-data-input><descope-button id="submitterId">click</descope-button><span>It works!</span>';
 
-// what a published data source bundle registers
+// what a component ships and hands the SDK
 const cars = {
   name: 'cars',
   endpoint: '/v1/flow/ds/cars',
@@ -40,21 +40,12 @@ const cars = {
   },
 };
 
-let injectMock: jest.Mock;
-
 const renderScreen = async () => {
   startMock.mockReturnValueOnce(
     generateSdkResponse({ executionId: 'exec-1', stepId: 'step-1' }),
   );
   globalThis.DescopeUI = { 'descope-data-input': jest.fn() };
   fixtures.pageContent = PAGE;
-  // jsdom never loads script tags, so loading registers the bundle directly
-  injectMock = jest.fn(async () => {
-    globalThis.descope = { dataSources: { cars } };
-  });
-  const proto = customElements.get('descope-wc').prototype;
-  jest.spyOn(proto, 'injectNpmLib').mockImplementation(injectMock);
-
   document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
 
   await waitFor(() => screen.getByShadowText('It works!'), {
@@ -69,11 +60,11 @@ const renderScreen = async () => {
   return ele;
 };
 
-// mirrors the event a screen component dispatches to get a data source
-const getDataSource = (ele: HTMLElement, name = 'cars') => {
+// mirrors the event a screen component dispatches to hand over its data source
+const getDataSource = (ele: HTMLElement, dataSource = cars) => {
   const resolve = jest.fn();
   const event = new CustomEvent('descope-data-source', {
-    detail: { name, resolve },
+    detail: { dataSource, resolve },
     bubbles: true,
     composed: true,
     cancelable: true,
@@ -102,23 +93,9 @@ describe('web-component data sources', () => {
   afterEach(() => {
     teardownWebComponentTestEnv();
     jest.restoreAllMocks();
-    delete globalThis.descope;
   });
 
   describe('descope-data-source', () => {
-    it('preloads the data sources the rendered screen declares', async () => {
-      await renderScreen();
-
-      await waitFor(() =>
-        expect(injectMock).toHaveBeenCalledWith(
-          '@descope/components-data-sources',
-          expect.any(String),
-          'dist/cars.js',
-          [],
-        ),
-      );
-    });
-
     it('resolves a handle that calls the endpoint for the current step', async () => {
       httpPostMock.mockResolvedValue(okResponse({ cars: ['volvo'] }));
       const ele = await renderScreen();
@@ -167,10 +144,26 @@ describe('web-component data sources', () => {
     it('does not answer for a data source the component did not declare', async () => {
       const ele = await renderScreen();
 
-      const { event, resolve } = getDataSource(ele, 'other');
+      const { event, resolve } = getDataSource(ele, {
+        ...cars,
+        name: 'other',
+        endpoint: '/v1/flow/ds/other',
+      });
 
       expect(event.defaultPrevented).toBe(false);
       expect(resolve).not.toHaveBeenCalled();
+    });
+
+    it('does not answer for a data source with an endpoint outside /v1/flow/ds/', async () => {
+      const ele = await renderScreen();
+
+      const { event } = getDataSource(ele, {
+        ...cars,
+        endpoint: '/v1/mgmt/user/search',
+      });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(httpPostMock).not.toHaveBeenCalled();
     });
 
     it('does not answer an event from an element without an id', async () => {

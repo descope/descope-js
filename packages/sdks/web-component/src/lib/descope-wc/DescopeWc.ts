@@ -156,13 +156,9 @@ class DescopeWc extends BaseDescopeWc {
     dataSource: (e: CustomEvent) => this.#dataSources.handleEvent(e),
   };
 
-  // Screen components get data from data sources (@descope/components-data-sources) by
-  // name; the SDK loads them and knows nothing about what they fetch.
+  // Screen components get data through the data sources they ship with
+  // (@descope/components-data-sources); the SDK runs them and knows nothing about what they fetch.
   #dataSources = createDataSources({
-    injectNpmLib: (libName, version, filePath, overrides) =>
-      this.injectNpmLib(libName, version, filePath, overrides),
-    getVersion: async () =>
-      (await this.getProjectConfig())?.componentsDataSourcesVersion,
     getFlowState: () => this.flowState.current,
     post: (path, body) =>
       this.sdk.httpClient.post(path, body, { disableRetry: true }),
@@ -1908,7 +1904,6 @@ class DescopeWc extends BaseDescopeWc {
       setCssVars(rootElement, clone, screenState.cssVars, this.loggerWrapper);
 
       rootElement.replaceChildren(clone);
-      this.#dataSources.preload(rootElement);
 
       // If before html url was empty, we deduce its the first time a screen is shown
       const isFirstScreen = !prevState.htmlFilename;

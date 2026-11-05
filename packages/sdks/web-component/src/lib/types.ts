@@ -509,8 +509,6 @@ export type FlowConfig = {
 
 export interface ProjectConfiguration {
   componentsVersion: string;
-  // per project override of the pinned @descope/components-data-sources version
-  componentsDataSourcesVersion?: string;
   cssTemplate: {
     dark: ThemeTemplate;
     light: ThemeTemplate;
