@@ -12,6 +12,7 @@
       :widget-id="widgetId"
       :style-id="styleId"
       @logout="onLogout"
+      @flow-popup-unauthenticated="onFlowPopupUnauthenticated"
       @ready="onReady"
     />
   </div>
@@ -25,6 +26,7 @@ const descope = inject(DESCOPE_INJECTION_KEY);
 import { useOptions } from './hooks';
 const emit = defineEmits<{
   (e: 'logout', payload: Event): void;
+  (e: 'flow-popup-unauthenticated', payload: Event): void;
   (e: 'ready', payload: CustomEvent<Record<string, never>>): void;
 }>();
 
@@ -32,6 +34,11 @@ const onLogout = (e: Event) => {
   descope?.resetAuth(); // reset session values
   emit('logout', e);
 };
+
+// Forwarded only, no resetAuth: the app's own session is still valid, it is the
+// auth domain that does not know the user.
+const onFlowPopupUnauthenticated = (e: Event) =>
+  emit('flow-popup-unauthenticated', e);
 
 const onReady = (e: CustomEvent<Record<string, never>>) => emit('ready', e);
 

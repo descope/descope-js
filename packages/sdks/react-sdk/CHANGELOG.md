@@ -2,6 +2,39 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.5.0](https://github.com/descope/descope-js/compare/react-sdk-3.4.8...react-sdk-3.5.0) (2026-11-05)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.17`
+* `applications-portal-widget` updated to version `0.9.17`
+* `audit-management-widget` updated to version `0.9.17`
+* `outbound-applications-widget` updated to version `0.7.20`
+* `role-management-widget` updated to version `0.10.17`
+* `sdk-helpers` updated to version `0.11.0`
+* `tenant-profile-widget` updated to version `0.11.14`
+* `user-management-widget` updated to version `0.21.11`
+* `user-profile-widget` updated to version `0.21.0`
+* `web-component` updated to version `4.6.3`
+
+### Features
+
+* **user-profile-widget:** read the popup choice from config.json ([#1519](https://github.com/descope/descope-js/issues/1519)) ([4128944](https://github.com/descope/descope-js/commit/4128944196f8c621eca1412692ff2eefe9609948)), closes [descope/etc#18056](https://github.com/descope/etc/issues/18056) [descope/auth-hosting#1980](https://github.com/descope/auth-hosting/issues/1980) [descope/console-app#5979](https://github.com/descope/console-app/issues/5979) [descope/backend#3213](https://github.com/descope/backend/issues/3213) [descope/backend#2844](https://github.com/descope/backend/issues/2844) [descope/descope-js#1502](https://github.com/descope/descope-js/issues/1502)
+
+## [3.4.8](https://github.com/descope/descope-js/compare/react-sdk-3.4.7...react-sdk-3.4.8) (2026-11-03)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.16`
+* `applications-portal-widget` updated to version `0.9.16`
+* `audit-management-widget` updated to version `0.9.16`
+* `outbound-applications-widget` updated to version `0.7.19`
+* `role-management-widget` updated to version `0.10.16`
+* `tenant-profile-widget` updated to version `0.11.13`
+* `user-management-widget` updated to version `0.21.10`
+* `user-profile-widget` updated to version `0.20.4`
+* `web-component` updated to version `4.6.2`
+* `web-js-sdk` updated to version `1.54.5`
 ## [3.4.7](https://github.com/descope/descope-js/compare/react-sdk-3.4.6...react-sdk-3.4.7) (2026-10-29)
 
 ### Dependency Updates

@@ -8,3 +8,4 @@ export * from './jwt';
 export * from './csv';
 export * from './html';
 export * from './locale';
+export * from './openCenteredPopup';

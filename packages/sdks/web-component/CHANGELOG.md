@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.6.3](https://github.com/descope/descope-js/compare/web-component-4.6.2...web-component-4.6.3) (2026-11-05)
+
+### Dependency Updates
+
+* `sdk-helpers` updated to version `0.11.0`
+* `sdk-mixins` updated to version `0.30.0`
+## [4.6.2](https://github.com/descope/descope-js/compare/web-component-4.6.1...web-component-4.6.2) (2026-11-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.5`
+
+### Bug Fixes
+
+* **web-component:** only send the OAuth popup result to a trusted opener origin RELEASE ([#1502](https://github.com/descope/descope-js/issues/1502)) ([eb6a1cc](https://github.com/descope/descope-js/commit/eb6a1cc3df67ffe7891163f2348231ada99f6717)), closes [descope/etc#18825](https://github.com/descope/etc/issues/18825) [descope/backend#2844](https://github.com/descope/backend/issues/2844)
+
 ## [4.6.1](https://github.com/descope/descope-js/compare/web-component-4.6.0...web-component-4.6.1) (2026-10-29)
 
 
