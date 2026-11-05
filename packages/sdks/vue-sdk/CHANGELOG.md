@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.2.0](https://github.com/descope/descope-js/compare/vue-sdk-3.1.24...vue-sdk-3.2.0) (2026-11-05)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.17`
+* `audit-management-widget` updated to version `0.9.17`
+* `role-management-widget` updated to version `0.10.17`
+* `user-management-widget` updated to version `0.21.11`
+* `user-profile-widget` updated to version `0.21.0`
+* `applications-portal-widget` updated to version `0.9.17`
+* `web-component` updated to version `4.6.3`
+
+### Features
+
+* **user-profile-widget:** read the popup choice from config.json ([#1519](https://github.com/descope/descope-js/issues/1519)) ([4128944](https://github.com/descope/descope-js/commit/4128944196f8c621eca1412692ff2eefe9609948)), closes [descope/etc#18056](https://github.com/descope/etc/issues/18056) [descope/auth-hosting#1980](https://github.com/descope/auth-hosting/issues/1980) [descope/console-app#5979](https://github.com/descope/console-app/issues/5979) [descope/backend#3213](https://github.com/descope/backend/issues/3213) [descope/backend#2844](https://github.com/descope/backend/issues/2844) [descope/descope-js#1502](https://github.com/descope/descope-js/issues/1502)
+
 ## [3.1.24](https://github.com/descope/descope-js/compare/vue-sdk-3.1.23...vue-sdk-3.1.24) (2026-11-03)
 
 ### Dependency Updates
