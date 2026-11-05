@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.0](https://github.com/descope/descope-js/compare/user-profile-widget-0.20.4...user-profile-widget-0.21.0) (2026-11-05)
+
+### Dependency Updates
+
+* `web-component` updated to version `4.6.3`
+* `sdk-helpers` updated to version `0.11.0`
+* `sdk-mixins` updated to version `0.30.0`
+* `sdk-component-drivers` updated to version `0.19.0`
+
+### Features
+
+* **user-profile-widget:** read the popup choice from config.json ([#1519](https://github.com/descope/descope-js/issues/1519)) ([4128944](https://github.com/descope/descope-js/commit/4128944196f8c621eca1412692ff2eefe9609948)), closes [descope/etc#18056](https://github.com/descope/etc/issues/18056) [descope/auth-hosting#1980](https://github.com/descope/auth-hosting/issues/1980) [descope/console-app#5979](https://github.com/descope/console-app/issues/5979) [descope/backend#3213](https://github.com/descope/backend/issues/3213) [descope/backend#2844](https://github.com/descope/backend/issues/2844) [descope/descope-js#1502](https://github.com/descope/descope-js/issues/1502)
+
+## [0.20.4](https://github.com/descope/descope-js/compare/user-profile-widget-0.20.3...user-profile-widget-0.20.4) (2026-11-03)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.5`
+* `web-component` updated to version `4.6.2`
 ## [0.20.3](https://github.com/descope/descope-js/compare/user-profile-widget-0.20.2...user-profile-widget-0.20.3) (2026-10-29)
 
 ### Dependency Updates

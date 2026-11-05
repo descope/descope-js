@@ -1,46 +1,29 @@
-import {
-  FlowDriver,
-  ModalDriver,
-  UserAttributeDriver,
-} from '@descope/sdk-component-drivers';
+import { UserAttributeDriver } from '@descope/sdk-component-drivers';
 import {
   compose,
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import {
-  localeMixin,
-  cookieConfigMixin,
-  loggerMixin,
-  flowModalMixin,
-  flowInputMixin,
-} from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin } from '@descope/sdk-mixins';
 import { AttributeTypeName } from '../../../api/types';
 import { getUserCustomAttrs } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initUserCustomAttributesMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class UserCustomAttributesMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
-      cookieConfigMixin,
-      flowModalMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
       // flow Id is key in all maps
-      #editModals: Record<string, ModalDriver> = {};
+      #editRunners: Record<string, FlowRunner | undefined> = {};
 
-      #editFlows: Record<string, FlowDriver> = {};
-
-      #deleteModals: Record<string, ModalDriver> = {};
-
-      #deleteFlows: Record<string, FlowDriver> = {};
+      #deleteRunners: Record<string, FlowRunner | undefined> = {};
 
       static getFormattedValue(type: string, val: any) {
         if (type === AttributeTypeName.DATE && val) {
@@ -51,27 +34,6 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
           return !val ? 'False' : 'True';
         }
         return (val || '').toString();
-      }
-
-      #initEditModalContent(flowId: string) {
-        this.#editModals[flowId]?.setContent(
-          this.createFlowTemplate({ flowId }),
-        );
-        this.#editFlows[flowId]?.onSuccess(() => {
-          this.#editModals[flowId]?.close();
-          this.actions.getMe();
-        });
-      }
-
-      // have 2 init functions for edit and delete modals in order to keep the same standards as the email/phone/name mixin
-      #initDeleteModalContent(flowId: string) {
-        this.#deleteModals[flowId]?.setContent(
-          this.createFlowTemplate({ flowId }),
-        );
-        this.#deleteFlows[flowId]?.onSuccess(() => {
-          this.#deleteModals[flowId]?.close();
-          this.actions.getMe();
-        });
       }
 
       #updateCustomValueUserAttrs = withMemCache(
@@ -108,28 +70,19 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       ) {
         const editFlowId = nodeEle.getAttribute('edit-flow-id');
         if (editFlowId) {
-          this.#editModals[editFlowId] = this.createFlowModal({
-            'data-id': `edit-${customAttrName}`,
-            'close-on-outside-click': 'true',
+          this.#editRunners[editFlowId] = this.createFlowRunner({
+            dataId: `edit-${customAttrName}`,
+            flowId: editFlowId,
+            onSuccess: () => this.actions.getMe(),
           });
-
-          this.#editFlows[editFlowId] = new FlowDriver(
-            () =>
-              this.#editModals[editFlowId]?.ele?.querySelector('descope-wc'),
-            { logger: this.logger },
-          );
-          this.#editModals[editFlowId].afterClose =
-            this.#initEditModalContent.bind(this, editFlowId);
 
           compInstance.onEditClick(() => {
-            this.#editModals?.[editFlowId]?.open();
+            this.#editRunners?.[editFlowId]?.open();
           });
-
-          this.#initEditModalContent(editFlowId);
-          this.syncFlowTheme(this.#editFlows[editFlowId]);
         }
       }
 
+      // kept separate from the edit path to match the email/phone/name mixins
       #initDeleteFlow(
         nodeEle: Element,
         customAttrName: string,
@@ -137,27 +90,15 @@ export const initUserCustomAttributesMixin = createSingletonMixin(
       ) {
         const deleteFlowId = nodeEle.getAttribute('delete-flow-id');
         if (deleteFlowId) {
-          this.#deleteModals[deleteFlowId] = this.createFlowModal({
-            'data-id': `delete-${customAttrName}`,
-            'close-on-outside-click': 'true',
+          this.#deleteRunners[deleteFlowId] = this.createFlowRunner({
+            dataId: `delete-${customAttrName}`,
+            flowId: deleteFlowId,
+            onSuccess: () => this.actions.getMe(),
           });
-
-          this.#deleteFlows[deleteFlowId] = new FlowDriver(
-            () =>
-              this.#deleteModals[deleteFlowId]?.ele?.querySelector(
-                'descope-wc',
-              ),
-            { logger: this.logger },
-          );
-          this.#deleteModals[deleteFlowId].afterClose =
-            this.#initDeleteModalContent.bind(this, deleteFlowId);
 
           compInstance.onDeleteClick(() => {
-            this.#deleteModals?.[deleteFlowId]?.open();
+            this.#deleteRunners?.[deleteFlowId]?.open();
           });
-
-          this.#initDeleteModalContent(deleteFlowId);
-          this.syncFlowTheme(this.#deleteFlows[deleteFlowId]);
         }
       }
 

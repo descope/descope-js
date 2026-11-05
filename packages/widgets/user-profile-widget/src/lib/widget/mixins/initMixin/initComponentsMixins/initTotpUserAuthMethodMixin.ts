@@ -1,101 +1,29 @@
-import {
-  FlowDriver,
-  ModalDriver,
-  UserAuthMethodDriver,
-} from '@descope/sdk-component-drivers';
+import { UserAuthMethodDriver } from '@descope/sdk-component-drivers';
 import {
   compose,
   createSingletonMixin,
   withMemCache,
 } from '@descope/sdk-helpers';
-import {
-  localeMixin,
-  cookieConfigMixin,
-  loggerMixin,
-  flowModalMixin,
-  flowInputMixin,
-} from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { getHasTotp } from '../../../state/selectors';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initTotpUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class TotpUserAuthMethodMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
-      cookieConfigMixin,
-      flowModalMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
       totpUserAuthMethod: UserAuthMethodDriver;
 
-      #addModal: ModalDriver;
+      #addRunner: FlowRunner | undefined;
 
-      #addFlow: FlowDriver;
-
-      #removeTotpModal: ModalDriver;
-
-      #removeTotpFlow: FlowDriver;
-
-      #initAddModal() {
-        if (!this.totpUserAuthMethod.flowId) return;
-
-        this.#addModal = this.createFlowModal({
-          'data-id': 'totp',
-          'close-on-outside-click': 'true',
-        });
-        this.#addFlow = new FlowDriver(
-          () => this.#addModal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#addModal.afterClose = this.#initAddModalContent.bind(this);
-        this.#initAddModalContent();
-        this.syncFlowTheme(this.#addFlow);
-      }
-
-      #initAddModalContent() {
-        this.#addModal.setContent(
-          this.createFlowTemplate({ flowId: this.totpUserAuthMethod.flowId }),
-        );
-        this.#addFlow.onSuccess(() => {
-          this.#addModal.close();
-          this.actions.getMe();
-        });
-      }
-
-      #initRemoveTotpModal() {
-        if (!this.totpUserAuthMethod.fulfilledFlowId) return;
-
-        this.#removeTotpModal = this.createFlowModal({
-          'data-id': 'remove-totp',
-          'close-on-outside-click': 'true',
-        });
-        this.#removeTotpFlow = new FlowDriver(
-          () => this.#removeTotpModal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#removeTotpModal.afterClose =
-          this.#initRemoveTotpModalContent.bind(this);
-        this.#initRemoveTotpModalContent();
-        this.syncFlowTheme(this.#removeTotpFlow);
-      }
-
-      #initRemoveTotpModalContent() {
-        this.#removeTotpModal.setContent(
-          this.createFlowTemplate({
-            flowId: this.totpUserAuthMethod.fulfilledFlowId,
-          }),
-        );
-        this.#removeTotpFlow.onSuccess(() => {
-          this.#removeTotpModal.close();
-          this.actions.getMe();
-        });
-      }
+      #removeRunner: FlowRunner | undefined;
 
       #initTotpAuthMethod() {
         this.totpUserAuthMethod = new UserAuthMethodDriver(
@@ -107,11 +35,11 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
         );
 
         this.totpUserAuthMethod.onUnfulfilledButtonClick(() => {
-          this.#addModal?.open();
+          this.#addRunner?.open();
         });
 
         this.totpUserAuthMethod.onFulfilledButtonClick(() => {
-          this.#removeTotpModal?.open();
+          this.#removeRunner?.open();
         });
       }
 
@@ -125,8 +53,18 @@ export const initTotpUserAuthMethodMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.#initTotpAuthMethod();
-        this.#initAddModal();
-        this.#initRemoveTotpModal();
+
+        this.#addRunner = this.createFlowRunner({
+          dataId: 'totp',
+          flowId: this.totpUserAuthMethod.flowId,
+          onSuccess: () => this.actions.getMe(),
+        });
+
+        this.#removeRunner = this.createFlowRunner({
+          dataId: 'remove-totp',
+          flowId: this.totpUserAuthMethod.fulfilledFlowId,
+          onSuccess: () => this.actions.getMe(),
+        });
 
         this.#onFulfilledUpdate(getHasTotp(this.state));
 
