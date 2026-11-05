@@ -56,33 +56,23 @@ const flushMicrotasks = async () => {
 };
 
 // Chrome is the only browser that issues email verification tokens
-const setVendor = (vendor: string) => {
-  Object.defineProperty(window.navigator, 'vendor', {
-    value: vendor,
+const setBrand = (brand?: string) => {
+  Object.defineProperty(window.navigator, 'userAgentData', {
+    value: brand ? { brands: [{ brand: 'Chromium' }, { brand }] } : undefined,
     configurable: true,
   });
 };
 
 describe('web-component email verification', () => {
-  const { userAgent, vendor } = window.navigator;
-
   beforeEach(() => {
     setupWebComponentTestEnv();
     startMock.mockReturnValue(generateSdkResponse());
-    Object.defineProperty(window.navigator, 'userAgent', {
-      value: `${userAgent} Chrome/150.0.0.0`,
-      configurable: true,
-    });
-    setVendor('Google Inc.');
+    setBrand('Google Chrome');
   });
 
   afterEach(() => {
     teardownWebComponentTestEnv();
-    Object.defineProperty(window.navigator, 'userAgent', {
-      value: userAgent,
-      configurable: true,
-    });
-    setVendor(vendor);
+    setBrand();
   });
 
   it('does not fetch a nonce when the email field has no email-verification attribute', async () => {
@@ -94,12 +84,26 @@ describe('web-component email verification', () => {
     expect(getEvpInput()).toBeNull();
   });
 
-  it('does not fetch a nonce outside Chromium', async () => {
+  it('does not fetch a nonce in other Chromium based browsers', async () => {
     emailVerificationStartMock.mockResolvedValue({
       ok: true,
       data: { nonce: 'n0nce' },
     });
-    setVendor('Apple Computer, Inc.');
+    setBrand('Microsoft Edge');
+    fixtures.pageContent = evpPage;
+
+    await renderFirstScreen(wcInForm);
+
+    expect(emailVerificationStartMock).not.toHaveBeenCalled();
+    expect(getEvpInput()).toBeNull();
+  });
+
+  it('does not fetch a nonce in browsers without client hints', async () => {
+    emailVerificationStartMock.mockResolvedValue({
+      ok: true,
+      data: { nonce: 'n0nce' },
+    });
+    setBrand();
     fixtures.pageContent = evpPage;
 
     await renderFirstScreen(wcInForm);

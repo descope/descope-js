@@ -757,6 +757,12 @@ export function timeoutPromise<T>(
   });
 }
 
+// other Chromium based browsers (Edge, Brave, Opera) list their own brand
+export const isChrome = (): boolean =>
+  !!(navigator as any)?.userAgentData?.brands?.some(
+    ({ brand }) => brand === 'Google Chrome',
+  );
+
 export const getChromiumVersion = (): number => {
   const brands = (navigator as any)?.userAgentData?.brands;
   const found = brands?.find(

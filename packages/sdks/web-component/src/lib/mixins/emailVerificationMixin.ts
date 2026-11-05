@@ -3,7 +3,7 @@ import { compose, createSingletonMixin } from '@descope/sdk-helpers';
 import { loggerMixin } from '@descope/sdk-mixins';
 import type { createSdk } from '@descope/web-js-sdk';
 import { DESCOPE_ATTRIBUTE_EXCLUDE_FIELD } from '../constants';
-import { isChromium } from '../helpers';
+import { isChrome } from '../helpers';
 
 // Browser email verification (Chrome's Email Verification Protocol): the
 // browser finds a hidden autocomplete="email-verification-token" input under
@@ -136,7 +136,7 @@ export const emailVerificationMixin = createSingletonMixin(
         const emailVerification = this.#host.sdk?.emailVerification;
         if (
           !emailVerification ||
-          !isChromium() ||
+          !isChrome() ||
           !hasEmailVerificationField(fragment) ||
           !this.closest('form')
         ) {
