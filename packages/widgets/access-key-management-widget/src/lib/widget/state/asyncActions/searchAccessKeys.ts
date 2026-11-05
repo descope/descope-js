@@ -23,7 +23,18 @@ const reducer = buildAsyncReducer(action)(
     },
     // eslint-disable-next-line @typescript-eslint/no-shadow
     onFulfilled: (state, action) => {
-      state.accessKeysList.data = action.payload;
+      // after a create, show the new key first if the search returned it
+      const keys = action.payload;
+      const createdIdx =
+        keys?.findIndex((k) => k.id === state.createdAccessKeyId) ?? -1;
+      state.accessKeysList.data =
+        createdIdx > 0
+          ? [keys[createdIdx], ...keys.filter((_, i) => i !== createdIdx)]
+          : keys;
+      state.createdAccessKeyId = null;
+    },
+    onRejected: (state) => {
+      state.createdAccessKeyId = null;
     },
   },
   withRequestStatus((state: State) => state.accessKeysList),
