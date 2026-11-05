@@ -1,45 +1,35 @@
-import {
-  GenericFlowButtonDriver,
-  FlowDriver,
-  ModalDriver,
-} from '@descope/sdk-component-drivers';
+import { GenericFlowButtonDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import {
-  localeMixin,
-  loggerMixin,
-  flowModalMixin,
-  flowInputMixin,
-} from '@descope/sdk-mixins';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+import { localeMixin, loggerMixin } from '@descope/sdk-mixins';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { getUserId } from '../../../state/selectors';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initGenericFlowButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitGenericFlowButtonMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       stateManagementMixin,
-      flowModalMixin,
       loggerMixin,
       initWidgetRootMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
-      #modal: ModalDriver;
-
-      #flow: FlowDriver;
-
       #flowButtons: GenericFlowButtonDriver[] = [];
 
-      #removePageUpdatedCallback: (() => void) | null = null;
+      // One runner for every button, because they all share a single modal.
+      // Which flow runs is decided per click, not here.
+      #runner: FlowRunner | undefined;
 
       #initComponents(ele: Element) {
         const button = new GenericFlowButtonDriver(ele, {
           logger: this.logger,
         });
         button.onClick(() => {
-          this.#initModalContent(button.flowId, getUserId(this.state));
+          this.#runner?.open({
+            flowId: button.flowId,
+            client: { userId: getUserId(this.state) },
+          });
         });
         this.#flowButtons.push(button);
       }
@@ -53,49 +43,23 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
         });
       }
 
-      #initModal() {
-        this.#modal = this.createFlowModal({
-          'data-id': 'generic-flow-modal',
-          'close-on-outside-click': 'true',
-        });
-        this.#modal.afterClose = () => {
-          this.#removePageUpdatedCallback?.();
-          this.#removePageUpdatedCallback = null;
-        };
-        this.#flow = new FlowDriver(
-          () => this.#modal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.syncFlowTheme(this.#flow);
-      }
-
-      #onModalNeeded() {
-        this.#modal.open();
-        this.#removePageUpdatedCallback?.();
-      }
-
-      #initModalContent(flowId: string, userId: string) {
-        this.#modal.setContent(
-          // this modal is built on click and opened once the flow renders a
-          // page, so the flow has to start before the modal opens
-          this.createFlowTemplate({
-            flowId,
-            client: { userId },
-            lazyStart: false,
-          }),
-        );
-        const cb = () => this.#onModalNeeded();
-        this.#removePageUpdatedCallback = this.#flow.onPageUpdated(cb);
-        this.#flow.onSuccess(() => {
-          this.#modal.close();
-          this.actions.getMe();
-        });
-      }
-
       async onWidgetRootReady() {
         await super.onWidgetRootReady?.();
-        this.#initModal();
+
         this.#initFlowButtons();
+
+        this.#runner = this.createFlowRunner({
+          dataId: 'generic-flow-modal',
+          // only decides whether there is anything to run at all - every open
+          // names the flow its own button wants
+          flowId: this.#flowButtons[0]?.flowId,
+          // built on click, and shown only once the flow renders a page, so a
+          // flow that redirects away never flashes an empty modal
+          presetContent: false,
+          deferOpenUntilFirstPage: true,
+          onSuccess: () => this.actions.getMe(),
+        });
+
         this.#flowButtons.forEach((button) => button.enable());
       }
     },

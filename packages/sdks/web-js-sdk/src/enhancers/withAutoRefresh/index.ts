@@ -12,6 +12,7 @@ import {
   getTokenExpiration,
   getAutoRefreshTimeout,
   createActivityTracker,
+  millisecondsUntilDate,
 } from './helpers';
 import { AutoRefreshOptions } from './types';
 import logger from '../helpers/logger';
@@ -98,7 +99,7 @@ export const withAutoRefresh =
         refreshToken = refreshJwt;
         // Updated on each server response — may change if server starts/stops returning nextRefreshSeconds
         hasInactivityTimeout = nextRefreshSeconds > 0;
-        const timeout = getAutoRefreshTimeout(
+        let timeout = getAutoRefreshTimeout(
           sessionExpirationDate,
           nextRefreshSeconds,
         );
@@ -108,12 +109,14 @@ export const withAutoRefresh =
           /*
             When receiving a session with very short expiration - it means that the refresh token is also close to expiration
             This happens because session expiration cannot be more than the refresh expiration
-            In this case - the user is going to be logged out soon, so we don't want to set a refresh timer
+            In this case we refresh when the session expires (refreshing before that would just return the same short session)
+            If the refresh token expired as well, the refresh fails with 401, which clears the session and notifies subscribers
+            We never refresh sooner than the threshold, so a client clock that is ahead of the server does not cause a tight loop
           */
-          logger.debug(
-            'Session is too close to expiration, not setting refresh timer',
+          timeout = Math.max(
+            millisecondsUntilDate(sessionExpirationDate),
+            REFRESH_THRESHOLD,
           );
-          return;
         }
 
         const refreshTimeStr = new Date(

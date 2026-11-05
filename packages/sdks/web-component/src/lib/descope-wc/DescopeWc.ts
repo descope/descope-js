@@ -30,6 +30,7 @@ import {
   getAnimationDirection,
   getElementDescopeAttributes,
   getScriptResultPath,
+  getTrustedPopupOpenerOrigin,
   handleAutoFocus,
   handleReportValidityOnBlur,
   injectSamlIdpForm,
@@ -347,7 +348,7 @@ class DescopeWc extends BaseDescopeWc {
       if (!globalThis.descope?.[script.id]) {
         await this.injectNpmLib(
           '@descope/flow-scripts',
-          '1.0.20', // currently using a fixed version when loading scripts
+          '1.0.21', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
       }
@@ -2489,18 +2490,27 @@ class DescopeWc extends BaseDescopeWc {
   // Notify opener with code/exchangeError using either BroadcastChannel or postMessage fallback
   #notifyOpener(executionId: string, code: string, exchangeError: string) {
     const [prefix, openerOrigin] = window.name?.split('|') || [];
-    const usePostMessageFallback = prefix === 'descope-wc' && openerOrigin;
+    const requestsPostMessage = prefix === 'descope-wc' && !!openerOrigin;
+    const targetOrigin = requestsPostMessage
+      ? getTrustedPopupOpenerOrigin(openerOrigin)
+      : undefined;
+    if (requestsPostMessage && !targetOrigin) {
+      this.loggerWrapper.warn(
+        'Popup opener origin is not approved for this project, add it to the approved domains to send the OAuth result to it',
+        openerOrigin,
+      );
+    }
 
     const message = { data: { code, exchangeError }, action: 'code' };
 
     // PostMessage fallback path (for cross-origin popups)
-    if (usePostMessageFallback) {
+    if (targetOrigin) {
       this.loggerWrapper.debug(
         'Using postMessage fallback to notify opener in origin',
-        openerOrigin,
+        targetOrigin,
       );
       try {
-        window.opener.postMessage(message, openerOrigin);
+        window.opener.postMessage(message, targetOrigin);
       } catch (err) {
         this.loggerWrapper.error(
           'Failed to send postMessage fallback (likely COOP isolation)',

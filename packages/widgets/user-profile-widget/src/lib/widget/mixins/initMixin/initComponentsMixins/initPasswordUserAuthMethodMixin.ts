@@ -1,64 +1,22 @@
-import {
-  FlowDriver,
-  ModalDriver,
-  UserAuthMethodDriver,
-} from '@descope/sdk-component-drivers';
+import { UserAuthMethodDriver } from '@descope/sdk-component-drivers';
 import { compose, createSingletonMixin } from '@descope/sdk-helpers';
-import {
-  localeMixin,
-  cookieConfigMixin,
-  loggerMixin,
-  flowModalMixin,
-  flowInputMixin,
-} from '@descope/sdk-mixins';
+import { localeMixin, loggerMixin } from '@descope/sdk-mixins';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
-import { flowSyncThemeMixin } from '../../flowSyncThemeMixin';
+import { flowRunnerMixin, FlowRunner } from '../../flowRunnerMixin';
 
 export const initPasswordUserAuthMethodMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class PasswordUserAuthMethodMixinClass extends compose(
       localeMixin,
-      flowSyncThemeMixin,
       stateManagementMixin,
       loggerMixin,
       initWidgetRootMixin,
-      cookieConfigMixin,
-      flowModalMixin,
-      flowInputMixin,
+      flowRunnerMixin,
     )(superclass) {
       passwordUserAuthMethod: UserAuthMethodDriver;
 
-      #modal: ModalDriver;
-
-      #flow: FlowDriver;
-
-      #initModal() {
-        if (!this.passwordUserAuthMethod.flowId) return;
-
-        this.#modal = this.createFlowModal({
-          'data-id': 'password',
-          'close-on-outside-click': 'true',
-        });
-        this.#flow = new FlowDriver(
-          () => this.#modal.ele?.querySelector('descope-wc'),
-          { logger: this.logger },
-        );
-        this.#modal.afterClose = this.#initModalContent.bind(this);
-        this.#initModalContent();
-        this.syncFlowTheme(this.#flow);
-      }
-
-      #initModalContent() {
-        this.#modal.setContent(
-          this.createFlowTemplate({
-            flowId: this.passwordUserAuthMethod.flowId,
-          }),
-        );
-        this.#flow.onSuccess(() => {
-          this.#modal.close();
-        });
-      }
+      #runner: FlowRunner | undefined;
 
       initPasswordAuthMethod() {
         this.passwordUserAuthMethod = new UserAuthMethodDriver(
@@ -70,7 +28,7 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
         );
 
         this.passwordUserAuthMethod.onUnfulfilledButtonClick(() => {
-          this.#modal?.open();
+          this.#runner?.open();
         });
       }
 
@@ -78,7 +36,11 @@ export const initPasswordUserAuthMethodMixin = createSingletonMixin(
         await super.onWidgetRootReady?.();
 
         this.initPasswordAuthMethod();
-        this.#initModal();
+
+        this.#runner = this.createFlowRunner({
+          dataId: 'password',
+          flowId: this.passwordUserAuthMethod.flowId,
+        });
       }
     },
 );
