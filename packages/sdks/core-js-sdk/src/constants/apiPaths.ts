@@ -92,6 +92,9 @@ export default {
     replace: '/v1/auth/password/replace',
     policy: '/v1/auth/password/policy',
   },
+  emailVerification: {
+    start: '/v1/auth/emailverification/start',
+  },
   // NOTE: When adding routes that validate session state (like refresh, me, etc.),
   // consider adding them to SESSION_VALIDATION_ROUTES in web-js-sdk/src/enhancers/helpers/index.ts
   // These routes trigger logout/clear tokens on failure, unlike OTP routes that may fail for invalid input

@@ -36,6 +36,7 @@ import {
   componentConditionsMixin,
   duplicateFlowWarningMixin,
   passwordManagerMixin,
+  emailVerificationMixin,
   validationTrackingMixin,
 } from '../mixins';
 import {
@@ -62,6 +63,7 @@ const BaseClass = compose(
   componentConditionsMixin,
   duplicateFlowWarningMixin,
   passwordManagerMixin,
+  emailVerificationMixin,
   injectStyleMixin,
   telemetryMixin,
   validationTrackingMixin,

@@ -235,6 +235,11 @@ export type TOTPResponse = {
   key: string;
 };
 
+/** Browser email verification start response */
+export type EmailVerificationStartResponse = {
+  nonce: string;
+};
+
 /** Password reset response with details according to response method */
 export type PasswordResetResponse = {
   resetMethod: string;

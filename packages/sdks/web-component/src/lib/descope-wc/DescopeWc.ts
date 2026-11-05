@@ -557,6 +557,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#resetPollingTimeout();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
+    this.clearEmailVerification();
 
     window.removeEventListener(
       'visibilitychange',
@@ -1358,6 +1359,10 @@ class DescopeWc extends BaseDescopeWc {
   };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
+    if (isCustomScreen) {
+      this.clearEmailVerification();
+    }
+
     const toggleVisibility = () => {
       this.contentRootElement.classList.toggle('hidden', isCustomScreen);
       this.slotElement.classList.toggle('hidden', !isCustomScreen);
@@ -1825,6 +1830,8 @@ class DescopeWc extends BaseDescopeWc {
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
+    this.clearEmailVerification();
+
     this.updateScreenUser(screenState?.user);
 
     const stepTemplate = document.createElement('template');
@@ -1866,6 +1873,9 @@ class DescopeWc extends BaseDescopeWc {
     // Apply on the fragment before mount so the first paint shows the right
     // state (otherwise the user briefly sees unhidden/enabled components).
     this.applyComponentsState(clone, screenState?.componentsState);
+
+    // not awaited, so the nonce fetch does not delay the screen render
+    this.startEmailVerification(clone);
 
     // set auto-detect attributes (country code from geo, lang from locale)
     const { geo } = (await this.getExecutionContext()) ?? {};
@@ -2266,6 +2276,8 @@ class DescopeWc extends BaseDescopeWc {
 
           this.nextRequestStatus.update({ isLoading: true });
 
+          const evpToken = await this.emailVerificationToken(submitter);
+
           const actionArgs = {
             ...eleDescopeAttrs,
             ...formData,
@@ -2274,6 +2286,7 @@ class DescopeWc extends BaseDescopeWc {
             // is performed in the native app, so a custom origin needs to be injected
             // into the webauthn request data.
             origin: this.#origin,
+            ...(evpToken && { evpToken }),
           };
 
           const res = await next(submitterId, actionArgs);

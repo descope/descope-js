@@ -85,6 +85,9 @@ export const sdk = {
       get: jest.fn(),
     },
   },
+  emailVerification: {
+    start: jest.fn().mockName('emailVerification.start'),
+  },
   getLastUserLoginId: jest.fn().mockName('getLastUserLoginId'),
   getLastUserDisplayName: jest.fn().mockName('getLastUserDisplayName'),
 };
@@ -94,6 +97,8 @@ export const startMock = sdk.flow.start as jest.Mock;
 export const flowEventMock = sdk.flow.event as jest.Mock;
 export const isWebauthnSupportedMock = sdk.webauthn.helpers
   .isSupported as jest.Mock;
+export const emailVerificationStartMock = sdk.emailVerification
+  .start as jest.Mock;
 export const getLastUserLoginIdMock = sdk.getLastUserLoginId as jest.Mock;
 export const getLastUserDisplayNameMock =
   sdk.getLastUserDisplayName as jest.Mock;

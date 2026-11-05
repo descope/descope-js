@@ -17,6 +17,7 @@ import withOutbound from './outbound';
 import withOtp from './otp';
 import withSso from './sso';
 import withTotp from './totp';
+import withEmailVerification from './emailVerification';
 import withPassword from './password';
 import {
   JWTResponse,
@@ -57,6 +58,7 @@ export default (httpClient: HttpClient) => ({
   webauthn: withWebauthn(httpClient),
   password: withPassword(httpClient),
   flow: withFlow(httpClient),
+  emailVerification: withEmailVerification(httpClient),
   /**
    * Refreshes a session token
    * Should be called when a session has expired (failed validation) to renew it
