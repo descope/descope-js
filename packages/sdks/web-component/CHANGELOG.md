@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.7.0](https://github.com/descope/descope-js/compare/web-component-4.6.3...web-component-4.7.0) (2026-11-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.6`
+
+### Features
+
+* **web-component:** support browser email verification in flows ([#1547](https://github.com/descope/descope-js/issues/1547)) ([8d9f5c5](https://github.com/descope/descope-js/commit/8d9f5c5a9700329f05cac86ada9df6f19ee3e201))
+
+
+### Bug Fixes
+
+* **web-component:** send the page origin from custom screens ([#1550](https://github.com/descope/descope-js/issues/1550)) ([4d93b95](https://github.com/descope/descope-js/commit/4d93b95d8cb3aaf3ced14434f49ed4feab4609fa))
+
 ## [4.6.3](https://github.com/descope/descope-js/compare/web-component-4.6.2...web-component-4.6.3) (2026-11-05)
 
 ### Dependency Updates
