@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.21](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.20...outbound-applications-widget-0.7.21) (2026-11-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.6`
+* `web-component` updated to version `4.7.0`
+
+### Bug Fixes
+
+* **outbound-applications-widget:** start connect/disconnect flows eagerly RELEASE ([#1551](https://github.com/descope/descope-js/issues/1551)) ([b50c5b3](https://github.com/descope/descope-js/commit/b50c5b31dcaf2103c22c97767cf043ba665ab104)), closes [descope/etc#19963](https://github.com/descope/etc/issues/19963) [#1488](https://github.com/descope/descope-js/issues/1488)
+
 ## [0.7.20](https://github.com/descope/descope-js/compare/outbound-applications-widget-0.7.19...outbound-applications-widget-0.7.20) (2026-11-05)
 
 ### Dependency Updates
