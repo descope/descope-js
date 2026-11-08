@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.78.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.77.0...core-js-sdk-2.78.0) (2026-11-08)
+
+
+### Features
+
+* **web-component:** support browser email verification in flows ([#1547](https://github.com/descope/descope-js/issues/1547)) ([8d9f5c5](https://github.com/descope/descope-js/commit/8d9f5c5a9700329f05cac86ada9df6f19ee3e201))
+
 ## [2.77.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.76.0...core-js-sdk-2.77.0) (2026-10-17)
 
 
