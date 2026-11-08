@@ -224,6 +224,22 @@ test.describe('widget', () => {
         );
         expect(client).toMatchObject({ acme: 'corp' });
       });
+
+      // the modal opens on the flow's first page, so the flow must not wait
+      // for the modal to open
+      test('starts the disconnect flow eagerly', async ({ page }) => {
+        await page
+          .locator('descope-button')
+          .filter({ hasText: 'Disconnect' })
+          .getByRole('button')
+          .click();
+
+        await expect(
+          page
+            .locator('descope-modal[data-id="outbound-apps-disconnect"]')
+            .locator('descope-wc'),
+        ).toHaveAttribute('lazy-start', 'false');
+      });
     });
 
     test.describe('app connect', () => {
@@ -242,6 +258,22 @@ test.describe('widget', () => {
         });
 
         await page.goto(`http://localhost:${widgetPort}`);
+      });
+
+      // the modal opens on the flow's first page, so the flow must not wait
+      // for the modal to open
+      test('starts the connect flow eagerly', async ({ page }) => {
+        await page
+          .locator('descope-list-item')
+          .nth(1)
+          .getByText('Connect')
+          .click();
+
+        await expect(
+          page
+            .locator('descope-modal[data-id="outbound-apps-connect"]')
+            .locator('descope-wc'),
+        ).toHaveAttribute('lazy-start', 'false');
       });
 
       test('run headless and not trigger modal', async ({ page }) => {
