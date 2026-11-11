@@ -13,6 +13,13 @@ export const getAccessKeysList = createSelector(
   (accessKeys) =>
     accessKeys.map((accessKey) => ({
       ...accessKey,
+      // grid columns read `item[path]` (no nested path support), so expose each
+      // custom attribute under a flat `customAttributes.<name>` key
+      ...Object.fromEntries(
+        Object.entries(accessKey?.customAttributes || {}).map(
+          ([name, value]) => [`customAttributes.${name}`, value],
+        ),
+      ),
       expireTimeFormatted: !accessKey?.expireTime
         ? 'Never'
         : new Date((accessKey?.expireTime || 0) * 1000).toLocaleString(),

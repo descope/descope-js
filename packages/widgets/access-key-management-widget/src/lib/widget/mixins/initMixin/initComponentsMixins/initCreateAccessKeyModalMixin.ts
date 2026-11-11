@@ -14,6 +14,21 @@ import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { initCreatedAccessKeyModalMixin } from './initCreatedAccessKeyModalMixin';
 
+const CUSTOM_ATTRIBUTES_PREFIX = 'customAttributes.';
+
+// form fields named `customAttributes.<name>` are grouped into a `customAttributes` object
+export const unflattenCustomAttributes = (formData: Record<string, any>) =>
+  Object.entries(formData).reduce((acc, [key, value]) => {
+    if (!key.startsWith(CUSTOM_ATTRIBUTES_PREFIX)) {
+      return Object.assign(acc, { [key]: value });
+    }
+    if (!acc.customAttributes) {
+      acc.customAttributes = {};
+    }
+    acc.customAttributes[key.slice(CUSTOM_ATTRIBUTES_PREFIX.length)] = value;
+    return acc;
+  }, {} as any);
+
 export const initCreateAccessKeyModalMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitCreateAccessKeyModalMixinClass extends compose(
@@ -59,9 +74,9 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
         submitButton.onClick(async () => {
           if (this.validateForm(this.createAccessKeyModal.ele)) {
             const res: Record<string, any> = await this.actions.createAccessKey(
-              {
-                ...this.getFormData(this.createAccessKeyModal.ele),
-              },
+              unflattenCustomAttributes(
+                this.getFormData(this.createAccessKeyModal.ele),
+              ),
             );
             this.createAccessKeyModal.close();
 

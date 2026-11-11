@@ -181,6 +181,75 @@ test.describe('widget', () => {
     ).toBeVisible();
   });
 
+  test('custom attributes: grid column and create', async ({ page }) => {
+    // screens as the console widget editor renders them once a "Team" custom
+    // attribute column is added to the grid
+    await page.route('*/**/root.html', async (route) =>
+      route.fulfill({
+        body: rootMock.replace(
+          '</descope-grid>',
+          '<descope-grid-text-column header="Team" path="customAttributes.team" resizable="true"></descope-grid-text-column></descope-grid>',
+        ),
+      }),
+    );
+    await page.route('*/**/create-access-key-modal.html', async (route) =>
+      route.fulfill({
+        body: createAccessKeyModalMock.replace(
+          '<descope-container data-editor-type="container" direction="row" id="buttonsContainer"',
+          '<descope-text-field bordered="true" full-width="true" id="dca-teamInput" label="Team" name="customAttributes.team" size="sm"></descope-text-field>\n  <descope-container data-editor-type="container" direction="row" id="buttonsContainer"',
+        ),
+      }),
+    );
+    await page.route(apiPath('accesskey', 'search'), async (route) =>
+      route.fulfill({
+        json: {
+          keys: mockAccessKeys.keys.map((key, i) =>
+            i === 0 ? { ...key, customAttributes: { team: 'payments' } } : key,
+          ),
+        },
+      }),
+    );
+    let createBody: Record<string, any> | undefined;
+    await page.route(apiPath('accesskey', 'create'), async (route) => {
+      createBody = route.request().postDataJSON();
+      await route.fulfill({
+        json: {
+          key: { ...mockAccessKeys.keys[1], id: 'new', ...createBody },
+          cleartext,
+        },
+      });
+    });
+
+    await page.reload();
+    await waitForWidgetReady(page);
+
+    // grid shows the custom attribute column and value
+    await expect(page.getByText('payments').first()).toBeVisible();
+    await page.screenshot({ path: test.info().outputPath('1-grid.png') });
+
+    // create a key with a custom attribute
+    await page.getByTestId('create-access-key-trigger').first().click();
+    await page.getByText('Name').last().fill('ci key');
+    await page.getByText('Team').last().fill('platform');
+    await page.screenshot({
+      path: test.info().outputPath('2-create-modal.png'),
+    });
+    await page.getByTestId('create-access-key-modal-submit').last().click();
+
+    await expect(
+      page.locator('text=Access Key created successfully'),
+    ).toBeVisible();
+    expect(createBody).toMatchObject({
+      name: 'ci key',
+      customAttributes: { team: 'platform' },
+    });
+    expect(Object.keys(createBody)).not.toContain('customAttributes.team');
+
+    await page.getByTestId('created-access-key-modal-close').first().click();
+    await expect(page.getByText('platform').first()).toBeVisible();
+    await page.screenshot({ path: test.info().outputPath('3-grid-after.png') });
+  });
+
   test('create access key', async ({ page, browserName }) => {
     const openAddAccessKeyModalButton = page
       .getByTestId('create-access-key-trigger')
