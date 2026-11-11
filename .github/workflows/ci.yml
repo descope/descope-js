@@ -58,7 +58,13 @@ jobs:
       - name: Mark directory as safe
         run: git config --system --add safe.directory /__w/descope-js/descope-js
       - name: Install jq
-        run: apt-get update && apt-get install -y jq
+        # gitleaks.sh and the regions fetch need jq. Taken from jq's GitHub release, not apt:
+        # Ubuntu's mirrors are not always reachable from the container.
+        run: |
+          curl --fail --silent --show-error --location --retry 3 --retry-all-errors \
+            -o /usr/local/bin/jq https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-linux-amd64
+          echo "b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f  /usr/local/bin/jq" | sha256sum --check
+          chmod +x /usr/local/bin/jq
       - name: Set permission
         run: chmod -R 777 /usr/local
 
