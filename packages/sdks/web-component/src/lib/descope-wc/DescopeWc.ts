@@ -29,6 +29,7 @@ import {
   clearSsoQueryParams,
   getAnimationDirection,
   getElementDescopeAttributes,
+  getIdFromExecId,
   getScriptResultPath,
   getTrustedPopupOpenerOrigin,
   handleAutoFocus,
@@ -37,7 +38,9 @@ import {
   injectWsFedIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
+  linkRunToSsoContext,
   openCenteredPopup,
+  pickSsoQueryParams,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
@@ -617,6 +620,10 @@ class DescopeWc extends BaseDescopeWc {
       this.flowState.update({
         stepId: null,
         executionId: null,
+        // a page continuing a run from a magic link has no OIDC params in flow
+        // state, so a restart would lose the context. Use the adopted one
+        // (only ever set on such a page, null everywhere else).
+        ...this.adoptedSsoQueryParams,
       });
     } else {
       this.loggerWrapper.error(
@@ -789,6 +796,17 @@ class DescopeWc extends BaseDescopeWc {
       reqTimestamp,
       ...ssoQueryParams
     } = currentState;
+
+    // a run started with an OIDC context: remember it for the run, so a page
+    // that continues this run from a magic link can recover it on a refresh
+    if (isChanged('executionId') && executionId) {
+      linkRunToSsoContext(
+        getIdFromExecId(executionId),
+        pickSsoQueryParams(ssoQueryParams),
+        projectId,
+        flowId,
+      );
+    }
 
     let startScreenId: string;
     let startScreenName: string;
@@ -1608,7 +1626,8 @@ class DescopeWc extends BaseDescopeWc {
       // must not leak into an unrelated visit later in this tab.
       // Note: an OIDC flow does NOT reach here. It ends on the RESPONSE_ACTIONS
       // .redirect branch in onFlowChange with a non-completed status, so
-      // its entry is left to expire on the 10 minute cap instead. Measured
+      // its tab entry and its run entry are left to expire instead (10
+      // minutes, or a day for OIDC with an error redirect). Measured
       // against the local stack, not assumed. That is safe because the backend
       // deletes the state_id on success, so a later restore of it cannot
       // authorize anything, it only errors.

@@ -1,8 +1,11 @@
 import {
   DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX,
+  DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX,
   SSO_QUERY_PARAMS_MAX_AGE_MS,
+  SSO_QUERY_PARAMS_WITH_ERROR_REDIRECT_MAX_AGE_MS,
 } from '../constants';
 import type { SSOQueryParams } from '../types';
+import { getStorageItem, setStorageItem } from './storage';
 
 // The SSO / OIDC query params are read off the URL once and removed from it
 // (see handleUrlParams), so a page refresh mid-flow loses the OIDC context and
@@ -12,7 +15,9 @@ import type { SSOQueryParams } from '../types';
 // refresh can recover them, and handed back only when all of these hold:
 //   - the page was actually reloaded, not navigated to
 //   - it is the same origin, path, project and flow
-//   - the entry is younger than the server side state_id lifetime
+//   - the entry is younger than the server side state_id lifetime, or, for an
+//     OIDC context that carries the app's error redirect, younger than a day
+//     (see isWithinMaxAge)
 // Anything else gets nothing. A crafted link opened in the same tab is a
 // navigation, not a reload, so it can never pick up a stored context.
 //
@@ -96,6 +101,53 @@ export const resetInitializedScopes = () => {
 export const hasAnySsoQueryParam = (params: Partial<SSOQueryParams>): boolean =>
   Object.values(params ?? {}).some(Boolean);
 
+// The keys handleUrlParams reads. Flow state holds them next to many unrelated
+// fields, so they have to be picked out by name. A Record over the type, so a
+// new SSO param that is missing here fails to compile instead of being dropped.
+const SSO_QUERY_PARAM_KEY_MAP: Record<keyof SSOQueryParams, true> = {
+  oidcIdpStateId: true,
+  samlIdpStateId: true,
+  wsfedIdpStateId: true,
+  samlIdpUsername: true,
+  descopeIdpInitiated: true,
+  ssoAppId: true,
+  customAppId: true,
+  oidcLoginHint: true,
+  oidcPrompt: true,
+  oidcErrorRedirectUri: true,
+  oidcResource: true,
+  thirdPartyAppId: true,
+  thirdPartyAppStateId: true,
+  applicationScopes: true,
+};
+const SSO_QUERY_PARAM_KEYS = Object.keys(SSO_QUERY_PARAM_KEY_MAP) as Array<
+  keyof SSOQueryParams
+>;
+
+export const pickSsoQueryParams = (
+  state: Partial<SSOQueryParams>,
+): Partial<SSOQueryParams> =>
+  SSO_QUERY_PARAM_KEYS.reduce(
+    (acc, key) =>
+      state?.[key] ? Object.assign(acc, { [key]: state[key] }) : acc,
+    {} as Partial<SSOQueryParams>,
+  );
+
+// After the server side state expired, a restored state_id can only fail. That
+// is still useful for OIDC when the app's error redirect comes with it, because
+// the server then sends the user back to the app instead of leaving them on this
+// page. Anything else keeps the state lifetime.
+const isWithinMaxAge = (entry: {
+  params: Partial<SSOQueryParams>;
+  ts: number;
+}): boolean => {
+  const maxAge =
+    entry?.params?.oidcIdpStateId && entry?.params?.oidcErrorRedirectUri
+      ? SSO_QUERY_PARAMS_WITH_ERROR_REDIRECT_MAX_AGE_MS
+      : SSO_QUERY_PARAMS_MAX_AGE_MS;
+  return Date.now() - entry.ts < maxAge;
+};
+
 // Only a genuine reload of THIS page counts. Anything we cannot confirm is
 // treated as not a reload, so the check fails closed.
 const isPageReload = (): boolean => {
@@ -133,10 +185,13 @@ const isSameScope = (a: ScopeKey, b: ScopeKey): boolean =>
   a?.projectId === b.projectId &&
   a?.flowId === b.flowId;
 
+// `ts` is passed when the context was first seen earlier, on another page, so
+// its age keeps counting from then.
 export const storeSsoQueryParams = (
   params: Partial<SSOQueryParams>,
   projectId: string,
   flowId: string,
+  ts: number = Date.now(),
 ): void => {
   if (!hasAnySsoQueryParam(params)) {
     return;
@@ -145,7 +200,7 @@ export const storeSsoQueryParams = (
     const entry: StoredEntry = {
       params,
       scope: buildScope(projectId, flowId),
-      ts: Date.now(),
+      ts,
     };
     window.sessionStorage?.setItem(
       storageKey(projectId, flowId),
@@ -174,10 +229,142 @@ export const restoreSsoQueryParams = (
     if (!isSameScope(entry?.scope, buildScope(projectId, flowId))) {
       return null;
     }
-    if (Date.now() - entry.ts >= SSO_QUERY_PARAMS_MAX_AGE_MS) {
+    if (!isWithinMaxAge(entry)) {
       return null;
     }
     return entry.params;
+  } catch (e) {
+    return null;
+  }
+};
+
+// The age of this tab's entry, so a run started from it is linked with the time
+// the context was first seen, not the time of the restart.
+const getStoredSsoQueryParamsTs = (
+  projectId: string,
+  flowId: string,
+): number | undefined => {
+  try {
+    const raw = window.sessionStorage?.getItem(storageKey(projectId, flowId));
+    if (!raw) {
+      return undefined;
+    }
+    const entry: StoredEntry = JSON.parse(raw);
+    return isSameScope(entry?.scope, buildScope(projectId, flowId))
+      ? entry.ts
+      : undefined;
+  } catch (e) {
+    return undefined;
+  }
+};
+
+// The OIDC params only reach the tab that /authorize opened. A magic link or an
+// enchanted link opens another tab that continues the same run, and that tab
+// never had them, so a refresh there used to start a run with no context.
+// So the context is also kept per run, in storage shared by the tabs of the
+// origin, keyed by the run id. A page that opens with this flow's run id in its
+// URL copies that run's context into its own tab entry, and a later refresh of
+// that page restores it through the normal reload path above.
+// The run id is random and only the server puts it into a URL (magic link,
+// OAuth return), so a page cannot pick up a context it was not given a link to.
+type RunEntry = {
+  params: Partial<SSOQueryParams>;
+  ts: number;
+  projectId: string;
+};
+
+const runStorageKey = (runId: string): string =>
+  `${DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX}${runId}`;
+
+// Entries are never cleared on success, because an OIDC flow ends on a redirect
+// and not on the completed branch. They expire instead, and every link and
+// every adopt sweeps the expired ones from localStorage. A customStorage cannot
+// list its keys, so there expired entries are only ignored, never removed.
+// Keys are collected before any is removed, because removing while walking
+// localStorage by index skips the key after each removed one.
+const sweepExpiredRunEntries = (): void => {
+  try {
+    const storage = window.localStorage;
+    if (!storage) {
+      return;
+    }
+    const keys: string[] = [];
+    for (let i = 0; i < storage.length; i += 1) {
+      const key = storage.key(i);
+      if (key?.startsWith(DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX)) {
+        keys.push(key);
+      }
+    }
+    keys.forEach((key) => {
+      let expired = true;
+      try {
+        expired = !isWithinMaxAge(JSON.parse(storage.getItem(key)));
+      } catch (e) {
+        // unreadable, treat as expired
+      }
+      if (expired) {
+        storage.removeItem(key);
+      }
+    });
+  } catch (e) {
+    // localStorage unavailable, nothing to sweep
+  }
+};
+
+export const linkRunToSsoContext = (
+  runId: string,
+  params: Partial<SSOQueryParams>,
+  projectId: string,
+  flowId: string,
+): void => {
+  if (!runId || !hasAnySsoQueryParam(params)) {
+    return;
+  }
+  try {
+    const entry: RunEntry = {
+      params,
+      ts: getStoredSsoQueryParamsTs(projectId, flowId) ?? Date.now(),
+      projectId,
+    };
+    setStorageItem(runStorageKey(runId), JSON.stringify(entry));
+  } catch (e) {
+    // storage unavailable, losing reload persistence is acceptable
+  }
+  sweepExpiredRunEntries();
+};
+
+// Copies the run's context into this tab, keeping its original age, and returns
+// it. Returns null when this run was not started with one in this browser.
+export const adoptRunSsoContext = (
+  runId: string,
+  projectId: string,
+  flowId: string,
+): Partial<SSOQueryParams> | null => {
+  if (!runId) {
+    return null;
+  }
+  // also sweep on read, so an expired entry (this one included) does not wait
+  // for the next SSO run to be removed
+  sweepExpiredRunEntries();
+  try {
+    const raw = getStorageItem(runStorageKey(runId));
+    if (!raw) {
+      return null;
+    }
+    const entry: RunEntry = JSON.parse(raw);
+    // the run id alone already identifies the run. The project is checked too,
+    // since one login origin can serve several projects, and only the known
+    // SSO keys are taken, so a changed entry cannot set other flow state.
+    const params = pickSsoQueryParams(entry?.params);
+    if (
+      entry?.projectId !== projectId ||
+      !hasAnySsoQueryParam(params) ||
+      !isWithinMaxAge(entry)
+    ) {
+      return null;
+    }
+    storeSsoQueryParams(params, projectId, flowId, entry.ts);
+    return params;
   } catch (e) {
     return null;
   }
