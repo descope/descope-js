@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.7.1](https://github.com/descope/descope-js/compare/web-component-4.7.0...web-component-4.7.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **web-component:** keep the flow running on popstate without run ids RELEASE ([#1553](https://github.com/descope/descope-js/issues/1553)) ([657d295](https://github.com/descope/descope-js/commit/657d295f1cfd1ef9d8e34262ca7f71fdd8092774))
+
 ## [4.7.0](https://github.com/descope/descope-js/compare/web-component-4.6.3...web-component-4.7.0) (2026-11-08)
 
 ### Dependency Updates
