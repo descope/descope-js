@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.7.3](https://github.com/descope/descope-js/compare/web-component-4.7.2...web-component-4.7.3) (2026-11-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.7`
+
+### Bug Fixes
+
+* **web-component:** keep the OIDC context when a magic link tab is refreshed RELEASE ([#1556](https://github.com/descope/descope-js/issues/1556)) ([8086e22](https://github.com/descope/descope-js/commit/8086e22a2557aa5b44841e222b1821e765fb73ce)), closes [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [etc#460](https://github.com/descope/etc/issues/460) [etc#15556](https://github.com/descope/etc/issues/15556) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1546](https://github.com/descope/descope-js/issues/1546)
+
 ## [4.7.2](https://github.com/descope/descope-js/compare/web-component-4.7.1...web-component-4.7.2) (2026-11-12)
 
 
