@@ -6,6 +6,7 @@ import {
 } from '../../src/lib/constants';
 import {
   adoptRunSsoContext,
+  clearSsoContextOnAppRedirect,
   clearSsoQueryParams,
   dropStaleSsoQueryParams,
   hasAnySsoQueryParam,
@@ -14,6 +15,7 @@ import {
   restoreSsoQueryParams,
   storeSsoQueryParams,
   markScopeFirstInit,
+  sweepExpiredRunEntries,
 } from '../../src/lib/helpers/oidcSession';
 import {
   resetCustomStorage,
@@ -557,7 +559,7 @@ describe('oidcSession', () => {
       expect(localStorage.getItem(runKeyFor())).not.toBeNull();
     });
 
-    it('uses customStorage when set, and still works', () => {
+    it('keeps run entries in localStorage even when a customStorage is set', () => {
       const store: Record<string, string> = {};
       setCustomStorage({
         getItem: (k) => store[k] ?? null,
@@ -569,8 +571,45 @@ describe('oidcSession', () => {
         },
       });
       linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
-      expect(store[runKeyFor()]).toBeDefined();
+      expect(store[runKeyFor()]).toBeUndefined();
+      expect(localStorage.getItem(runKeyFor())).not.toBeNull();
       expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toEqual(LINKED);
+    });
+
+    it('sweeps expired run entries on its own, keeping live and unrelated ones', () => {
+      const old = JSON.stringify({ params: NO_ERROR_REDIRECT, ts: 0 });
+      localStorage.setItem(runKeyFor('a'), old);
+      localStorage.setItem('unrelated', old);
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+      sweepExpiredRunEntries();
+      expect(localStorage.getItem(runKeyFor('a'))).toBeNull();
+      expect(localStorage.getItem('unrelated')).toBe(old);
+      expect(localStorage.getItem(runKeyFor())).not.toBeNull();
+    });
+
+    it('never puts the login hint or the SAML username in a run entry', () => {
+      linkRunToSsoContext(
+        RUN_ID,
+        {
+          ...PARAMS,
+          oidcLoginHint: 'user@example.com',
+          samlIdpUsername: 'user@example.com',
+        },
+        'P1',
+        'sign-in',
+      );
+      expect(localStorage.getItem(runKeyFor())).not.toContain('user@example');
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toEqual(LINKED);
+    });
+
+    it('a run with only personal data is not linked', () => {
+      linkRunToSsoContext(
+        RUN_ID,
+        { oidcLoginHint: 'user@example.com' },
+        'P1',
+        'sign-in',
+      );
+      expect(localStorage.getItem(runKeyFor())).toBeNull();
     });
 
     it('does not adopt a run linked for another project', () => {
@@ -602,6 +641,80 @@ describe('oidcSession', () => {
         linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in'),
       ).not.toThrow();
       expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toBeNull();
+    });
+  });
+
+  // the login ends with a redirect to the app's redirect_uri, the address the
+  // server also gives as oidc_error_redirect_uri
+  describe('clearSsoContextOnAppRedirect', () => {
+    const setUp = () => {
+      setLocation('https://auth.example.com/login');
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+    };
+    const entriesLeft = () => ({
+      tab: sessionStorage.getItem(keyFor()) !== null,
+      run: localStorage.getItem(runKeyFor()) !== null,
+    });
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it.each([
+      ['with a code', 'http://localhost:3000/callback?code=c1&state=s1'],
+      [
+        'with an error',
+        'http://localhost:3000/callback?error=session%20expired&state=s1',
+      ],
+    ])('removes both entries on the redirect to the app %s', (_n, url) => {
+      setUp();
+      clearSsoContextOnAppRedirect(url, RUN_ID, PARAMS, 'P1', 'sign-in');
+      expect(entriesLeft()).toEqual({ tab: false, run: false });
+    });
+
+    it.each([
+      [
+        'an OAuth provider mid-flow',
+        'https://accounts.google.com/o/oauth2/v2/auth?client_id=x',
+      ],
+      ['another path of the app', 'http://localhost:3000/other?code=c1'],
+      ['another port', 'http://localhost:3001/callback?code=c1'],
+      ['a relative url on the login page', '/login?x=1'],
+      ['a url that cannot be parsed', 'http://'],
+    ])('keeps both entries on a redirect to %s', (_n, url) => {
+      setUp();
+      clearSsoContextOnAppRedirect(url, RUN_ID, PARAMS, 'P1', 'sign-in');
+      expect(entriesLeft()).toEqual({ tab: true, run: true });
+    });
+
+    it('keeps both entries when the flow has no error redirect', () => {
+      setUp();
+      clearSsoContextOnAppRedirect(
+        'http://localhost:3000/callback?code=c1',
+        RUN_ID,
+        NO_ERROR_REDIRECT,
+        'P1',
+        'sign-in',
+      );
+      expect(entriesLeft()).toEqual({ tab: true, run: true });
+    });
+
+    it('does not throw when storage throws', () => {
+      setUp();
+      jest.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+        throw new Error('nope');
+      });
+      expect(() =>
+        clearSsoContextOnAppRedirect(
+          'http://localhost:3000/callback?code=c1',
+          RUN_ID,
+          PARAMS,
+          'P1',
+          'sign-in',
+        ),
+      ).not.toThrow();
+      (Storage.prototype.removeItem as jest.Mock).mockRestore();
     });
   });
 });

@@ -5,7 +5,6 @@ import {
   SSO_QUERY_PARAMS_WITH_ERROR_REDIRECT_MAX_AGE_MS,
 } from '../constants';
 import type { SSOQueryParams } from '../types';
-import { getStorageItem, setStorageItem } from './storage';
 
 // The SSO / OIDC query params are read off the URL once and removed from it
 // (see handleUrlParams), so a page refresh mid-flow loses the OIDC context and
@@ -276,15 +275,35 @@ type RunEntry = {
 const runStorageKey = (runId: string): string =>
   `${DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX}${runId}`;
 
-// Entries are never cleared on success, because an OIDC flow ends on a redirect
-// and not on the completed branch. They expire instead, and every link and
-// every adopt sweeps the expired ones from localStorage. A customStorage cannot
-// list its keys, so there expired entries are only ignored, never removed.
+// Run entries always use the browser's localStorage, even when the app set a
+// customStorage, like DSLI in web-js-sdk: they hold no personal data, and they
+// must be listable so expired ones can be swept, which a customStorage cannot do.
+// Accessing localStorage can throw (blocked storage), so every caller catches.
+const runStorage = (): Storage | null => window.localStorage ?? null;
+
+// The login hint and the SAML username are usually emails, and a run entry is
+// shared by the tabs and outlives them, so they stay out of it. The cost: a
+// login restarted from a run entry has no login hint, so its email field is not
+// prefilled and the start carries no externalId from it.
+const withoutPersonalData = (
+  params: Partial<SSOQueryParams>,
+): Partial<SSOQueryParams> => {
+  const shared = { ...params };
+  delete shared.oidcLoginHint;
+  delete shared.samlIdpUsername;
+  return shared;
+};
+
+// Entries live up to the same cap as the tab entry (10 minutes, a day for OIDC
+// with an error redirect). The entry of an OIDC login that redirects back to the
+// app is removed right away (clearSsoContextOnAppRedirect). Expired ones are
+// swept on every flow load, and on every link for a long-lived page that starts
+// runs without loading again.
 // Keys are collected before any is removed, because removing while walking
 // localStorage by index skips the key after each removed one.
-const sweepExpiredRunEntries = (): void => {
+export const sweepExpiredRunEntries = (): void => {
   try {
-    const storage = window.localStorage;
+    const storage = runStorage();
     if (!storage) {
       return;
     }
@@ -317,16 +336,17 @@ export const linkRunToSsoContext = (
   projectId: string,
   flowId: string,
 ): void => {
-  if (!runId || !hasAnySsoQueryParam(params)) {
+  const shared = withoutPersonalData(params);
+  if (!runId || !hasAnySsoQueryParam(shared)) {
     return;
   }
   try {
     const entry: RunEntry = {
-      params,
+      params: shared,
       ts: getStoredSsoQueryParamsTs(projectId, flowId) ?? Date.now(),
       projectId,
     };
-    setStorageItem(runStorageKey(runId), JSON.stringify(entry));
+    runStorage()?.setItem(runStorageKey(runId), JSON.stringify(entry));
   } catch (e) {
     // storage unavailable, losing reload persistence is acceptable
   }
@@ -343,11 +363,8 @@ export const adoptRunSsoContext = (
   if (!runId) {
     return null;
   }
-  // also sweep on read, so an expired entry (this one included) does not wait
-  // for the next SSO run to be removed
-  sweepExpiredRunEntries();
   try {
-    const raw = getStorageItem(runStorageKey(runId));
+    const raw = runStorage()?.getItem(runStorageKey(runId));
     if (!raw) {
       return null;
     }
@@ -408,3 +425,38 @@ export const dropStaleSsoQueryParams = (
 // parallel sign-in's entry, and the sign-in then lost its redirect on refresh.
 export const clearSsoQueryParams = (projectId: string, flowId: string): void =>
   removeIfScopeMatches(projectId, flowId);
+
+// An OIDC login ends with a redirect back to the app's redirect_uri, the same
+// address the server put into oidc_error_redirect_uri. A redirect there, with a
+// code or with an error, means the login is over, so this tab's entry and the
+// run entry are removed now instead of waiting to expire. Any other redirect,
+// like one to an OAuth provider mid-flow, leaves both alone, and so does a flow
+// without an error redirect, whose entries expire after 10 minutes anyway.
+export const clearSsoContextOnAppRedirect = (
+  redirectTo: string,
+  runId: string,
+  params: Partial<SSOQueryParams>,
+  projectId: string,
+  flowId: string,
+): void => {
+  if (!params?.oidcErrorRedirectUri) {
+    return;
+  }
+  try {
+    const target = new URL(redirectTo, window.location.href);
+    const app = new URL(params.oidcErrorRedirectUri);
+    if (target.origin !== app.origin || target.pathname !== app.pathname) {
+      return;
+    }
+  } catch (e) {
+    return;
+  }
+  clearSsoQueryParams(projectId, flowId);
+  try {
+    if (runId) {
+      runStorage()?.removeItem(runStorageKey(runId));
+    }
+  } catch (e) {
+    // localStorage blocked, the run entry expires instead
+  }
+};

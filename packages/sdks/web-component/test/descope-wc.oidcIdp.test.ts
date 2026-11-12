@@ -1310,6 +1310,93 @@ describe('web-component', () => {
         expect(startOptions(1).oidcIdpStateId).toBe('abcdefgh');
       });
 
+      // the run ends in tab B with the redirect back to the app: the run entry
+      // and tab B's adopted entry go right away instead of waiting to expire
+      it('the final redirect back to the app removes the stored context', async () => {
+        await runTabA();
+        nextMock.mockReturnValue(
+          generateSdkResponse({
+            executionId: RUN,
+            action: 'redirect',
+            redirectUrl: 'http://localhost:3000/callback?code=c1&state=s1',
+          }),
+        );
+        openNewTab(magicLinkUrl());
+        mount();
+        await waitFor(
+          () =>
+            expect(window.location.assign).toHaveBeenCalledWith(
+              'http://localhost:3000/callback?code=c1&state=s1',
+            ),
+          { timeout: WAIT_TIMEOUT },
+        );
+        expect(localStorage.getItem(runKey())).toBeNull();
+        expect(sessionStorage.getItem(ssoKey())).toBeNull();
+      });
+
+      // the common case: one tab, the params are in flow state, not adopted
+      it('a login in a single tab that redirects back to the app removes its context', async () => {
+        const setItem = jest.spyOn(Storage.prototype, 'setItem');
+        startMock.mockReturnValue(
+          generateSdkResponse({
+            executionId: RUN,
+            action: 'redirect',
+            redirectUrl: 'http://localhost:3000/callback?code=c1&state=s1',
+          }),
+        );
+        window.location.search = oidcUrl;
+        mount();
+        await waitFor(
+          () =>
+            expect(window.location.assign).toHaveBeenCalledWith(
+              'http://localhost:3000/callback?code=c1&state=s1',
+            ),
+          { timeout: WAIT_TIMEOUT },
+        );
+        // both were written first, so null means removed, not never stored
+        const written = setItem.mock.calls.map(([key]) => key);
+        expect(written).toEqual(expect.arrayContaining([ssoKey(), runKey()]));
+        expect(localStorage.getItem(runKey())).toBeNull();
+        expect(sessionStorage.getItem(ssoKey())).toBeNull();
+        setItem.mockRestore();
+      });
+
+      it('a redirect to an OAuth provider keeps the stored context', async () => {
+        await runTabA();
+        nextMock.mockReturnValue(
+          generateSdkResponse({
+            executionId: RUN,
+            action: 'redirect',
+            redirectUrl: 'https://accounts.google.com/o/oauth2/v2/auth?x=1',
+          }),
+        );
+        openNewTab(magicLinkUrl());
+        mount();
+        await waitFor(
+          () =>
+            expect(window.location.assign).toHaveBeenCalledWith(
+              'https://accounts.google.com/o/oauth2/v2/auth?x=1',
+            ),
+          { timeout: WAIT_TIMEOUT },
+        );
+        expect(localStorage.getItem(runKey())).not.toBeNull();
+        expect(sessionStorage.getItem(ssoKey())).not.toBeNull();
+      });
+
+      it('any flow load removes expired run entries', async () => {
+        localStorage.setItem(
+          runKey('old'),
+          JSON.stringify({ params: { oidcIdpStateId: 'x' }, ts: 0 }),
+        );
+        startMock.mockReturnValue(generateSdkResponse());
+        window.location.search = '';
+        mount();
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(localStorage.getItem(runKey('old'))).toBeNull();
+      });
+
       // polled in tab A, where flow state does hold the OIDC params, so a
       // write per poll would show up here
       it('polling does not write the run context again', async () => {

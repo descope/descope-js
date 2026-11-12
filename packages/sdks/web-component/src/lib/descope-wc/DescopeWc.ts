@@ -26,6 +26,7 @@ import {
 } from '../constants';
 import {
   clearPreviousExternalInputs,
+  clearSsoContextOnAppRedirect,
   clearSsoQueryParams,
   getAnimationDirection,
   getElementDescopeAttributes,
@@ -1151,6 +1152,19 @@ class DescopeWc extends BaseDescopeWc {
           };
         }
       } else {
+        // the final redirect back to the app ends an OIDC login, so its stored
+        // context goes now. A magic link page keeps its adopted context out of
+        // flow state, so it is passed in separately.
+        clearSsoContextOnAppRedirect(
+          redirectTo,
+          getIdFromExecId(executionId),
+          {
+            ...this.adoptedSsoQueryParams,
+            ...pickSsoQueryParams(ssoQueryParams),
+          },
+          projectId,
+          flowId,
+        );
         this.handleRedirect(redirectTo);
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
         // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
@@ -1625,12 +1639,12 @@ class DescopeWc extends BaseDescopeWc {
       // the flow is done, so a stored OIDC context has served its purpose and
       // must not leak into an unrelated visit later in this tab.
       // Note: an OIDC flow does NOT reach here. It ends on the RESPONSE_ACTIONS
-      // .redirect branch in onFlowChange with a non-completed status, so
-      // its tab entry and its run entry are left to expire instead (10
-      // minutes, or a day for OIDC with an error redirect). Measured
-      // against the local stack, not assumed. That is safe because the backend
-      // deletes the state_id on success, so a later restore of it cannot
-      // authorize anything, it only errors.
+      // .redirect branch in onFlowChange with a non-completed status (measured
+      // against the local stack, not assumed). That branch removes the entries
+      // when the redirect goes back to the app (clearSsoContextOnAppRedirect).
+      // Otherwise they expire: 10 minutes, or a day for OIDC with an error
+      // redirect. That is safe because the backend deletes the state_id on
+      // success, so a later restore of it cannot authorize anything, it only errors.
       clearSsoQueryParams(this.projectId, this.flowId);
       this.#dispatch('success', payload);
       return;

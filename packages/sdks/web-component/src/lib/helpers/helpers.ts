@@ -48,6 +48,7 @@ import {
   restoreSsoQueryParams,
   storeSsoQueryParams,
   markScopeFirstInit,
+  sweepExpiredRunEntries,
 } from './oidcSession';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
@@ -597,6 +598,9 @@ export const handleUrlParams = (
   // in another tab, so copy that context here for a later refresh of this page.
   // Not used for this load, which behaves exactly as before.
   let adoptedSsoQueryParams: Partial<SSOQueryParams> | null = null;
+  // every flow load, so run entries of logins that never finished do not wait
+  // for the next OIDC login to be removed
+  sweepExpiredRunEntries();
   if (hasAnySsoQueryParam(ssoQueryParams)) {
     storeSsoQueryParams(ssoQueryParams, projectId, flowId);
   } else if (executionId) {
