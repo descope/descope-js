@@ -14,7 +14,7 @@ import { State } from '../src/lib/widget/state/types';
 import '../src/lib/index';
 import rootMock from './mocks/rootMock';
 import createAccessKeyModalMock from './mocks/createAccessKeyModalMock';
-import { unflattenCustomAttributes } from '../src/lib/widget/mixins/initMixin/initComponentsMixins/initCreateAccessKeyModalMixin';
+import { buildCreateAccessKeyPayload } from '../src/lib/widget/mixins/initMixin/initComponentsMixins/initCreateAccessKeyModalMixin';
 import createdAccessKeyModalMock from './mocks/createdAccessKeyModalMock';
 import deleteAccessKeyModalMock from './mocks/deleteAccessKeyModalMock';
 import activateAccessKeyModalMock from './mocks/activateAccessKeyModalMock';
@@ -297,20 +297,27 @@ describe('access-key-management-widget', () => {
       );
     });
 
-    it('unflattenCustomAttributes groups prefixed form fields', () => {
+    it('buildCreateAccessKeyPayload groups prefixed fields and drops empty ones', () => {
       expect(
-        unflattenCustomAttributes({
+        buildCreateAccessKeyPayload({
           name: 'key',
           'customAttributes.team': 'infra',
           'customAttributes.a.b': 1,
+          'customAttributes.empty': '',
         }),
       ).toEqual({
         name: 'key',
         customAttributes: { team: 'infra', 'a.b': 1 },
       });
-      expect(unflattenCustomAttributes({ name: 'key' })).toEqual({
-        name: 'key',
-      });
+    });
+
+    it('buildCreateAccessKeyPayload omits customAttributes when all are empty', () => {
+      expect(
+        buildCreateAccessKeyPayload({
+          name: 'key',
+          'customAttributes.team': '',
+        }),
+      ).toEqual({ name: 'key' });
     });
   });
 

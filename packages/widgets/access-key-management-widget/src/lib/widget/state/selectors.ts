@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { flatten } from '@descope/sdk-helpers';
 import { State } from './types';
 
 export const getRawAccessKeysList = (state: State) => state.accessKeysList.data;
@@ -15,11 +16,7 @@ export const getAccessKeysList = createSelector(
       ...accessKey,
       // grid columns read `item[path]` (no nested path support), so expose each
       // custom attribute under a flat `customAttributes.<name>` key
-      ...Object.fromEntries(
-        Object.entries(accessKey?.customAttributes || {}).map(
-          ([name, value]) => [`customAttributes.${name}`, value],
-        ),
-      ),
+      ...flatten(accessKey?.customAttributes || {}, 'customAttributes'),
       expireTimeFormatted: !accessKey?.expireTime
         ? 'Never'
         : new Date((accessKey?.expireTime || 0) * 1000).toLocaleString(),

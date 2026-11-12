@@ -225,15 +225,10 @@ test.describe('widget', () => {
 
     // grid shows the custom attribute column and value
     await expect(page.getByText('payments').first()).toBeVisible();
-    await page.screenshot({ path: test.info().outputPath('1-grid.png') });
-
     // create a key with a custom attribute
     await page.getByTestId('create-access-key-trigger').first().click();
     await page.getByText('Name').last().fill('ci key');
     await page.getByText('Team').last().fill('platform');
-    await page.screenshot({
-      path: test.info().outputPath('2-create-modal.png'),
-    });
     await page.getByTestId('create-access-key-modal-submit').last().click();
 
     await expect(
@@ -247,7 +242,6 @@ test.describe('widget', () => {
 
     await page.getByTestId('created-access-key-modal-close').first().click();
     await expect(page.getByText('platform').first()).toBeVisible();
-    await page.screenshot({ path: test.info().outputPath('3-grid-after.png') });
   });
 
   test('create access key', async ({ page, browserName }) => {

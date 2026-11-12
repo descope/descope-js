@@ -7,6 +7,7 @@ import {
   compose,
   createSingletonMixin,
   createTemplate,
+  unflatten,
 } from '@descope/sdk-helpers';
 import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
 import { getTenantRoles } from '../../../state/selectors';
@@ -14,20 +15,17 @@ import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { initCreatedAccessKeyModalMixin } from './initCreatedAccessKeyModalMixin';
 
-const CUSTOM_ATTRIBUTES_PREFIX = 'customAttributes.';
-
-// form fields named `customAttributes.<name>` are grouped into a `customAttributes` object
-export const unflattenCustomAttributes = (formData: Record<string, any>) =>
-  Object.entries(formData).reduce((acc, [key, value]) => {
-    if (!key.startsWith(CUSTOM_ATTRIBUTES_PREFIX)) {
-      return Object.assign(acc, { [key]: value });
-    }
-    if (!acc.customAttributes) {
-      acc.customAttributes = {};
-    }
-    acc.customAttributes[key.slice(CUSTOM_ATTRIBUTES_PREFIX.length)] = value;
-    return acc;
-  }, {} as any);
+// group flat `customAttributes.<name>` form fields into a `customAttributes`
+// object, dropping empty ones first - there is nothing to clear on a new key
+export const buildCreateAccessKeyPayload = (formData: Record<string, any>) =>
+  unflatten(
+    Object.fromEntries(
+      Object.entries(formData).filter(
+        ([key, value]) => !key.startsWith('customAttributes.') || value !== '',
+      ),
+    ),
+    'customAttributes',
+  );
 
 export const initCreateAccessKeyModalMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -74,9 +72,9 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
         submitButton.onClick(async () => {
           if (this.validateForm(this.createAccessKeyModal.ele)) {
             const res: Record<string, any> = await this.actions.createAccessKey(
-              unflattenCustomAttributes(
+              buildCreateAccessKeyPayload(
                 this.getFormData(this.createAccessKeyModal.ele),
-              ),
+              ) as any,
             );
             this.createAccessKeyModal.close();
 
