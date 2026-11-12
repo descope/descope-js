@@ -109,3 +109,37 @@ export class State<T extends StateObject> {
     return true;
   }
 }
+
+// Group flat form fields named `<keyPrefix>.<name>` back into a nested
+// `{ [keyPrefix]: { <name>: value } }` object, leaving other fields untouched.
+export const unflatten = <T extends Record<string, any>>(
+  formData: T,
+  keyPrefix: string,
+): Record<string, any> =>
+  Object.entries(formData).reduce(
+    (acc, [key, value]) => {
+      const [prefix, ...rest] = key.split('.');
+
+      if (keyPrefix !== prefix) {
+        return Object.assign(acc, { [key]: value });
+      }
+
+      if (!acc[prefix]) {
+        acc[prefix] = {};
+      }
+
+      acc[prefix][rest.join('.')] = value;
+
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
+
+// Spread a nested `{ <name>: value }` object into flat `<keyPrefix>.<name>` keys.
+export const flatten = (vals: Record<string, unknown>, keyPrefix: string) =>
+  Object.fromEntries(
+    Object.entries(vals || {}).map(([key, val]) => [
+      `${keyPrefix}.${key}`,
+      val,
+    ]),
+  );

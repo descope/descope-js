@@ -51,7 +51,7 @@ const create: (
   config: CreateAccessKeyConfig,
   expireTime: number,
 ) => Promise<{ cleartext: string; key: AccessKey }> = async (
-  { name, roleNames, userId, permittedIps },
+  { name, roleNames, userId, permittedIps, customAttributes },
   expireTime,
 ) => {
   const i = Math.random().toString(10).substring(15);
@@ -67,6 +67,7 @@ const create: (
         createdTime: new Date().getTime() / 1000,
         roleNames,
         permittedIps,
+        customAttributes,
         status: 'active',
         clientId: `Client ID ${i}`,
         boundUserId: userId || `User ${i}`,
