@@ -342,6 +342,10 @@ class BaseDescopeWc extends BaseClass {
 
   #syncStateIdFromUrl() {
     const { stepId, executionId } = getRunIdsFromUrl(this.flowId);
+    // A url without run ids has no step to go to. This happens when routers
+    // (e.g. single-spa) fire popstate for our own url cleanup, and resetting
+    // here would restart the running flow
+    if (!executionId) return;
     this.#flowState.update({ stepId, executionId });
   }
 
