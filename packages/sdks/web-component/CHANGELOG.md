@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.7.2](https://github.com/descope/descope-js/compare/web-component-4.7.1...web-component-4.7.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.22 RELEASE ([#1557](https://github.com/descope/descope-js/issues/1557)) ([19a5864](https://github.com/descope/descope-js/commit/19a586443ed76c8622dce18e8200430933666830)), closes [#1546](https://github.com/descope/descope-js/issues/1546) [descope/etc#7422](https://github.com/descope/etc/issues/7422) [descope/descope-js#1546](https://github.com/descope/descope-js/issues/1546)
+* **web-component:** stop a failed client script from blocking the submit ([#1546](https://github.com/descope/descope-js/issues/1546)) ([138dd1f](https://github.com/descope/descope-js/commit/138dd1f54ad660749d69432eebe1bd4f96b750a1)), closes [descope/etc#7422](https://github.com/descope/etc/issues/7422)
+
 ## [4.7.1](https://github.com/descope/descope-js/compare/web-component-4.7.0...web-component-4.7.1) (2026-11-12)
 
 
