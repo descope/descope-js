@@ -26,9 +26,11 @@ import {
 } from '../constants';
 import {
   clearPreviousExternalInputs,
+  clearSsoContextOnAppRedirect,
   clearSsoQueryParams,
   getAnimationDirection,
   getElementDescopeAttributes,
+  getIdFromExecId,
   getScriptResultPath,
   getTrustedPopupOpenerOrigin,
   handleAutoFocus,
@@ -37,7 +39,9 @@ import {
   injectWsFedIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
+  linkRunToSsoContext,
   openCenteredPopup,
+  pickSsoQueryParams,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
@@ -644,6 +648,10 @@ class DescopeWc extends BaseDescopeWc {
       this.flowState.update({
         stepId: null,
         executionId: null,
+        // a page continuing a run from a magic link has no OIDC params in flow
+        // state, so a restart would lose the context. Use the adopted one
+        // (only ever set on such a page, null everywhere else).
+        ...this.adoptedSsoQueryParams,
       });
     } else {
       this.loggerWrapper.error(
@@ -816,6 +824,17 @@ class DescopeWc extends BaseDescopeWc {
       reqTimestamp,
       ...ssoQueryParams
     } = currentState;
+
+    // a run started with an OIDC context: remember it for the run, so a page
+    // that continues this run from a magic link can recover it on a refresh
+    if (isChanged('executionId') && executionId) {
+      linkRunToSsoContext(
+        getIdFromExecId(executionId),
+        pickSsoQueryParams(ssoQueryParams),
+        projectId,
+        flowId,
+      );
+    }
 
     let startScreenId: string;
     let startScreenName: string;
@@ -1160,6 +1179,19 @@ class DescopeWc extends BaseDescopeWc {
           };
         }
       } else {
+        // the final redirect back to the app ends an OIDC login, so its stored
+        // context goes now. A magic link page keeps its adopted context out of
+        // flow state, so it is passed in separately.
+        clearSsoContextOnAppRedirect(
+          redirectTo,
+          getIdFromExecId(executionId),
+          {
+            ...this.adoptedSsoQueryParams,
+            ...pickSsoQueryParams(ssoQueryParams),
+          },
+          projectId,
+          flowId,
+        );
         this.handleRedirect(redirectTo);
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
         // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
@@ -1634,11 +1666,12 @@ class DescopeWc extends BaseDescopeWc {
       // the flow is done, so a stored OIDC context has served its purpose and
       // must not leak into an unrelated visit later in this tab.
       // Note: an OIDC flow does NOT reach here. It ends on the RESPONSE_ACTIONS
-      // .redirect branch in onFlowChange with a non-completed status, so
-      // its entry is left to expire on the 10 minute cap instead. Measured
-      // against the local stack, not assumed. That is safe because the backend
-      // deletes the state_id on success, so a later restore of it cannot
-      // authorize anything, it only errors.
+      // .redirect branch in onFlowChange with a non-completed status (measured
+      // against the local stack, not assumed). That branch removes the entries
+      // when the redirect goes back to the app (clearSsoContextOnAppRedirect).
+      // Otherwise they expire: 10 minutes, or a day for OIDC with an error
+      // redirect. That is safe because the backend deletes the state_id on
+      // success, so a later restore of it cannot authorize anything, it only errors.
       clearSsoQueryParams(this.projectId, this.flowId);
       this.#dispatch('success', payload);
       return;

@@ -607,6 +607,8 @@ type CustomStorage = {
 > **Note:** `customStorage` backs the keys the SDK persists on your behalf (tokens, last-authenticated user). Make sure your implementation round-trips these keys cleanly — `getItem(key)` should return the same string that was last passed to `setItem(key, value)`. If your storage drops, filters, or namespaces keys so that they don't survive a round-trip, the features that rely on them may degrade.
 >
 > The internal, non-PII markers for the client-side session-refresh optimization (`DSLI` / `DSLI_DISABLED`) are the exception: the SDK always keeps them in real `window.localStorage`, independent of `customStorage`. This is what makes the optimization behave correctly even when you back the other keys with `sessionStorage` or an in-memory store.
+>
+> The same goes for the web component's SSO login entries (`dls_sso_run_*`), which let a page opened from a magic link recover the login after a refresh. They hold no personal data (no login hint or username), and they stay in real `window.localStorage` so that expired ones can be removed, which a `customStorage` without key listing cannot support. Each is kept for up to 10 minutes, or up to a day for an OIDC login that carries the app's error redirect, and is removed earlier when an OIDC login redirects back to the app.
 
 ### Last User Persistence
 

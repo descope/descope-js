@@ -25,6 +25,15 @@ export const DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX =
   'dls_sso_query_params';
 // matches the server side state lifetime
 export const SSO_QUERY_PARAMS_MAX_AGE_MS = 10 * 60 * 1000;
+// an OIDC context that carries the app's error redirect is still worth
+// restoring after the state expired: the server then sends the user back to the
+// app with "session expired" instead of leaving them on the login page
+export const SSO_QUERY_PARAMS_WITH_ERROR_REDIRECT_MAX_AGE_MS =
+  24 * 60 * 60 * 1000;
+// prefix only, the id part of the execution id is appended. Shared by all tabs
+// of the origin, so a page opened from a magic link can find the OIDC context
+// of the run it continues
+export const DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX = 'dls_sso_run_';
 export const DESCOPE_ATTRIBUTE_OPT_IN_LAST_USED = 'data-opt-in-last-used-auth';
 
 // SSO query params

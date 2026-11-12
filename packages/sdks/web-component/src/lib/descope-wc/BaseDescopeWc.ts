@@ -51,6 +51,7 @@ import {
   FlowStatus,
   ProjectConfiguration,
   SdkConfig,
+  SSOQueryParams,
 } from '../types';
 
 // this is replaced in build time
@@ -105,6 +106,15 @@ class BaseDescopeWc extends BaseClass {
   #init = false;
 
   #customStorage: CustomStorage | undefined;
+
+  // The OIDC context this page copied from the run its URL continues (see
+  // handleUrlParams). Kept out of flow state, so this page renders and calls
+  // `next` exactly as before. Only a flow restart reads it.
+  #adoptedSsoQueryParams: Partial<SSOQueryParams> | null = null;
+
+  protected get adoptedSsoQueryParams() {
+    return this.#adoptedSsoQueryParams;
+  }
 
   flowStatus: FlowStatus = 'initial';
 
@@ -717,7 +727,9 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
       ssoQueryParams,
+      adoptedSsoQueryParams,
     } = handleUrlParams(this.flowId, this.projectId, this.loggerWrapper);
+    this.#adoptedSsoQueryParams = adoptedSsoQueryParams ?? null;
 
     // we want to update the state when user clicks on back in the browser
     window.addEventListener('popstate', this.#eventsCbRefs.popstate);
