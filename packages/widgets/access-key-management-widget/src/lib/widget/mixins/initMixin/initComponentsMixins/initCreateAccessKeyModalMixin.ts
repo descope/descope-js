@@ -65,6 +65,10 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
             );
             this.createAccessKeyModal.close();
 
+            if (!res?.error) {
+              this.actions.searchAccessKeys();
+            }
+
             if (res?.payload?.cleartext) {
               this.setFormData(this.createdAccessKeyModal.ele, {
                 'generated-key': res?.payload?.cleartext,

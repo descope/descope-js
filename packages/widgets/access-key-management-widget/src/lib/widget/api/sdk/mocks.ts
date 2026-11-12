@@ -6,12 +6,21 @@ import {
   SearchAccessKeyConfig,
 } from '../types';
 
+// keys made by the mock create, so the list reload after a create shows them
+const createdKeys: AccessKey[] = [];
+// statuses set by the mock activate / deactivate, so the list reload keeps them
+const statusOverrides: Record<string, string> = {};
+// ids removed by the mock delete, so the list reload does not bring them back
+const deletedIds = new Set<string>();
+// mock ids and secrets come from a counter: they are fake, and a counter never collides with the static keys
+let mockCounter = 0;
+
 const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
   text,
   sort,
 } = {}) =>
   new Promise((resolve) => {
-    const keys: AccessKey[] = [];
+    const keys: AccessKey[] = [...createdKeys];
     const timeMock = new Date().getTime() / 1000 + 60 * 60 * 24 * 30;
     const timeMockFormatted = new Date(timeMock).toLocaleString();
     for (let i = 1; i < 10; i += 1) {
@@ -31,6 +40,12 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
         boundUserId: `User ${i}`,
       });
     }
+    // apply mock status changes before sorting, so a status sort sees them
+    keys.forEach((key, idx) => {
+      if (statusOverrides[key.id]) {
+        keys[idx] = { ...key, status: statusOverrides[key.id] };
+      }
+    });
     sort.forEach((s) => {
       keys.sort((a, b) =>
         !s.desc
@@ -41,8 +56,9 @@ const search: (config: SearchAccessKeyConfig) => Promise<AccessKey[]> = async ({
     resolve(
       keys.filter(
         (key) =>
-          key.name.toLowerCase().includes(text.toLowerCase()) ||
-          key.createdBy.toLowerCase().includes(text.toLowerCase()),
+          !deletedIds.has(key.id) &&
+          (key.name.toLowerCase().includes(text.toLowerCase()) ||
+            key.createdBy.toLowerCase().includes(text.toLowerCase())),
       ),
     );
   });
@@ -54,39 +70,56 @@ const create: (
   { name, roleNames, userId, permittedIps },
   expireTime,
 ) => {
-  const i = Math.random().toString(10).substring(15);
+  mockCounter += 1;
+  const i = `new-${mockCounter}`;
+  const key: AccessKey = {
+    id: `access-key-id-${i}`,
+    name: name || `Access Key ${i}`,
+    createdBy: userId || `User ${i}`,
+    editable: true,
+    expireTime,
+    createdTime: new Date().getTime() / 1000,
+    roleNames,
+    permittedIps,
+    status: 'active',
+    clientId: `Client ID ${i}`,
+    boundUserId: userId || `User ${i}`,
+  };
+  createdKeys.unshift(key);
   return new Promise((resolve) => {
     resolve({
-      cleartext: Math.random().toString(20).substring(2),
-      key: {
-        id: `access-key-id-${i}`,
-        name: name || `Access Key ${i}`,
-        createdBy: userId || `User ${i}`,
-        editable: true,
-        expireTime,
-        createdTime: new Date().getTime() / 1000,
-        roleNames,
-        permittedIps,
-        status: 'active',
-        clientId: `Client ID ${i}`,
-        boundUserId: userId || `User ${i}`,
-      },
+      cleartext: `mock-secret-${i}`,
+      key,
     });
   });
 };
 
-const activate = async () => {};
+const activate = async (ids: string[]) => {
+  ids.forEach((id) => {
+    statusOverrides[id] = 'active';
+  });
+};
 
-const deactivate = async () => {};
+const deactivate = async (ids: string[]) => {
+  ids.forEach((id) => {
+    statusOverrides[id] = 'inactive';
+  });
+};
 
-const deleteBatch = async () => {};
+const deleteBatch = async (ids: string[]) => {
+  ids.forEach((id) => {
+    deletedIds.add(id);
+    const idx = createdKeys.findIndex((key) => key.id === id);
+    if (idx !== -1) createdKeys.splice(idx, 1);
+  });
+};
 
 const rotate: (
   config: RotateAccessKeyConfig,
 ) => Promise<{ cleartext: string; key: AccessKey }> = async ({ id }) =>
   new Promise((resolve) => {
     resolve({
-      cleartext: Math.random().toString(20).substring(2),
+      cleartext: `mock-secret-rotated-${id}`,
       key: {
         id,
         name: `Access Key ${id}`,

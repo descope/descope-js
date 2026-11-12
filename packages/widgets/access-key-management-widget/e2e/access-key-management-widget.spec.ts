@@ -182,6 +182,18 @@ test.describe('widget', () => {
   });
 
   test('create access key', async ({ page, browserName }) => {
+    // the search result does not include the new key, so after the create
+    // the grid must show what the reload returned, not the created key
+    let searchCalls = 0;
+    await page.route(apiPath('accesskey', 'search'), async (route) => {
+      searchCalls += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ keys: mockAccessKeys.keys }),
+      });
+    });
+
     const openAddAccessKeyModalButton = page
       .getByTestId('create-access-key-trigger')
       .first();
@@ -241,10 +253,16 @@ test.describe('widget', () => {
       .first();
     await closeCreatedAccessKeyButton.click();
 
-    // update grid items
+    // the list is reloaded once after the create
+    await expect.poll(() => searchCalls).toBe(1);
+
+    // the grid shows the search result, so the new key is not in it
     await expect(
-      page.locator(`text=${mockNewAccessKey['name']}`).first(),
+      page.locator(`text=${mockAccessKeys.keys[0]['name']}`).first(),
     ).toBeVisible();
+    await expect(page.locator(`text=${mockNewAccessKey['name']}`)).toHaveCount(
+      0,
+    );
 
     if (browserName === 'chromium') {
       const clipboardContent = await page.evaluate(
