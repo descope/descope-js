@@ -2,6 +2,25 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.5.4](https://github.com/descope/descope-js/compare/react-sdk-3.5.3...react-sdk-3.5.4) (2026-11-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.19`
+* `applications-portal-widget` updated to version `0.9.19`
+* `audit-management-widget` updated to version `0.9.19`
+* `outbound-applications-widget` updated to version `0.7.24`
+* `role-management-widget` updated to version `0.10.19`
+* `tenant-profile-widget` updated to version `0.11.18`
+* `user-management-widget` updated to version `0.21.15`
+* `user-profile-widget` updated to version `0.21.4`
+* `web-component` updated to version `4.7.3`
+* `web-js-sdk` updated to version `1.54.7`
+
+### Bug Fixes
+
+* **web-component:** keep the OIDC context when a magic link tab is refreshed RELEASE ([#1556](https://github.com/descope/descope-js/issues/1556)) ([8086e22](https://github.com/descope/descope-js/commit/8086e22a2557aa5b44841e222b1821e765fb73ce)), closes [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [etc#460](https://github.com/descope/etc/issues/460) [etc#15556](https://github.com/descope/etc/issues/15556) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1546](https://github.com/descope/descope-js/issues/1546)
+
 ## [3.5.3](https://github.com/descope/descope-js/compare/react-sdk-3.5.2...react-sdk-3.5.3) (2026-11-12)
 
 ### Dependency Updates
