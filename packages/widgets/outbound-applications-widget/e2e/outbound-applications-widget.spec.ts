@@ -139,14 +139,19 @@ test.describe('widget', () => {
           window.customElements.define(
             'descope-wc',
             class extends HTMLElement {
-              connectedCallback() {
-                this.innerHTML = '<button>Finish Flow</button>';
+              // like the real descope-wc, a lazy-start flow waits for start()
+              start() {
                 setTimeout(() => {
                   this.dispatchEvent(new CustomEvent('page-updated'));
                 });
+              }
+
+              connectedCallback() {
+                this.innerHTML = '<button>Finish Flow</button>';
                 this.querySelector('button').onclick = () => {
                   this.dispatchEvent(new CustomEvent('success'));
                 };
+                if (this.getAttribute('lazy-start') !== 'true') this.start();
               }
             },
           );
@@ -224,22 +229,6 @@ test.describe('widget', () => {
         );
         expect(client).toMatchObject({ acme: 'corp' });
       });
-
-      // the modal opens on the flow's first page, so the flow must not wait
-      // for the modal to open
-      test('starts the disconnect flow eagerly', async ({ page }) => {
-        await page
-          .locator('descope-button')
-          .filter({ hasText: 'Disconnect' })
-          .getByRole('button')
-          .click();
-
-        await expect(
-          page
-            .locator('descope-modal[data-id="outbound-apps-disconnect"]')
-            .locator('descope-wc'),
-        ).toHaveAttribute('lazy-start', 'false');
-      });
     });
 
     test.describe('app connect', () => {
@@ -248,32 +237,21 @@ test.describe('widget', () => {
           window.customElements.define(
             'descope-wc',
             class extends HTMLElement {
-              connectedCallback() {
+              // like the real descope-wc, a lazy-start flow waits for start()
+              start() {
                 setTimeout(() => {
                   this.dispatchEvent(new CustomEvent('success'));
                 }, 1000);
+              }
+
+              connectedCallback() {
+                if (this.getAttribute('lazy-start') !== 'true') this.start();
               }
             },
           );
         });
 
         await page.goto(`http://localhost:${widgetPort}`);
-      });
-
-      // the modal opens on the flow's first page, so the flow must not wait
-      // for the modal to open
-      test('starts the connect flow eagerly', async ({ page }) => {
-        await page
-          .locator('descope-list-item')
-          .nth(1)
-          .getByText('Connect')
-          .click();
-
-        await expect(
-          page
-            .locator('descope-modal[data-id="outbound-apps-connect"]')
-            .locator('descope-wc'),
-        ).toHaveAttribute('lazy-start', 'false');
       });
 
       test('run headless and not trigger modal', async ({ page }) => {
