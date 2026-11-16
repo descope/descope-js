@@ -615,7 +615,13 @@ class BaseDescopeWc extends BaseClass {
         this.shadowRoot.activeElement?.localName ?? '',
       );
 
-      if (e.key !== 'Enter' || isLinkEleFocused || isIgnoredElementFocused)
+      // a component that handled Enter itself (e.g. a toggle or a copy button) prevents its default
+      if (
+        e.key !== 'Enter' ||
+        e.defaultPrevented ||
+        isLinkEleFocused ||
+        isIgnoredElementFocused
+      )
         return;
 
       e.preventDefault();
