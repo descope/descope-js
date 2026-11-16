@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { getInternalStorage, getLocalStorage } from '../helpers';
 import { LOCAL_STORAGE_LAST_USER_LOGIN_ID } from '../withLastLoggedInUser/constants';
 import { LOGGED_IN_INDICATOR_KEY } from './constants';
@@ -25,6 +26,9 @@ import { LOGGED_IN_INDICATOR_KEY } from './constants';
 export function hasLoginIndicator(): boolean {
   return (
     !!getInternalStorage(LOGGED_IN_INDICATOR_KEY) ||
-    !!getLocalStorage(LOCAL_STORAGE_LAST_USER_LOGIN_ID)
+    !!getLocalStorage(LOCAL_STORAGE_LAST_USER_LOGIN_ID) ||
+    // readable companion of the refresh cookie, set by the backend on the refresh
+    // cookie's domain, so a login on a sibling subdomain is visible here too
+    !!Cookies.get(LOGGED_IN_INDICATOR_KEY)
   );
 }

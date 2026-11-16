@@ -214,6 +214,38 @@ describe('sdk', () => {
       expect(mockFetch).toHaveBeenCalled();
     });
 
+    // A login on a sibling subdomain leaves no DSLI in this origin's
+    // localStorage, only the backend's DSLI cookie on the shared domain
+    it('calls fetch when only the DSLI marker cookie is set', async () => {
+      document.cookie = 'DSLI=1';
+      try {
+        const mockFetch = jest
+          .fn()
+          .mockReturnValue(createMockReturnValue(flowResponse));
+        global.fetch = mockFetch;
+        const sdk = createSdk({ projectId: 'pid' });
+        await sdk.refresh(undefined, true);
+        expect(mockFetch).toHaveBeenCalled();
+      } finally {
+        document.cookie = 'DSLI=; max-age=0';
+      }
+    });
+
+    it('calls fetch when only a readable refresh cookie is set', async () => {
+      document.cookie = 'DSR=refresh-token';
+      try {
+        const mockFetch = jest
+          .fn()
+          .mockReturnValue(createMockReturnValue(flowResponse));
+        global.fetch = mockFetch;
+        const sdk = createSdk({ projectId: 'pid' });
+        await sdk.refresh(undefined, true);
+        expect(mockFetch).toHaveBeenCalled();
+      } finally {
+        document.cookie = 'DSR=; max-age=0';
+      }
+    });
+
     it('calls fetch when only the lastUser bootstrap key is set (DSLI absent)', async () => {
       localStorage.setItem(LAST_USER_KEY, 'someone@example.com');
       const mockFetch = jest
