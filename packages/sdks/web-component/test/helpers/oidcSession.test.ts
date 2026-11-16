@@ -1,15 +1,26 @@
 import {
   DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX,
+  DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX,
   SSO_QUERY_PARAMS_MAX_AGE_MS,
+  SSO_QUERY_PARAMS_WITH_ERROR_REDIRECT_MAX_AGE_MS,
 } from '../../src/lib/constants';
 import {
+  adoptRunSsoContext,
+  clearSsoContextOnAppRedirect,
   clearSsoQueryParams,
   dropStaleSsoQueryParams,
   hasAnySsoQueryParam,
+  linkRunToSsoContext,
+  pickSsoQueryParams,
   restoreSsoQueryParams,
   storeSsoQueryParams,
   markScopeFirstInit,
+  sweepExpiredRunEntries,
 } from '../../src/lib/helpers/oidcSession';
+import {
+  resetCustomStorage,
+  setCustomStorage,
+} from '../../src/lib/helpers/storage';
 
 // the storage key carries the project and flow, so two flows never collide
 const keyFor = (projectId = 'P1', flowId = 'sign-in') =>
@@ -21,6 +32,28 @@ const PARAMS = {
   oidcErrorRedirectUri: 'http://localhost:3000/callback',
   descopeIdpInitiated: false,
 };
+
+const NO_ERROR_REDIRECT = {
+  oidcIdpStateId: 's-abc123',
+  ssoAppId: 'descope-default-oidc',
+  descopeIdpInitiated: false,
+};
+
+// what a run entry holds: the component links `pickSsoQueryParams` of its flow
+// state, which drops empty values such as `descopeIdpInitiated: false`
+const LINKED = {
+  oidcIdpStateId: PARAMS.oidcIdpStateId,
+  ssoAppId: PARAMS.ssoAppId,
+  oidcErrorRedirectUri: PARAMS.oidcErrorRedirectUri,
+};
+const LINKED_NO_ERROR_REDIRECT = {
+  oidcIdpStateId: NO_ERROR_REDIRECT.oidcIdpStateId,
+  ssoAppId: NO_ERROR_REDIRECT.ssoAppId,
+};
+
+const RUN_ID = '3LxlQm0olL1UllpmpekeXGNgrlb';
+const runKeyFor = (runId = RUN_ID) =>
+  `${DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX}${runId}`;
 
 const setLocation = (url: string) => {
   Object.defineProperty(window, 'location', {
@@ -170,11 +203,47 @@ describe('oidcSession', () => {
     );
 
     it('does not restore an entry older than the cap', () => {
-      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      storeSsoQueryParams(NO_ERROR_REDIRECT, 'P1', 'sign-in');
       setNavigationType('reload');
       jest
         .spyOn(Date, 'now')
         .mockReturnValue(Date.now() + SSO_QUERY_PARAMS_MAX_AGE_MS + 1);
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+
+    it('restores an OIDC entry with an error redirect past the cap, so the app gets the user back', () => {
+      const start = Date.now();
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('reload');
+      jest.spyOn(Date, 'now').mockReturnValue(start + 30 * 60 * 1000);
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(PARAMS);
+    });
+
+    it('does not restore an OIDC entry with an error redirect past the long cap', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      setNavigationType('reload');
+      jest
+        .spyOn(Date, 'now')
+        .mockReturnValue(
+          Date.now() + SSO_QUERY_PARAMS_WITH_ERROR_REDIRECT_MAX_AGE_MS + 1,
+        );
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+
+    it.each([
+      ['SAML', { samlIdpStateId: 'saml-1', ssoAppId: 'app' }],
+      ['WS-Fed', { wsfedIdpStateId: 'wsfed-1', ssoAppId: 'app' }],
+      ['OIDC without an error redirect', NO_ERROR_REDIRECT],
+      [
+        'an error redirect without a state',
+        { oidcErrorRedirectUri: 'http://localhost:3000/callback' },
+      ],
+    ])('keeps the short cap for %s', (_name, params) => {
+      storeSsoQueryParams(params, 'P1', 'sign-in');
+      setNavigationType('reload');
+      jest
+        .spyOn(Date, 'now')
+        .mockReturnValue(Date.now() + SSO_QUERY_PARAMS_MAX_AGE_MS + 60 * 1000);
       expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
     });
 
@@ -378,6 +447,274 @@ describe('oidcSession', () => {
         throw new Error('nope');
       });
       expect(() => clearSsoQueryParams('P1', 'sign-in')).not.toThrow();
+    });
+  });
+
+  describe('pickSsoQueryParams', () => {
+    it('keeps only the SSO keys that have a value', () => {
+      expect(
+        pickSsoQueryParams({
+          ...PARAMS,
+          oidcLoginHint: '',
+          baseUrl: 'http://localhost:8000',
+          deferredRedirect: true,
+        } as any),
+      ).toEqual({
+        oidcIdpStateId: PARAMS.oidcIdpStateId,
+        ssoAppId: PARAMS.ssoAppId,
+        oidcErrorRedirectUri: PARAMS.oidcErrorRedirectUri,
+      });
+    });
+  });
+
+  // tab A starts the run with the OIDC params, tab B is the page a magic link
+  // opens on the same run. Both share localStorage, each has its own
+  // sessionStorage, which the tests model by clearing sessionStorage.
+  describe('run context', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      resetCustomStorage();
+    });
+
+    it('a page continuing the run gets the context of the tab that started it', () => {
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+      sessionStorage.clear();
+
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toEqual(LINKED);
+      setNavigationType('reload');
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toEqual(LINKED);
+    });
+
+    it('adopting keeps the age of the original context', () => {
+      const start = Date.now();
+      storeSsoQueryParams(NO_ERROR_REDIRECT, 'P1', 'sign-in');
+      linkRunToSsoContext(RUN_ID, NO_ERROR_REDIRECT, 'P1', 'sign-in');
+      sessionStorage.clear();
+      jest
+        .spyOn(Date, 'now')
+        .mockReturnValue(start + SSO_QUERY_PARAMS_MAX_AGE_MS - 1000);
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toEqual(
+        LINKED_NO_ERROR_REDIRECT,
+      );
+      setNavigationType('reload');
+      (Date.now as jest.Mock).mockReturnValue(
+        start + SSO_QUERY_PARAMS_MAX_AGE_MS + 1000,
+      );
+      expect(restoreSsoQueryParams('P1', 'sign-in')).toBeNull();
+    });
+
+    it('a run nobody linked gives nothing', () => {
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+      expect(adoptRunSsoContext('3Lsomeotherrun', 'P1', 'sign-in')).toBeNull();
+      expect(sessionStorage.getItem(keyFor())).toBeNull();
+    });
+
+    it('an empty run id never links or adopts', () => {
+      linkRunToSsoContext('', PARAMS, 'P1', 'sign-in');
+      expect(localStorage.length).toBe(0);
+      expect(adoptRunSsoContext('', 'P1', 'sign-in')).toBeNull();
+    });
+
+    it('a run without SSO params is not linked', () => {
+      linkRunToSsoContext(RUN_ID, { descopeIdpInitiated: false }, 'P1', 'f');
+      expect(localStorage.getItem(runKeyFor())).toBeNull();
+    });
+
+    it.each([
+      [
+        'OIDC without an error redirect, after the short cap',
+        NO_ERROR_REDIRECT,
+        SSO_QUERY_PARAMS_MAX_AGE_MS + 1,
+      ],
+      [
+        'OIDC with an error redirect, after the long cap',
+        PARAMS,
+        SSO_QUERY_PARAMS_WITH_ERROR_REDIRECT_MAX_AGE_MS + 1,
+      ],
+    ])('does not adopt %s', (_name, params, age) => {
+      const start = Date.now();
+      linkRunToSsoContext(RUN_ID, params, 'P1', 'sign-in');
+      jest.spyOn(Date, 'now').mockReturnValue(start + age);
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toBeNull();
+    });
+
+    it('linking sweeps expired run entries, all of them, and keeps live ones', () => {
+      const old = JSON.stringify({ params: NO_ERROR_REDIRECT, ts: 0 });
+      // adjacent expired keys: removing while walking by index would skip one
+      localStorage.setItem(runKeyFor('a'), old);
+      localStorage.setItem(runKeyFor('b'), old);
+      localStorage.setItem(runKeyFor('c'), 'not json');
+      localStorage.setItem('unrelated', old);
+
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+
+      expect(localStorage.getItem(runKeyFor('a'))).toBeNull();
+      expect(localStorage.getItem(runKeyFor('b'))).toBeNull();
+      expect(localStorage.getItem(runKeyFor('c'))).toBeNull();
+      expect(localStorage.getItem('unrelated')).toBe(old);
+      expect(localStorage.getItem(runKeyFor())).not.toBeNull();
+    });
+
+    it('keeps run entries in localStorage even when a customStorage is set', () => {
+      const store: Record<string, string> = {};
+      setCustomStorage({
+        getItem: (k) => store[k] ?? null,
+        setItem: (k, v) => {
+          store[k] = v;
+        },
+        removeItem: (k) => {
+          delete store[k];
+        },
+      });
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+      expect(store[runKeyFor()]).toBeUndefined();
+      expect(localStorage.getItem(runKeyFor())).not.toBeNull();
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toEqual(LINKED);
+    });
+
+    it('sweeps expired run entries on its own, keeping live and unrelated ones', () => {
+      const old = JSON.stringify({ params: NO_ERROR_REDIRECT, ts: 0 });
+      localStorage.setItem(runKeyFor('a'), old);
+      localStorage.setItem('unrelated', old);
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+      sweepExpiredRunEntries();
+      expect(localStorage.getItem(runKeyFor('a'))).toBeNull();
+      expect(localStorage.getItem('unrelated')).toBe(old);
+      expect(localStorage.getItem(runKeyFor())).not.toBeNull();
+    });
+
+    it('never puts the login hint or the SAML username in a run entry', () => {
+      linkRunToSsoContext(
+        RUN_ID,
+        {
+          ...PARAMS,
+          oidcLoginHint: 'user@example.com',
+          samlIdpUsername: 'user@example.com',
+        },
+        'P1',
+        'sign-in',
+      );
+      expect(localStorage.getItem(runKeyFor())).not.toContain('user@example');
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toEqual(LINKED);
+    });
+
+    it('a run with only personal data is not linked', () => {
+      linkRunToSsoContext(
+        RUN_ID,
+        { oidcLoginHint: 'user@example.com' },
+        'P1',
+        'sign-in',
+      );
+      expect(localStorage.getItem(runKeyFor())).toBeNull();
+    });
+
+    it('does not adopt a run linked for another project', () => {
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+      expect(adoptRunSsoContext(RUN_ID, 'P2', 'sign-in')).toBeNull();
+      expect(sessionStorage.getItem(keyFor('P2'))).toBeNull();
+    });
+
+    it('takes only the SSO keys from a stored run entry', () => {
+      localStorage.setItem(
+        runKeyFor(),
+        JSON.stringify({
+          params: { ...PARAMS, executionId: 'x|#|y', stepId: '9' },
+          ts: Date.now(),
+          projectId: 'P1',
+        }),
+      );
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toEqual(LINKED);
+    });
+
+    it('does not throw when storage throws', () => {
+      jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new Error('nope');
+      });
+      jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('nope');
+      });
+      expect(() =>
+        linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in'),
+      ).not.toThrow();
+      expect(adoptRunSsoContext(RUN_ID, 'P1', 'sign-in')).toBeNull();
+    });
+  });
+
+  // the login ends with a redirect to the app's redirect_uri, the address the
+  // server also gives as oidc_error_redirect_uri
+  describe('clearSsoContextOnAppRedirect', () => {
+    const setUp = () => {
+      setLocation('https://auth.example.com/login');
+      storeSsoQueryParams(PARAMS, 'P1', 'sign-in');
+      linkRunToSsoContext(RUN_ID, PARAMS, 'P1', 'sign-in');
+    };
+    const entriesLeft = () => ({
+      tab: sessionStorage.getItem(keyFor()) !== null,
+      run: localStorage.getItem(runKeyFor()) !== null,
+    });
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it.each([
+      ['with a code', 'http://localhost:3000/callback?code=c1&state=s1'],
+      [
+        'with an error',
+        'http://localhost:3000/callback?error=session%20expired&state=s1',
+      ],
+    ])('removes both entries on the redirect to the app %s', (_n, url) => {
+      setUp();
+      clearSsoContextOnAppRedirect(url, RUN_ID, PARAMS, 'P1', 'sign-in');
+      expect(entriesLeft()).toEqual({ tab: false, run: false });
+    });
+
+    it.each([
+      [
+        'an OAuth provider mid-flow',
+        'https://accounts.google.com/o/oauth2/v2/auth?client_id=x',
+      ],
+      ['another path of the app', 'http://localhost:3000/other?code=c1'],
+      ['another port', 'http://localhost:3001/callback?code=c1'],
+      ['a relative url on the login page', '/login?x=1'],
+      ['a url that cannot be parsed', 'http://'],
+    ])('keeps both entries on a redirect to %s', (_n, url) => {
+      setUp();
+      clearSsoContextOnAppRedirect(url, RUN_ID, PARAMS, 'P1', 'sign-in');
+      expect(entriesLeft()).toEqual({ tab: true, run: true });
+    });
+
+    it('keeps both entries when the flow has no error redirect', () => {
+      setUp();
+      clearSsoContextOnAppRedirect(
+        'http://localhost:3000/callback?code=c1',
+        RUN_ID,
+        NO_ERROR_REDIRECT,
+        'P1',
+        'sign-in',
+      );
+      expect(entriesLeft()).toEqual({ tab: true, run: true });
+    });
+
+    it('does not throw when storage throws', () => {
+      setUp();
+      jest.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+        throw new Error('nope');
+      });
+      expect(() =>
+        clearSsoContextOnAppRedirect(
+          'http://localhost:3000/callback?code=c1',
+          RUN_ID,
+          PARAMS,
+          'P1',
+          'sign-in',
+        ),
+      ).not.toThrow();
+      (Storage.prototype.removeItem as jest.Mock).mockRestore();
     });
   });
 });

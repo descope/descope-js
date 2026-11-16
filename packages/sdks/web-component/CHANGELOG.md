@@ -2,6 +2,46 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.7.3](https://github.com/descope/descope-js/compare/web-component-4.7.2...web-component-4.7.3) (2026-11-12)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.7`
+
+### Bug Fixes
+
+* **web-component:** keep the OIDC context when a magic link tab is refreshed RELEASE ([#1556](https://github.com/descope/descope-js/issues/1556)) ([8086e22](https://github.com/descope/descope-js/commit/8086e22a2557aa5b44841e222b1821e765fb73ce)), closes [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [etc#460](https://github.com/descope/etc/issues/460) [etc#15556](https://github.com/descope/etc/issues/15556) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1514](https://github.com/descope/descope-js/issues/1514) [#1546](https://github.com/descope/descope-js/issues/1546)
+
+## [4.7.2](https://github.com/descope/descope-js/compare/web-component-4.7.1...web-component-4.7.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **web-component:** bump @descope/flow-scripts to 1.0.22 RELEASE ([#1557](https://github.com/descope/descope-js/issues/1557)) ([19a5864](https://github.com/descope/descope-js/commit/19a586443ed76c8622dce18e8200430933666830)), closes [#1546](https://github.com/descope/descope-js/issues/1546) [descope/etc#7422](https://github.com/descope/etc/issues/7422) [descope/descope-js#1546](https://github.com/descope/descope-js/issues/1546)
+* **web-component:** stop a failed client script from blocking the submit ([#1546](https://github.com/descope/descope-js/issues/1546)) ([138dd1f](https://github.com/descope/descope-js/commit/138dd1f54ad660749d69432eebe1bd4f96b750a1)), closes [descope/etc#7422](https://github.com/descope/etc/issues/7422)
+
+## [4.7.1](https://github.com/descope/descope-js/compare/web-component-4.7.0...web-component-4.7.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **web-component:** keep the flow running on popstate without run ids RELEASE ([#1553](https://github.com/descope/descope-js/issues/1553)) ([657d295](https://github.com/descope/descope-js/commit/657d295f1cfd1ef9d8e34262ca7f71fdd8092774))
+
+## [4.7.0](https://github.com/descope/descope-js/compare/web-component-4.6.3...web-component-4.7.0) (2026-11-08)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.54.6`
+
+### Features
+
+* **web-component:** support browser email verification in flows ([#1547](https://github.com/descope/descope-js/issues/1547)) ([8d9f5c5](https://github.com/descope/descope-js/commit/8d9f5c5a9700329f05cac86ada9df6f19ee3e201))
+
+
+### Bug Fixes
+
+* **web-component:** send the page origin from custom screens ([#1550](https://github.com/descope/descope-js/issues/1550)) ([4d93b95](https://github.com/descope/descope-js/commit/4d93b95d8cb3aaf3ced14434f49ed4feab4609fa))
+
 ## [4.6.3](https://github.com/descope/descope-js/compare/web-component-4.6.2...web-component-4.6.3) (2026-11-05)
 
 ### Dependency Updates

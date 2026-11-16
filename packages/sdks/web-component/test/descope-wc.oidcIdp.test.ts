@@ -35,7 +35,9 @@ import {
   SSO_APP_ID_PARAM_NAME,
   URL_RUN_IDS_PARAM_NAME,
   DESCOPE_SSO_QUERY_PARAMS_SESSION_STORAGE_KEY_PREFIX,
+  DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX,
   HAS_DYNAMIC_VALUES_ATTR_NAME,
+  URL_TOKEN_PARAM_NAME,
 } from '../src/lib/constants';
 
 // the storage key carries the project and flow
@@ -1128,6 +1130,349 @@ describe('web-component', () => {
           ).toBeNull(),
         { timeout: WAIT_TIMEOUT },
       );
+    });
+
+    // descope-js#1514 kept the context only in the tab /authorize opened. A
+    // magic link opens another tab on the same run, which never had the params,
+    // so refreshing it lost the context.
+    describe('a page opened from a magic link', () => {
+      const RUN = 'sign-in|#|run1';
+      const runKey = (id = 'run1') =>
+        `${DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX}${id}`;
+      const oidcUrl = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh&${SSO_APP_ID_PARAM_NAME}=app1&${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodeURIComponent(
+        'http://localhost:3000/callback',
+      )}`;
+      const magicLinkUrl = (run = RUN, stepId = '5') =>
+        `?${URL_RUN_IDS_PARAM_NAME}=${encodeURIComponent(
+          run,
+        )}_${stepId}&${URL_TOKEN_PARAM_NAME}=token1`;
+
+      // tab A: the page /authorize opened. Its run gets linked to the context.
+      const runTabA = async () => {
+        startMock.mockReturnValue(generateSdkResponse({ executionId: RUN }));
+        window.location.search = oidcUrl;
+        mount();
+        await waitFor(
+          () => expect(localStorage.getItem(runKey())).not.toBeNull(),
+          {
+            timeout: WAIT_TIMEOUT,
+          },
+        );
+      };
+
+      // a new tab: shared localStorage, its own empty sessionStorage, a new
+      // document
+      const openNewTab = (url: string, navigationType = 'navigate') => {
+        document.body.innerHTML = '';
+        sessionStorage.clear();
+        resetInitializedScopes();
+        setNavigationType(navigationType);
+        window.location.search = url;
+      };
+
+      const reload = () => {
+        document.body.innerHTML = '';
+        resetInitializedScopes();
+        window.location.search = '';
+        setNavigationType('reload');
+        mount();
+      };
+
+      it('restores the run context when that page is refreshed', async () => {
+        await runTabA();
+        expect(startMock).toHaveBeenCalledTimes(1);
+
+        nextMock.mockReturnValue(generateSdkResponse({ executionId: RUN }));
+        openNewTab(magicLinkUrl());
+        mount();
+        await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+          timeout: WAIT_TIMEOUT,
+        });
+        // the first load continues the run exactly as before: next with the
+        // token, no start
+        expect(nextMock.mock.calls[0].slice(0, 3)).toEqual([
+          RUN,
+          '5',
+          'submit',
+        ]);
+        expect(nextMock.mock.calls[0][5]).toEqual(
+          expect.objectContaining({ token: 'token1' }),
+        );
+        expect(startMock).toHaveBeenCalledTimes(1);
+
+        startMock.mockReturnValue(
+          generateSdkResponse({ executionId: 'sign-in|#|run2' }),
+        );
+        reload();
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(startOptions(1)).toEqual(
+          expect.objectContaining({
+            oidcIdpStateId: 'abcdefgh',
+            ssoAppId: 'app1',
+            oidcErrorRedirectUri: 'http://localhost:3000/callback',
+          }),
+        );
+        expect(window.location.search).toBe('');
+
+        // the restarted run is linked too, so its own magic link page works
+        await waitFor(
+          () => expect(localStorage.getItem(runKey('run2'))).not.toBeNull(),
+          { timeout: WAIT_TIMEOUT },
+        );
+        nextMock.mockReturnValue(
+          generateSdkResponse({ executionId: 'sign-in|#|run2' }),
+        );
+        openNewTab(magicLinkUrl('sign-in|#|run2'));
+        mount();
+        await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(2), {
+          timeout: WAIT_TIMEOUT,
+        });
+        reload();
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(3), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(startOptions(2).oidcIdpStateId).toBe('abcdefgh');
+      });
+
+      it('restores nothing for a run that was not started with a context here', async () => {
+        startMock.mockReturnValue(generateSdkResponse());
+        nextMock.mockReturnValue(generateSdkResponse({ executionId: RUN }));
+        openNewTab(magicLinkUrl());
+        mount();
+        await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(sessionStorage.getItem(ssoKey())).toBeNull();
+
+        reload();
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(startOptions(0).oidcIdpStateId ?? null).toBeNull();
+      });
+
+      it('a later visit by navigation picks up nothing', async () => {
+        await runTabA();
+        nextMock.mockReturnValue(generateSdkResponse({ executionId: RUN }));
+        openNewTab(magicLinkUrl());
+        mount();
+        await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        // same tab, a clean visit (a link, not a refresh)
+        document.body.innerHTML = '';
+        resetInitializedScopes();
+        window.location.search = '';
+        setNavigationType('navigate');
+        mount();
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(startOptions(1).oidcIdpStateId).toBeNull();
+      });
+
+      it('an OAuth return in the same tab, then a refresh, keeps the context', async () => {
+        await runTabA();
+        nextMock.mockReturnValue(generateSdkResponse({ executionId: RUN }));
+        // the provider sends the browser back to this page with run ids and code
+        document.body.innerHTML = '';
+        resetInitializedScopes();
+        setNavigationType('navigate');
+        window.location.search = `?${URL_RUN_IDS_PARAM_NAME}=${encodeURIComponent(
+          RUN,
+        )}_5&${URL_CODE_PARAM_NAME}=code1`;
+        mount();
+        await waitFor(() => expect(nextMock).toHaveBeenCalledTimes(1), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        reload();
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(startOptions(1).oidcIdpStateId).toBe('abcdefgh');
+      });
+
+      it('restart-on-error on that page keeps the context', async () => {
+        await runTabA();
+        nextMock.mockReturnValue(
+          generateSdkResponse({ ok: false, requestErrorCode: 'E108201' }),
+        );
+        openNewTab(magicLinkUrl());
+        document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1" restart-on-error="true"></descope-wc>`;
+
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(startOptions(1).oidcIdpStateId).toBe('abcdefgh');
+      });
+
+      // the run ends in tab B with the redirect back to the app: the run entry
+      // and tab B's adopted entry go right away instead of waiting to expire
+      it('the final redirect back to the app removes the stored context', async () => {
+        await runTabA();
+        nextMock.mockReturnValue(
+          generateSdkResponse({
+            executionId: RUN,
+            action: 'redirect',
+            redirectUrl: 'http://localhost:3000/callback?code=c1&state=s1',
+          }),
+        );
+        openNewTab(magicLinkUrl());
+        mount();
+        await waitFor(
+          () =>
+            expect(window.location.assign).toHaveBeenCalledWith(
+              'http://localhost:3000/callback?code=c1&state=s1',
+            ),
+          { timeout: WAIT_TIMEOUT },
+        );
+        expect(localStorage.getItem(runKey())).toBeNull();
+        expect(sessionStorage.getItem(ssoKey())).toBeNull();
+      });
+
+      // the common case: one tab, the params are in flow state, not adopted
+      it('a login in a single tab that redirects back to the app removes its context', async () => {
+        const setItem = jest.spyOn(Storage.prototype, 'setItem');
+        startMock.mockReturnValue(
+          generateSdkResponse({
+            executionId: RUN,
+            action: 'redirect',
+            redirectUrl: 'http://localhost:3000/callback?code=c1&state=s1',
+          }),
+        );
+        window.location.search = oidcUrl;
+        mount();
+        await waitFor(
+          () =>
+            expect(window.location.assign).toHaveBeenCalledWith(
+              'http://localhost:3000/callback?code=c1&state=s1',
+            ),
+          { timeout: WAIT_TIMEOUT },
+        );
+        // both were written first, so null means removed, not never stored
+        const written = setItem.mock.calls.map(([key]) => key);
+        expect(written).toEqual(expect.arrayContaining([ssoKey(), runKey()]));
+        expect(localStorage.getItem(runKey())).toBeNull();
+        expect(sessionStorage.getItem(ssoKey())).toBeNull();
+        setItem.mockRestore();
+      });
+
+      it('a redirect to an OAuth provider keeps the stored context', async () => {
+        await runTabA();
+        nextMock.mockReturnValue(
+          generateSdkResponse({
+            executionId: RUN,
+            action: 'redirect',
+            redirectUrl: 'https://accounts.google.com/o/oauth2/v2/auth?x=1',
+          }),
+        );
+        openNewTab(magicLinkUrl());
+        mount();
+        await waitFor(
+          () =>
+            expect(window.location.assign).toHaveBeenCalledWith(
+              'https://accounts.google.com/o/oauth2/v2/auth?x=1',
+            ),
+          { timeout: WAIT_TIMEOUT },
+        );
+        expect(localStorage.getItem(runKey())).not.toBeNull();
+        expect(sessionStorage.getItem(ssoKey())).not.toBeNull();
+      });
+
+      it('any flow load removes expired run entries', async () => {
+        localStorage.setItem(
+          runKey('old'),
+          JSON.stringify({ params: { oidcIdpStateId: 'x' }, ts: 0 }),
+        );
+        startMock.mockReturnValue(generateSdkResponse());
+        window.location.search = '';
+        mount();
+        await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+          timeout: WAIT_TIMEOUT,
+        });
+        expect(localStorage.getItem(runKey('old'))).toBeNull();
+      });
+
+      // polled in tab A, where flow state does hold the OIDC params, so a
+      // write per poll would show up here
+      it('polling does not write the run context again', async () => {
+        const setItem = jest.spyOn(Storage.prototype, 'setItem');
+        const runWrites = () =>
+          setItem.mock.calls.filter(([key]) =>
+            String(key).startsWith(DESCOPE_SSO_RUN_STORAGE_KEY_PREFIX),
+          ).length;
+        fixtures.pageContent =
+          '<div data-type="polling">...</div><span>It works!</span>';
+        nextMock.mockReturnValue(
+          generateSdkResponse({ executionId: RUN, action: 'poll' }),
+        );
+        await runTabA();
+        await waitFor(
+          () => expect(nextMock.mock.calls.length).toBeGreaterThanOrEqual(2),
+          { timeout: WAIT_TIMEOUT },
+        );
+        expect(runWrites()).toBe(1);
+        // resetAllMocks in the teardown would leave a no-op spy behind
+        setItem.mockRestore();
+      });
+    });
+
+    it('a reload after the state lifetime still restores an OIDC context with an error redirect', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+      const start = Date.now();
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh&${OIDC_ERROR_REDIRECT_URI_PARAM_NAME}=${encodeURIComponent(
+        'http://localhost:3000/callback',
+      )}`;
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const now = jest
+        .spyOn(Date, 'now')
+        .mockReturnValue(start + 30 * 60 * 1000);
+      document.body.innerHTML = '';
+      resetInitializedScopes();
+      window.location.search = '';
+      setNavigationType('reload');
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(1).oidcIdpStateId).toBe('abcdefgh');
+      now.mockRestore();
+    });
+
+    it('a reload after the state lifetime restores nothing without an error redirect', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+      fixtures.pageContent = '<span>It works!</span>';
+      const start = Date.now();
+
+      window.location.search = `?${OIDC_IDP_STATE_ID_PARAM_NAME}=abcdefgh`;
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const now = jest
+        .spyOn(Date, 'now')
+        .mockReturnValue(start + 11 * 60 * 1000);
+      document.body.innerHTML = '';
+      resetInitializedScopes();
+      window.location.search = '';
+      setNavigationType('reload');
+      mount();
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(2), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startOptions(1).oidcIdpStateId ?? null).toBeNull();
+      now.mockRestore();
     });
   });
 });

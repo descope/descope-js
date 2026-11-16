@@ -26,9 +26,11 @@ import {
 } from '../constants';
 import {
   clearPreviousExternalInputs,
+  clearSsoContextOnAppRedirect,
   clearSsoQueryParams,
   getAnimationDirection,
   getElementDescopeAttributes,
+  getIdFromExecId,
   getScriptResultPath,
   getTrustedPopupOpenerOrigin,
   handleAutoFocus,
@@ -37,7 +39,9 @@ import {
   injectWsFedIdpForm,
   isConditionalLoginSupported,
   leadingDebounce,
+  linkRunToSsoContext,
   openCenteredPopup,
+  pickSsoQueryParams,
   setTOTPVariable,
   showFirstScreenOnExecutionInit,
   State,
@@ -347,66 +351,80 @@ class DescopeWc extends BaseDescopeWc {
     this.loggerWrapper.debug(
       `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
     );
-    const promises = Promise.all(
-      scripts?.map(async (script) => {
-        const scriptElement = this.shadowRoot.querySelector(
-          `[data-script-id="${script.id}"]`,
-        ) as ScriptElement;
-        if (scriptElement) {
-          this.loggerWrapper.debug('Script already loaded', script.id);
-          const { moduleRes } = scriptElement;
-          moduleRes?.start?.();
-          return moduleRes;
-        }
-        if (!globalThis.descope?.[script.id]) {
-          await this.injectNpmLib(
-            '@descope/flow-scripts',
-            '1.0.21', // currently using a fixed version when loading scripts
-            `dist/${script.id}.js`,
+    const loadScript = async (script: ClientScript) => {
+      const scriptElement = this.shadowRoot.querySelector(
+        `[data-script-id="${script.id}"]`,
+      ) as ScriptElement;
+      if (scriptElement) {
+        this.loggerWrapper.debug('Script already loaded', script.id);
+        const { moduleRes } = scriptElement;
+        moduleRes?.start?.();
+        return moduleRes;
+      }
+      if (!globalThis.descope?.[script.id]) {
+        await this.injectNpmLib(
+          '@descope/flow-scripts',
+          '1.0.22', // currently using a fixed version when loading scripts
+          `dist/${script.id}.js`,
+        );
+      }
+      const module = globalThis.descope?.[script.id];
+      return new Promise((resolve, reject) => {
+        try {
+          // call the module loading function
+          const moduleRes = module(
+            script.initArgs as any,
+            { baseUrl: this.baseUrl, ref: this },
+            createScriptCallback(script, resolve),
+            this.loggerWrapper,
           );
-        }
-        const module = globalThis.descope?.[script.id];
-        return new Promise((resolve, reject) => {
-          try {
-            // call the module loading function
-            const moduleRes = module(
-              script.initArgs as any,
-              { baseUrl: this.baseUrl, ref: this },
-              createScriptCallback(script, resolve),
-              this.loggerWrapper,
-            );
-            // some modules do not return a ScriptModule object
-            if (moduleRes) {
-              const newScriptElement = document.createElement(
-                'div',
-              ) as ScriptElement;
-              newScriptElement.setAttribute('data-script-id', script.id);
-              newScriptElement.moduleRes = moduleRes;
-              this.shadowRoot.appendChild(newScriptElement);
-              const subscriptionToken = this.nextRequestStatus.subscribe(() => {
-                this.loggerWrapper.debug('Stopping script', script.id);
-                // if the script is stopped successfully, we want to remove it from the DOM
-                // to allow the script element to be re-created on the next request
-                if (moduleRes.stop?.()) {
-                  this.nextRequestStatus.unsubscribe(subscriptionToken);
-                  this.loggerWrapper.debug('Removing script', script.id);
-                  this.shadowRoot.removeChild(newScriptElement);
-                }
-              });
-              // Modules that implement `present` mint their token when presented
-              // (awaited before the next call), not while loading, so they never
-              // invoke the callback here. Consider them loaded once constructed,
-              // otherwise loading always races SDK_SCRIPTS_LOAD_TIMEOUT and the
-              // first submit is delayed by the remainder of that timeout.
-              if (typeof moduleRes.present === 'function') {
-                resolve(script.id);
+          // some modules do not return a ScriptModule object
+          if (moduleRes) {
+            const newScriptElement = document.createElement(
+              'div',
+            ) as ScriptElement;
+            newScriptElement.setAttribute('data-script-id', script.id);
+            newScriptElement.moduleRes = moduleRes;
+            this.shadowRoot.appendChild(newScriptElement);
+            const subscriptionToken = this.nextRequestStatus.subscribe(() => {
+              this.loggerWrapper.debug('Stopping script', script.id);
+              // if the script is stopped successfully, we want to remove it from the DOM
+              // to allow the script element to be re-created on the next request
+              if (moduleRes.stop?.()) {
+                this.nextRequestStatus.unsubscribe(subscriptionToken);
+                this.loggerWrapper.debug('Removing script', script.id);
+                this.shadowRoot.removeChild(newScriptElement);
               }
+            });
+            // Modules that implement `present` mint their token when presented
+            // (awaited before the next call), not while loading, so they never
+            // invoke the callback here. Consider them loaded once constructed,
+            // otherwise loading always races SDK_SCRIPTS_LOAD_TIMEOUT and the
+            // first submit is delayed by the remainder of that timeout.
+            if (typeof moduleRes.present === 'function') {
+              resolve(script.id);
             }
-          } catch (e) {
-            reject(e);
           }
-        });
-      }),
+        } catch (e) {
+          reject(e);
+        }
+      });
+    };
+
+    const promises = Promise.all(
+      (scripts ?? []).map((script) =>
+        // One blocked script must not cut the batch short. Promise.all rejects on
+        // the first failure, which would settle the whole load while healthy
+        // scripts are still downloading, so those never get refreshed and their
+        // results never reach the first submit.
+        loadScript(script).catch((e) => {
+          this.loggerWrapper.warn(
+            `Sdk script ${script.id} failed to load, continuing without it`,
+            (e as Error)?.message,
+          );
+          return null;
+        }),
+      ),
     );
 
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -418,9 +436,22 @@ class DescopeWc extends BaseDescopeWc {
     });
 
     // clear the timer once scripts load, otherwise the timeout warning is logged even on success
-    return Promise.race([promises, toPromise]).finally(() =>
-      clearTimeout(timeoutId),
-    );
+    return Promise.race([promises, toPromise])
+      .finally(() => clearTimeout(timeoutId))
+      .catch((e) => {
+        // Last resort. Each script already carries its own catch above, so this
+        // should not fire - but a rejection here would be unrecoverable. Callers
+        // either await this through `#sdkScriptsLoading` before a submit, where a
+        // rejection leaves the submit button stuck in its loading state with no
+        // way back, or do not await it at all, where it becomes an unhandled
+        // rejection. Carry on without the scripts: the backend already handles a
+        // missing token.
+        this.loggerWrapper.warn(
+          'Sdk scripts failed to load, continuing without them',
+          (e as Error)?.message,
+        );
+        return null;
+      });
   }
 
   get isDismissScreenErrorOnInput() {
@@ -576,6 +607,7 @@ class DescopeWc extends BaseDescopeWc {
     this.#resetPollingTimeout();
     this.#conditionalUiAbortController?.abort();
     this.#conditionalUiAbortController = null;
+    this.clearEmailVerification();
 
     window.removeEventListener(
       'visibilitychange',
@@ -639,6 +671,10 @@ class DescopeWc extends BaseDescopeWc {
       this.flowState.update({
         stepId: null,
         executionId: null,
+        // a page continuing a run from a magic link has no OIDC params in flow
+        // state, so a restart would lose the context. Use the adopted one
+        // (only ever set on such a page, null everywhere else).
+        ...this.adoptedSsoQueryParams,
       });
     } else {
       this.loggerWrapper.error(
@@ -811,6 +847,17 @@ class DescopeWc extends BaseDescopeWc {
       reqTimestamp,
       ...ssoQueryParams
     } = currentState;
+
+    // a run started with an OIDC context: remember it for the run, so a page
+    // that continues this run from a magic link can recover it on a refresh
+    if (isChanged('executionId') && executionId) {
+      linkRunToSsoContext(
+        getIdFromExecId(executionId),
+        pickSsoQueryParams(ssoQueryParams),
+        projectId,
+        flowId,
+      );
+    }
 
     let startScreenId: string;
     let startScreenName: string;
@@ -1155,6 +1202,19 @@ class DescopeWc extends BaseDescopeWc {
           };
         }
       } else {
+        // the final redirect back to the app ends an OIDC login, so its stored
+        // context goes now. A magic link page keeps its adopted context out of
+        // flow state, so it is passed in separately.
+        clearSsoContextOnAppRedirect(
+          redirectTo,
+          getIdFromExecId(executionId),
+          {
+            ...this.adoptedSsoQueryParams,
+            ...pickSsoQueryParams(ssoQueryParams),
+          },
+          projectId,
+          flowId,
+        );
         this.handleRedirect(redirectTo);
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
         // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
@@ -1321,6 +1381,7 @@ class DescopeWc extends BaseDescopeWc {
           projectConfig.componentsVersion,
           flowVersions,
           {
+            origin: this.#origin,
             ...this.formConfigValues,
             ...this.getComponentsContext(),
             ...transformScreenInputs(inputs),
@@ -1352,6 +1413,7 @@ class DescopeWc extends BaseDescopeWc {
           flowConfig.version,
           projectConfig.componentsVersion,
           {
+            origin: this.#origin,
             ...this.getComponentsContext(),
             ...transformScreenInputs(input),
           },
@@ -1379,6 +1441,10 @@ class DescopeWc extends BaseDescopeWc {
   };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
+    if (isCustomScreen) {
+      this.clearEmailVerification();
+    }
+
     const toggleVisibility = () => {
       this.contentRootElement.classList.toggle('hidden', isCustomScreen);
       this.slotElement.classList.toggle('hidden', !isCustomScreen);
@@ -1623,11 +1689,12 @@ class DescopeWc extends BaseDescopeWc {
       // the flow is done, so a stored OIDC context has served its purpose and
       // must not leak into an unrelated visit later in this tab.
       // Note: an OIDC flow does NOT reach here. It ends on the RESPONSE_ACTIONS
-      // .redirect branch in onFlowChange with a non-completed status, so
-      // its entry is left to expire on the 10 minute cap instead. Measured
-      // against the local stack, not assumed. That is safe because the backend
-      // deletes the state_id on success, so a later restore of it cannot
-      // authorize anything, it only errors.
+      // .redirect branch in onFlowChange with a non-completed status (measured
+      // against the local stack, not assumed). That branch removes the entries
+      // when the redirect goes back to the app (clearSsoContextOnAppRedirect).
+      // Otherwise they expire: 10 minutes, or a day for OIDC with an error
+      // redirect. That is safe because the backend deletes the state_id on
+      // success, so a later restore of it cannot authorize anything, it only errors.
       clearSsoQueryParams(this.projectId, this.flowId);
       this.#dispatch('success', payload);
       return;
@@ -1846,6 +1913,8 @@ class DescopeWc extends BaseDescopeWc {
 
     this.loggerWrapper.debug('Rendering a flow screen');
 
+    this.clearEmailVerification();
+
     this.updateScreenUser(screenState?.user);
 
     const stepTemplate = document.createElement('template');
@@ -1887,6 +1956,9 @@ class DescopeWc extends BaseDescopeWc {
     // Apply on the fragment before mount so the first paint shows the right
     // state (otherwise the user briefly sees unhidden/enabled components).
     this.applyComponentsState(clone, screenState?.componentsState);
+
+    // not awaited, so the nonce fetch does not delay the screen render
+    this.startEmailVerification(clone);
 
     // set auto-detect attributes (country code from geo, lang from locale)
     const { geo } = (await this.getExecutionContext()) ?? {};
@@ -2311,6 +2383,8 @@ class DescopeWc extends BaseDescopeWc {
 
           this.nextRequestStatus.update({ isLoading: true });
 
+          const evpToken = await this.emailVerificationToken(submitter);
+
           const actionArgs = {
             ...eleDescopeAttrs,
             ...formData,
@@ -2319,6 +2393,7 @@ class DescopeWc extends BaseDescopeWc {
             // is performed in the native app, so a custom origin needs to be injected
             // into the webauthn request data.
             origin: this.#origin,
+            ...(evpToken && { evpToken }),
           };
 
           const res = await next(submitterId, actionArgs);

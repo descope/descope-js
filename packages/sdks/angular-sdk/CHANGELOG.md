@@ -2,6 +2,49 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.29.4](https://github.com/descope/descope-js/compare/angular-sdk-0.29.3...angular-sdk-0.29.4) (2026-11-12)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.19`
+* `audit-management-widget` updated to version `0.9.19`
+* `role-management-widget` updated to version `0.10.19`
+* `user-management-widget` updated to version `0.21.15`
+* `user-profile-widget` updated to version `0.21.4`
+* `tenant-profile-widget` updated to version `0.11.18`
+* `applications-portal-widget` updated to version `0.9.19`
+* `web-component` updated to version `4.7.3`
+* `web-js-sdk` updated to version `1.54.7`
+## [0.29.3](https://github.com/descope/descope-js/compare/angular-sdk-0.29.2...angular-sdk-0.29.3) (2026-11-12)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.21.14`
+* `user-profile-widget` updated to version `0.21.3`
+* `tenant-profile-widget` updated to version `0.11.17`
+* `web-component` updated to version `4.7.2`
+## [0.29.2](https://github.com/descope/descope-js/compare/angular-sdk-0.29.1...angular-sdk-0.29.2) (2026-11-12)
+
+### Dependency Updates
+
+* `user-management-widget` updated to version `0.21.13`
+* `user-profile-widget` updated to version `0.21.2`
+* `tenant-profile-widget` updated to version `0.11.16`
+* `web-component` updated to version `4.7.1`
+## [0.29.1](https://github.com/descope/descope-js/compare/angular-sdk-0.29.0...angular-sdk-0.29.1) (2026-11-08)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.18`
+* `audit-management-widget` updated to version `0.9.18`
+* `role-management-widget` updated to version `0.10.18`
+* `user-management-widget` updated to version `0.21.12`
+* `user-profile-widget` updated to version `0.21.1`
+* `tenant-profile-widget` updated to version `0.11.15`
+* `applications-portal-widget` updated to version `0.9.18`
+* `web-component` updated to version `4.7.0`
+* `web-js-sdk` updated to version `1.54.6`
+* `core-js-sdk` updated to version `2.78.0`
 ## [0.29.0](https://github.com/descope/descope-js/compare/angular-sdk-0.28.28...angular-sdk-0.29.0) (2026-11-05)
 
 ### Dependency Updates

@@ -110,8 +110,11 @@ export const initOutboundAppsListMixin = createSingletonMixin(
 
       #initConnectModalContent(appId: string) {
         this.#connectModal.setContent(
+          // this modal is built on click and opened once the flow renders a
+          // page, so the flow has to start before the modal opens
           this.createFlowTemplate({
             flowId: this.#obAppsList.connectFlowId,
+            lazyStart: false,
             outboundAppId: appId,
           }),
         );
@@ -129,8 +132,10 @@ export const initOutboundAppsListMixin = createSingletonMixin(
 
       #initDisconnectModalContent(appId: string) {
         this.#disconnectModal.setContent(
+          // same as the connect modal: opened on first page, so start eagerly
           this.createFlowTemplate({
             flowId: this.#obAppsList.disconnectFlowId,
+            lazyStart: false,
             outboundAppId: appId,
           }),
         );
