@@ -42,11 +42,13 @@ import {
   StepState,
 } from '../types';
 import {
+  adoptRunSsoContext,
   dropStaleSsoQueryParams,
   hasAnySsoQueryParam,
   restoreSsoQueryParams,
   storeSsoQueryParams,
   markScopeFirstInit,
+  sweepExpiredRunEntries,
 } from './oidcSession';
 
 const MD_COMPONENTS = ['descope-enriched-text'];
@@ -122,6 +124,12 @@ function resetUrlParam(paramName: string) {
 
 const getFlowIdFromExecId = (executionId: string) => {
   const regex = /(.*)\|#\|.*/;
+  return regex.exec(executionId)?.[1] || '';
+};
+
+// the run id part, after the flow id
+export const getIdFromExecId = (executionId: string) => {
+  const regex = /.*\|#\|(.*)/;
   return regex.exec(executionId)?.[1] || '';
 };
 
@@ -585,8 +593,22 @@ export const handleUrlParams = (
   const firstInitForScope = markScopeFirstInit(projectId, flowId);
 
   let effectiveSsoQueryParams: Partial<SSOQueryParams> = ssoQueryParams;
+  // a page opened from this flow's magic link or OAuth return continues a run
+  // and has no OIDC params of its own. Its run may have been started with them
+  // in another tab, so copy that context here for a later refresh of this page.
+  // Not used for this load, which behaves exactly as before.
+  let adoptedSsoQueryParams: Partial<SSOQueryParams> | null = null;
+  // every flow load, so run entries of logins that never finished do not wait
+  // for the next OIDC login to be removed
+  sweepExpiredRunEntries();
   if (hasAnySsoQueryParam(ssoQueryParams)) {
     storeSsoQueryParams(ssoQueryParams, projectId, flowId);
+  } else if (executionId) {
+    adoptedSsoQueryParams = adoptRunSsoContext(
+      getIdFromExecId(executionId),
+      projectId,
+      flowId,
+    );
   } else if (!executionFlowId) {
     const restored = firstInitForScope
       ? restoreSsoQueryParams(projectId, flowId)
@@ -612,6 +634,7 @@ export const handleUrlParams = (
     redirectAuthBackupCallbackUri,
     redirectAuthInitiator,
     ssoQueryParams: effectiveSsoQueryParams,
+    adoptedSsoQueryParams,
   };
 };
 

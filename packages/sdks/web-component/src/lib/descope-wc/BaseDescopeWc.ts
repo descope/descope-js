@@ -51,6 +51,7 @@ import {
   FlowStatus,
   ProjectConfiguration,
   SdkConfig,
+  SSOQueryParams,
 } from '../types';
 
 // this is replaced in build time
@@ -105,6 +106,15 @@ class BaseDescopeWc extends BaseClass {
   #init = false;
 
   #customStorage: CustomStorage | undefined;
+
+  // The OIDC context this page copied from the run its URL continues (see
+  // handleUrlParams). Kept out of flow state, so this page renders and calls
+  // `next` exactly as before. Only a flow restart reads it.
+  #adoptedSsoQueryParams: Partial<SSOQueryParams> | null = null;
+
+  protected get adoptedSsoQueryParams() {
+    return this.#adoptedSsoQueryParams;
+  }
 
   flowStatus: FlowStatus = 'initial';
 
@@ -342,6 +352,10 @@ class BaseDescopeWc extends BaseClass {
 
   #syncStateIdFromUrl() {
     const { stepId, executionId } = getRunIdsFromUrl(this.flowId);
+    // A url without run ids has no step to go to. This happens when routers
+    // (e.g. single-spa) fire popstate for our own url cleanup, and resetting
+    // here would restart the running flow
+    if (!executionId) return;
     this.#flowState.update({ stepId, executionId });
   }
 
@@ -713,7 +727,9 @@ class BaseDescopeWc extends BaseClass {
       redirectAuthCodeChallenge,
       redirectAuthInitiator,
       ssoQueryParams,
+      adoptedSsoQueryParams,
     } = handleUrlParams(this.flowId, this.projectId, this.loggerWrapper);
+    this.#adoptedSsoQueryParams = adoptedSsoQueryParams ?? null;
 
     // we want to update the state when user clicks on back in the browser
     window.addEventListener('popstate', this.#eventsCbRefs.popstate);
