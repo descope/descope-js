@@ -1,4 +1,4 @@
-import { State } from '../src';
+import { State, flatten, unflatten } from '../src';
 
 describe('State', () => {
   beforeEach(() => {
@@ -437,5 +437,39 @@ describe('State', () => {
 
       expect(callback).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe('flatten', () => {
+  it('spreads a nested object into prefixed keys', () => {
+    expect(flatten({ a: 1, b: 'x' }, 'attrs')).toEqual({
+      'attrs.a': 1,
+      'attrs.b': 'x',
+    });
+  });
+
+  it('returns an empty object for nullish input', () => {
+    expect(flatten(undefined as any, 'attrs')).toEqual({});
+    expect(flatten({}, 'attrs')).toEqual({});
+  });
+});
+
+describe('unflatten', () => {
+  it('groups prefixed keys back into a nested object', () => {
+    expect(unflatten({ 'attrs.a': 1, 'attrs.b': 'x' }, 'attrs')).toEqual({
+      attrs: { a: 1, b: 'x' },
+    });
+  });
+
+  it('leaves non-prefixed keys untouched', () => {
+    expect(unflatten({ name: 'k', 'attrs.a': 1 }, 'attrs')).toEqual({
+      name: 'k',
+      attrs: { a: 1 },
+    });
+  });
+
+  it('round-trips with flatten', () => {
+    const vals = { a: 1, b: true };
+    expect(unflatten(flatten(vals, 'attrs'), 'attrs')).toEqual({ attrs: vals });
   });
 });
