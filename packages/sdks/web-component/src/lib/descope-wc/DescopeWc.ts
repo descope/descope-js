@@ -158,7 +158,8 @@ class DescopeWc extends BaseDescopeWc {
   };
 
   // Screen components get data through the data sources they ship with
-  // (@descope/components-data-sources); the SDK runs them and knows nothing about what they fetch.
+  // (@descope/components-data-sources). The components run them; the SDK only sends their
+  // requests to /v1/flow/ds/<name> with the flow and component identity.
   #dataSources = createDataSources({
     getFlowState: () => this.flowState.current,
     post: (path, body) =>
@@ -2077,7 +2078,9 @@ class DescopeWc extends BaseDescopeWc {
     // Each input sends one value under its name. An input that needs to send more
     // (e.g. the login ID suggest sends impersonateTenantId with the picked login ID)
     // exposes them as `extraFormValues`, a { name: string } object merged into the
-    // form. Values that aren't strings are ignored.
+    // form. Values that aren't strings are ignored, and an extra value never replaces a
+    // field another input (or an earlier extra value) already sends.
+    const names = new Set(values.map(({ name }) => name));
     inputs.forEach((input) => {
       const { extraFormValues } = input as unknown as {
         extraFormValues?: unknown;
@@ -2090,7 +2093,9 @@ class DescopeWc extends BaseDescopeWc {
         return;
       }
       Object.entries(extraFormValues).forEach(([name, value]) => {
-        if (typeof value === 'string') values.push({ name, value });
+        if (typeof value !== 'string' || names.has(name)) return;
+        names.add(name);
+        values.push({ name, value });
       });
     });
 

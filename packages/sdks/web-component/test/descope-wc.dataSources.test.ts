@@ -19,7 +19,7 @@ import { screen } from 'shadow-dom-testing-library';
 import '../src/lib/descope-wc';
 
 const PAGE =
-  '<descope-data-input name="field" data-testid="input" data-descope-ds="cars"></descope-data-input><descope-button id="submitterId">click</descope-button><span>It works!</span>';
+  '<descope-data-input name="field" data-testid="input"></descope-data-input><descope-button id="submitterId">click</descope-button><span>It works!</span>';
 
 const renderScreen = async () => {
   startMock.mockReturnValueOnce(
@@ -123,10 +123,10 @@ describe('web-component data sources', () => {
       );
     });
 
-    it('does not answer for a data source the component did not declare', async () => {
+    it('does not answer for an invalid data source name', async () => {
       const ele = await renderScreen();
 
-      const { event, resolve } = getDataSource(ele, 'other');
+      const { event, resolve } = getDataSource(ele, '../other');
 
       expect(event.defaultPrevented).toBe(false);
       expect(resolve).not.toHaveBeenCalled();
@@ -184,6 +184,19 @@ describe('web-component data sources', () => {
       const ele = await renderScreen();
       ele.value = 'karen@acme.com';
       ele.extraFormValues = { otherField: 'T1' };
+
+      const form = await submit();
+
+      expect(form).toEqual(
+        expect.objectContaining({ field: 'karen@acme.com', otherField: 'T1' }),
+      );
+    });
+
+    it('never replaces a field another input already sends', async () => {
+      nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+      const ele = await renderScreen();
+      ele.value = 'karen@acme.com';
+      ele.extraFormValues = { field: 'override', otherField: 'T1' };
 
       const form = await submit();
 

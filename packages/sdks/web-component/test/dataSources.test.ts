@@ -1,8 +1,5 @@
 // @ts-nocheck
-import {
-  createDataSources,
-  getDeclaredNames,
-} from '../src/lib/helpers/dataSources';
+import { createDataSources } from '../src/lib/helpers/dataSources';
 
 const setup = () => {
   const post = jest.fn(async () => ({
@@ -20,10 +17,9 @@ const setup = () => {
   return { ds, post, flowState };
 };
 
-const component = (declared = 'cars', id = 'comp-1') => {
+const component = (id = 'comp-1') => {
   const el = document.createElement('descope-thing');
   el.id = id;
-  if (declared !== null) el.setAttribute('data-descope-ds', declared);
   document.body.appendChild(el);
   return el;
 };
@@ -44,15 +40,8 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
-describe('getDeclaredNames', () => {
-  it('trims, dedupes and drops invalid names', () => {
-    const el = component(' cars , tenants, cars ,, Bad Name, ../x, cars@2');
-    expect(getDeclaredNames(el)).toEqual(['cars', 'tenants']);
-  });
-});
-
 describe('createDataSources', () => {
-  it('posts to the endpoint of the declared name with the flow and component identity', async () => {
+  it('posts to the endpoint of the name with the flow and component identity', async () => {
     const { ds, post, flowState } = setup();
     const request = await ask(ds, component(), 'cars');
     flowState.stepId = 'step-2';
@@ -105,9 +94,9 @@ describe('createDataSources', () => {
     await expect(request({})).resolves.toEqual({ ok: false, error: 'offline' });
   });
 
-  it('answers each declared name on the same component', async () => {
+  it('answers each name on the same component', async () => {
     const { ds, post } = setup();
-    const el = component('cars,tenants');
+    const el = component();
     const [cars, tenants] = await Promise.all([
       ask(ds, el, 'cars'),
       ask(ds, el, 'tenants'),
@@ -121,22 +110,16 @@ describe('createDataSources', () => {
   });
 
   it.each([
-    ['tenants'],
     ['../cars'],
     ['Cars'],
+    ['cars/x'],
+    [''],
     [undefined],
     [{ name: 'cars' }],
-  ])('does not answer for an undeclared or invalid name (%p)', async (name) => {
+  ])('does not answer for an invalid name (%p)', async (name) => {
     const { ds, post } = setup();
-    await expect(ask(ds, component('cars,../cars'), name)).resolves.toBe(
-      'unanswered',
-    );
+    await expect(ask(ds, component(), name)).resolves.toBe('unanswered');
     expect(post).not.toHaveBeenCalled();
-  });
-
-  it('does not answer a component that declares nothing', async () => {
-    const { ds } = setup();
-    await expect(ask(ds, component(null), 'cars')).resolves.toBe('unanswered');
   });
 
   it('does not answer without a resolve callback or an element id', async () => {
@@ -148,8 +131,6 @@ describe('createDataSources', () => {
     Object.defineProperty(event, 'target', { value: component() });
     ds.handleEvent(event);
     expect(event.defaultPrevented).toBe(false);
-    await expect(ask(ds, component('cars', ''), 'cars')).resolves.toBe(
-      'unanswered',
-    );
+    await expect(ask(ds, component(''), 'cars')).resolves.toBe('unanswered');
   });
 });
