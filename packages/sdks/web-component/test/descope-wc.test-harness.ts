@@ -5,6 +5,7 @@ import {
   createSdk,
   ensureFingerprintIds,
   getSessionToken,
+  getRefreshToken,
 } from '@descope/web-js-sdk';
 import '@testing-library/jest-dom';
 import { getABTestingKey } from '../src/lib/helpers/abTestingKey';
@@ -20,11 +21,14 @@ jest.mock('@descope/web-js-sdk', () => ({
   clearFingerprintData: jest.fn(),
   ensureFingerprintIds: jest.fn(),
   getSessionToken: jest.fn(),
+  getRefreshToken: jest.fn(),
 }));
 
 export { createSdk, ensureFingerprintIds };
 
 export const getSessionTokenMock = getSessionToken as jest.Mock;
+
+export const getRefreshTokenMock = getRefreshToken as jest.Mock;
 
 export const WAIT_TIMEOUT = 25000;
 

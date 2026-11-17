@@ -7,7 +7,11 @@ import { themeMixin } from '@descope/sdk-mixins/theme-mixin';
 import { injectStyleMixin } from '@descope/sdk-mixins/inject-style-mixin';
 // eslint-disable-next-line import/no-duplicates
 import { telemetryMixin } from '@descope/sdk-mixins/telemetry-mixin';
-import { createSdk, getSessionToken } from '@descope/web-js-sdk';
+import {
+  createSdk,
+  getRefreshToken,
+  getSessionToken,
+} from '@descope/web-js-sdk';
 import type { FlowNextOptions, FlowStartOptions } from '@descope/web-js-sdk';
 import {
   CONFIG_FILENAME,
@@ -90,6 +94,7 @@ class BaseDescopeWc extends BaseClass {
       'validate-on-blur',
       'send-session-token',
       'style-id',
+      'persist-tokens',
     ];
   }
 
@@ -268,6 +273,13 @@ class BaseDescopeWc extends BaseClass {
     return this.getAttribute('send-session-token') === 'true';
   }
 
+  // persist-tokens="false" makes the flow read-only towards the host page's
+  // session: it still sends the stored refresh token, but never stores tokens
+  // the flow returns (e.g. a widget flow that impersonates another user)
+  get persistTokens() {
+    return this.getAttribute('persist-tokens') !== 'false';
+  }
+
   get preview() {
     return !!this.getAttribute('preview');
   }
@@ -339,6 +351,7 @@ class BaseDescopeWc extends BaseClass {
       'validate-on-blur',
       'send-session-token',
       'style-id',
+      'persist-tokens',
       'outbound-app-id',
       'outbound-app-scopes',
       'theme-override',
@@ -382,6 +395,21 @@ class BaseDescopeWc extends BaseClass {
     };
     if (this.#customStorage) {
       config.customStorage = this.#customStorage;
+    }
+    if (!this.persistTokens) {
+      // read-only: keep sending the stored refresh token so the flow knows who
+      // is acting, without persisting anything the flow returns. New hooks
+      // object, so the shared static sdkConfigOverrides is never mutated
+      const { storagePrefix } = this;
+      config.persistTokens = false;
+      config.hooks = {
+        ...config.hooks,
+        beforeRequest: [].concat(config.hooks?.beforeRequest || [], (req) =>
+          Object.assign(req, {
+            token: req.token || getRefreshToken(storagePrefix),
+          }),
+        ),
+      };
     }
 
     this.sdk = createSdk(config);
