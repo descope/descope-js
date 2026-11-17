@@ -57,8 +57,8 @@ describe('templates', () => {
       expect(enriched(['a_b', '*c*'])).toEqual('Hi a\\_b,\\*c\\*!');
     });
 
-    it('should replace newlines with spaces', () => {
-      expect(enriched('a\nb\r\nc\rd')).toEqual('Hi a b c d!');
+    it('should keep newlines', () => {
+      expect(enriched('a\nb')).toEqual('Hi a\nb!');
     });
 
     it('should keep an email as is', () => {
