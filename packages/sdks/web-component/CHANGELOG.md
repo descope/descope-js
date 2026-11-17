@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.7.4](https://github.com/descope/descope-js/compare/web-component-4.7.3...web-component-4.7.4) (2026-11-17)
+
+
+### Bug Fixes
+
+* **web-component:** skip Enter submit when a component already handled the key ([#1559](https://github.com/descope/descope-js/issues/1559)) ([82cf4d8](https://github.com/descope/descope-js/commit/82cf4d8f185b58372905af1fe3188be9c6e7c077)), closes [descope/etc#19894](https://github.com/descope/etc/issues/19894) [descope/web-components-ui#1161](https://github.com/descope/web-components-ui/issues/1161) [descope/web-components-ui#1161](https://github.com/descope/web-components-ui/issues/1161)
+
 ## [4.7.3](https://github.com/descope/descope-js/compare/web-component-4.7.2...web-component-4.7.3) (2026-11-12)
 
 ### Dependency Updates
