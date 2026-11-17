@@ -48,6 +48,29 @@ describe('web-component enter key behavior', () => {
     await waitFor(() => expect(nextMock).toHaveBeenCalled());
   });
 
+  it('When a component already handled enter (default prevented), it does not click the button', async () => {
+    startMock.mockReturnValueOnce(generateSdkResponse());
+    nextMock.mockReturnValueOnce(generateSdkResponse({ screenId: '1' }));
+
+    fixtures.pageContent =
+      '<descope-button id="buttonId">Click</descope-button><div id="toggle" tabindex="0"></div><span>It works!</span>';
+
+    document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="otpSignInEmail" project-id="1"></descope-wc>`;
+
+    await waitFor(() => screen.getByShadowText('It works!'), {
+      timeout: WAIT_TIMEOUT,
+    });
+
+    const { shadowRoot } = document.getElementsByTagName('descope-wc')[0];
+    const click = jest.spyOn(shadowRoot.querySelector('#buttonId'), 'click');
+    const toggle = shadowRoot.querySelector('#toggle');
+    toggle.addEventListener('keydown', (e) => e.preventDefault());
+
+    fireEvent.keyDown(toggle, { key: 'Enter', code: 13, charCode: 13 });
+
+    expect(click).not.toHaveBeenCalled();
+  });
+
   it('should not load components which are already loaded', async () => {
     startMock.mockReturnValueOnce(generateSdkResponse());
 
