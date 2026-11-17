@@ -5,11 +5,8 @@ const cases: [string, string][] = [
   [String.raw`\*`, String.raw`\\\*`],
   [String.raw`a\b`, String.raw`a\\b`],
   ['a\\', String.raw`a\\`],
-  ['&copy;', String.raw`\&copy\;`],
-  ['- x', String.raw`\- x`],
-  ['1. x', String.raw`1\. x`],
   ['# x', String.raw`\# x`],
-  ['| a |', String.raw`\| a \|`],
+  ['a_b@c-d.com', String.raw`a\_b@c-d.com`],
 ];
 
 describe('escape markdown', () => {
@@ -18,15 +15,8 @@ describe('escape markdown', () => {
     expect(escapeMarkdown(source)).toEqual('\\*\\#\\/\\(\\)\\[\\]\\_\\<\\>\\`');
   });
 
-  it('should escape every ascii punctuation char', () => {
-    const punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
-    expect(escapeMarkdown(punctuation)).toEqual(
-      punctuation.replace(/./g, '\\$&'),
-    );
-  });
-
-  it('should leave letters, digits, spaces and unicode as is', () => {
-    const source = 'Claude Code 2 שלום é';
+  it('should leave other characters as is', () => {
+    const source = 'Claude Code 2 שלום é .@-+:&!?|~=';
     expect(escapeMarkdown(source)).toEqual(source);
   });
 
@@ -49,7 +39,7 @@ describe('unescape markdown', () => {
     );
   });
 
-  it('should keep a backslash before a non punctuation char', () => {
+  it('should keep a backslash before a char that is not escaped', () => {
     expect(unescapeMarkdown(String.raw`a\b`)).toEqual(String.raw`a\b`);
   });
 

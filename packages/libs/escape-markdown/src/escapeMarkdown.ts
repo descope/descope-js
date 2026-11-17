@@ -1,7 +1,7 @@
-// Every ASCII punctuation character. Markdown lets a backslash escape any of them.
-const punctuation = '[!-/:-@[-`{-~]';
-const escapeRegexp = new RegExp(punctuation, 'g');
-const unescapeRegexp = new RegExp(`\\\\(${punctuation})`, 'g');
+// Markdown characters escaped in values, the backslash included.
+// `.`, `@`, `-` and `&` are left as is, so emails and links keep working.
+const escapeRegexp = /[\\*#/()[\]_<>`]/g;
+const unescapeRegexp = /\\([\\*#/()[\]_<>`])/g;
 
 export const escapeMarkdown = (s: string) => {
   if (typeof s !== 'string') return s;

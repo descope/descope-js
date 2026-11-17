@@ -54,20 +54,17 @@ describe('templates', () => {
     });
 
     it('should escape an array value', () => {
-      expect(enriched(['a_b', '*c*'])).toEqual('Hi a\\_b\\,\\*c\\*!');
+      expect(enriched(['a_b', '*c*'])).toEqual('Hi a\\_b,\\*c\\*!');
     });
 
     it('should replace newlines with spaces', () => {
       expect(enriched('a\nb\r\nc\rd')).toEqual('Hi a b c d!');
     });
 
-    it('should escape a value that starts like a list item', () => {
-      expect(
-        renderTemplate(
-          '<descope-enriched-text>{{user.value}}</descope-enriched-text>',
-          { value: '- x' },
-        ),
-      ).toEqual('\\- x');
+    it('should keep an email as is', () => {
+      expect(enriched('dana.cohen@acme-corp.com')).toEqual(
+        'Hi dana.cohen@acme-corp.com!',
+      );
     });
 
     it('should keep the value as is in plain text', () => {
