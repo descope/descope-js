@@ -68,7 +68,7 @@ const applyTemplates = (
 ): string =>
   text.replace(/{{(.+?)}}/g, (_, match) =>
     handleMarkdown
-      ? escapeMarkdown(getByPath(screenState, match))
+      ? escapeMarkdown(String(getByPath(screenState, match)))
       : getByPath(screenState, match),
   );
 
