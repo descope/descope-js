@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.7.5](https://github.com/descope/descope-js/compare/web-component-4.7.4...web-component-4.7.5) (2026-11-17)
+
+### Dependency Updates
+
+* `escape-markdown` updated to version `0.1.7`
+
+### Bug Fixes
+
+* **escape-markdown:** escape backslash in markdown values RELEASE ([#1560](https://github.com/descope/descope-js/issues/1560)) ([40cfa2f](https://github.com/descope/descope-js/commit/40cfa2fa3e95ef2fffba4c97905b60a1a286079f))
+
 ## [4.7.4](https://github.com/descope/descope-js/compare/web-component-4.7.3...web-component-4.7.4) (2026-11-17)
 
 
