@@ -305,6 +305,7 @@ function encodeCreateResponse(
     id: credential.id,
     rawId: encodeBase64Url(credential.rawId),
     type: credential.type,
+    authenticatorAttachment: credential.authenticatorAttachment ?? undefined,
     response: {
       attestationObject: encodeBase64Url(credential.response.attestationObject),
       clientDataJSON: encodeBase64Url(credential.response.clientDataJSON),
@@ -332,6 +333,7 @@ function encodeGetResponse(credential: AssertionPublicKeyCredential): string {
     id: credential.id,
     rawId: encodeBase64Url(credential.rawId),
     type: credential.type,
+    authenticatorAttachment: credential.authenticatorAttachment ?? undefined,
     response: {
       authenticatorData: encodeBase64Url(credential.response.authenticatorData),
       clientDataJSON: encodeBase64Url(credential.response.clientDataJSON),

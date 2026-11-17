@@ -163,6 +163,7 @@ export type JWTResponse = {
   cookieName?: string;
   user?: UserResponse;
   firstSeen?: boolean;
+  externalPasskey?: boolean;
   sessionExpiration: number;
   claims: Claims;
   trustedDeviceJwt?: string;
