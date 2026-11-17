@@ -5,6 +5,7 @@ import {
   AccessKeyManagement,
   ApplicationsPortal,
   AuditManagement,
+  OutboundApplications,
   RoleManagement,
   TenantProfile,
   UserManagement,
@@ -27,6 +28,7 @@ jest.mock('@descope/audit-management-widget', () => ({ default: {} }));
 jest.mock('@descope/user-profile-widget', () => ({ default: {} }));
 jest.mock('@descope/applications-portal-widget', () => ({ default: {} }));
 jest.mock('@descope/tenant-profile-widget', () => ({ default: {} }));
+jest.mock('@descope/outbound-applications-widget', () => ({ default: {} }));
 
 jest.mock('@descope/web-js-sdk', () => {
   const sdk = {
@@ -162,6 +164,24 @@ describe('Descope Widgets', () => {
     expect(widget).toHaveAttribute('tenant', 'tenant1');
     expect(widget).toHaveAttribute('widget-id', 'widget1');
     expect(widget).toHaveAttribute('refresh-cookie-name', 'cookie-1');
+  });
+
+  it('render Outbound Applications', async () => {
+    renderWithProvider(
+      <OutboundApplications widgetId="widget1" tenant="tenant1" />,
+    );
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('descope-outbound-applications-widget'),
+      ).toBeInTheDocument(),
+    );
+
+    const widget = document.querySelector(
+      'descope-outbound-applications-widget',
+    );
+    expect(widget).toHaveAttribute('tenant', 'tenant1');
+    expect(widget).toHaveAttribute('widget-id', 'widget1');
   });
 
   it('render User Profile', async () => {
