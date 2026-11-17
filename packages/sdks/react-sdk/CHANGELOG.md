@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.5.6](https://github.com/descope/descope-js/compare/react-sdk-3.5.5...react-sdk-3.5.6) (2026-11-17)
+
+
+### Bug Fixes
+
+* **react-sdk:** pass tenant prop to OutboundApplications widget RELEASE ([#1561](https://github.com/descope/descope-js/issues/1561)) ([3061ae6](https://github.com/descope/descope-js/commit/3061ae6be2141cd6a8db17ac3fc6f0f5406e83cd)), closes [descope/etc#20552](https://github.com/descope/etc/issues/20552)
+
+## [3.5.5](https://github.com/descope/descope-js/compare/react-sdk-3.5.4...react-sdk-3.5.5) (2026-11-17)
+
+### Dependency Updates
+
+* `outbound-applications-widget` updated to version `0.7.25`
+* `tenant-profile-widget` updated to version `0.11.19`
+* `user-management-widget` updated to version `0.21.16`
+* `user-profile-widget` updated to version `0.21.5`
+* `web-component` updated to version `4.7.4`
 ## [3.5.4](https://github.com/descope/descope-js/compare/react-sdk-3.5.3...react-sdk-3.5.4) (2026-11-12)
 
 ### Dependency Updates

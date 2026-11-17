@@ -27,7 +27,18 @@ const OutboundApplications = React.forwardRef<
   OutboundApplicationsProps
 >(
   (
-    { logger, theme, locale, debug, widgetId, styleId, onReady, client, form },
+    {
+      logger,
+      tenant,
+      theme,
+      locale,
+      debug,
+      widgetId,
+      styleId,
+      onReady,
+      client,
+      form,
+    },
     ref,
   ) => {
     const [innerRef, setInnerRef] = useState(null);
@@ -57,6 +68,7 @@ const OutboundApplications = React.forwardRef<
           baseCdnUrl={baseCdnUrl}
           {...{
             // attributes
+            'tenant.attr': tenant,
             'theme.attr': theme,
             'locale.attr': locale,
             'debug.attr': debug,
