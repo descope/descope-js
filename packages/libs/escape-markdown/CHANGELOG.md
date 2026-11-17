@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.7](https://github.com/descope/descope-js/compare/escape-markdown-0.1.6...escape-markdown-0.1.7) (2026-11-17)
+
+
+### Bug Fixes
+
+* **escape-markdown:** escape backslash in markdown values RELEASE ([#1560](https://github.com/descope/descope-js/issues/1560)) ([40cfa2f](https://github.com/descope/descope-js/commit/40cfa2fa3e95ef2fffba4c97905b60a1a286079f))
+
 ## [0.1.6](https://github.com/descope/descope-js/compare/escape-markdown-0.1.5...escape-markdown-0.1.6) (2025-11-09)
 
 ## [0.1.5](https://github.com/descope/descope-js/compare/escape-markdown-0.1.4...escape-markdown-0.1.5) (2025-02-11)
