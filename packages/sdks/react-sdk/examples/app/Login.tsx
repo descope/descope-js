@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Descope, useSession } from '../../src';
 
 const Login = () => {
