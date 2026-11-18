@@ -7,12 +7,14 @@ const installBridge = (): void => {
 };
 
 describe('nativeBridgeMixin - method overrides', () => {
-  // Minimal base class with init/handleLogout the mixin will wrap.
+  // Minimal base class with the methods the mixin will wrap.
   // Counters let us assert the super chain ran (or was short-circuited).
   class BaseElement extends HTMLElement {
     superInitCalls = 0;
 
     superHandleLogoutCalls = 0;
+
+    widgetConfig: any = { version: 1, flowTarget: 'popup' };
 
     async init() {
       this.superInitCalls += 1;
@@ -20,6 +22,10 @@ describe('nativeBridgeMixin - method overrides', () => {
 
     async handleLogout() {
       this.superHandleLogoutCalls += 1;
+    }
+
+    async getWidgetConfig() {
+      return this.widgetConfig;
     }
   }
   const NativeBridgeElement = nativeBridgeMixin(BaseElement);
@@ -88,6 +94,44 @@ describe('nativeBridgeMixin - method overrides', () => {
       await element.handleLogout();
       expect(widgetLogoutListener).not.toHaveBeenCalled();
       expect(element.superHandleLogoutCalls).toBe(1);
+    });
+  });
+
+  describe('getWidgetConfig', () => {
+    it('keeps the popup flow target in web mode', async () => {
+      expect(await element.getWidgetConfig()).toEqual({
+        version: 1,
+        flowTarget: 'popup',
+      });
+    });
+
+    it('forces the modal flow target in native mode', async () => {
+      installBridge();
+
+      expect(await element.getWidgetConfig()).toEqual({
+        version: 1,
+        flowTarget: 'modal',
+      });
+    });
+
+    it('keeps the popup flow target when bridge lacks registerWidget (legacy)', async () => {
+      (window as any).descopeBridge = {};
+
+      expect((await element.getWidgetConfig()).flowTarget).toBe('popup');
+    });
+
+    it('leaves a config without a flow target untouched in native mode', async () => {
+      installBridge();
+      element.widgetConfig = { version: 1 };
+
+      expect(await element.getWidgetConfig()).toEqual({ version: 1 });
+    });
+
+    it('passes through a missing config in native mode', async () => {
+      installBridge();
+      element.widgetConfig = undefined;
+
+      expect(await element.getWidgetConfig()).toBeUndefined();
     });
   });
 });

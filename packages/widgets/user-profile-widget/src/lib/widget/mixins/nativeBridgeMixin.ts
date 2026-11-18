@@ -17,6 +17,7 @@ const hasNativeBridge = (): boolean =>
 type NativeBridgeSuper = {
   init?(): void | Promise<void>;
   handleLogout?(): void | Promise<void>;
+  getWidgetConfig?(): Promise<Record<string, unknown> | undefined>;
 };
 
 export const nativeBridgeMixin = createSingletonMixin(
@@ -39,6 +40,16 @@ export const nativeBridgeMixin = createSingletonMixin(
           return;
         }
         await super.handleLogout?.();
+      }
+
+      // native SDK bridges flows that run inside the widget, so they must
+      // stay in a modal rather than open in a popup
+      async getWidgetConfig() {
+        const config = await super.getWidgetConfig?.();
+        if (hasNativeBridge() && config?.flowTarget === 'popup') {
+          return { ...config, flowTarget: 'modal' };
+        }
+        return config;
       }
     };
   },

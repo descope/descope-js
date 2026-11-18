@@ -44,7 +44,7 @@ export const initMixin = createSingletonMixin(
       initUserBuiltinAttributesMixin,
       initLogoutMixin,
       // IMPORTANT: ORDER MATTERS
-      // nativeBridgeMixin overrides `init()` and `handleLogout()` from the mixins above it
+      // nativeBridgeMixin overrides `init()`, `handleLogout()` and `getWidgetConfig()` from the mixins above it
       nativeBridgeMixin,
       initTrustedDevicesMixin,
       initUserPasskeysMixin,
