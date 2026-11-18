@@ -3,7 +3,15 @@ import { screen } from 'shadow-dom-testing-library';
 import {
   setNOTPVariable,
   updateScreenFromScreenState,
+  updateTemplateFromScreenState,
 } from '../../src/lib/helpers/templates';
+
+const renderTemplate = (html: string, user: Record<string, unknown>) => {
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  updateTemplateFromScreenState(template.content, { user }, {});
+  return template.content.firstElementChild.textContent;
+};
 
 describe('templates', () => {
   afterEach(() => {
@@ -32,6 +40,40 @@ describe('templates', () => {
       form: { email: 'email2' },
     });
     await waitFor(() => screen.getByShadowDisplayValue('email2'));
+  });
+
+  describe('enriched text templates', () => {
+    const enriched = (value: unknown) =>
+      renderTemplate(
+        '<descope-enriched-text>Hi {{user.value}}!</descope-enriched-text>',
+        { value },
+      );
+
+    it('should escape a string value', () => {
+      expect(enriched('a\\b *x*')).toEqual('Hi a\\\\b \\*x\\*!');
+    });
+
+    it('should escape an array value', () => {
+      expect(enriched(['a_b', '*c*'])).toEqual('Hi a\\_b,\\*c\\*!');
+    });
+
+    it('should keep newlines', () => {
+      expect(enriched('a\nb')).toEqual('Hi a\nb!');
+    });
+
+    it('should keep an email as is', () => {
+      expect(enriched('dana.cohen@acme-corp.com')).toEqual(
+        'Hi dana.cohen@acme-corp.com!',
+      );
+    });
+
+    it('should keep the value as is in plain text', () => {
+      expect(
+        renderTemplate('<descope-text>Hi {{user.value}}</descope-text>', {
+          value: 'a\\b\n*c*',
+        }),
+      ).toEqual('Hi a\\b\n*c*');
+    });
   });
 
   it('should set NOTP variable', async () => {
