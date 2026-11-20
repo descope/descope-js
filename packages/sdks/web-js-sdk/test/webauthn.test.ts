@@ -32,6 +32,25 @@ describe('webauthn', () => {
     expect(parsedResponse.rawId).toEqual(mockBase64);
     expect(parsedResponse.response).toBeDefined();
     expect(parsedResponse.response.attestationObject).toEqual(mockBase64);
+    expect(parsedResponse).not.toHaveProperty('authenticatorAttachment');
+  });
+
+  it('should send the authenticator attachment on signup', async () => {
+    const mockSdk = createMockSdk();
+    const webauthn = createWebAuthn(mockSdk);
+    const finishSpy = jest.spyOn(mockSdk.webauthn.signUp, 'finish');
+    mockCredentials.create.mockReturnValueOnce(
+      Object.create(mockCreateResponse, {
+        authenticatorAttachment: { value: 'cross-platform' },
+      }),
+    );
+
+    await webauthn.signUp('foo', 'bar');
+
+    const [, response] = finishSpy.mock.lastCall as any;
+    expect(JSON.parse(response).authenticatorAttachment).toEqual(
+      'cross-platform',
+    );
   });
 
   it('should bail if signup start fails', async () => {
@@ -68,6 +87,23 @@ describe('webauthn', () => {
     expect(parsedResponse.rawId).toEqual(mockBase64);
     expect(parsedResponse.response).toBeDefined();
     expect(parsedResponse.response.authenticatorData).toEqual(mockBase64);
+    expect(parsedResponse).not.toHaveProperty('authenticatorAttachment');
+  });
+
+  it('should send the authenticator attachment on signin', async () => {
+    const mockSdk = createMockSdk();
+    const webauthn = createWebAuthn(mockSdk);
+    const finishSpy = jest.spyOn(mockSdk.webauthn.signIn, 'finish');
+    mockCredentials.get.mockReturnValueOnce(
+      Object.create(mockGetResponse, {
+        authenticatorAttachment: { value: 'platform' },
+      }),
+    );
+
+    await webauthn.signIn('foo');
+
+    const [, response] = finishSpy.mock.lastCall as any;
+    expect(JSON.parse(response).authenticatorAttachment).toEqual('platform');
   });
 
   it('should bail if signin start fails', async () => {
