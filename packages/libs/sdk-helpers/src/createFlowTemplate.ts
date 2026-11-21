@@ -24,6 +24,9 @@ export type FlowConfig = {
   // hold the flow's start call until the element's start() is called - modals
   // default this to true, pass false to start the flow as soon as it renders
   lazyStart?: boolean;
+  // false keeps the host page's session untouched by tokens the flow returns
+  persistTokens?: boolean;
+  storeLastAuthenticatedUser?: boolean;
   // widget-specific context
   tenant?: string;
   outboundAppId?: string;

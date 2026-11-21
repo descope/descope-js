@@ -36,7 +36,10 @@ export {
   clearFingerprintData,
 } from './enhancers/withFingerprint/helpers';
 
-export { getSessionToken } from './enhancers/withPersistTokens/helpers';
+export {
+  getSessionToken,
+  getRefreshToken,
+} from './enhancers/withPersistTokens/helpers';
 
 export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
 
