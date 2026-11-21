@@ -222,6 +222,15 @@ describe('withLoggedInIndicator', () => {
     it('returns false when neither key is set', () => {
       expect(hasLoginIndicator()).toBe(false);
     });
+
+    it('returns true when only the DSLI marker cookie is set', () => {
+      document.cookie = 'DSLI=1';
+      try {
+        expect(hasLoginIndicator()).toBe(true);
+      } finally {
+        document.cookie = 'DSLI=; max-age=0';
+      }
+    });
   });
 
   // Regression for the customStorage bug: the DSLI indicator must live in real
