@@ -7,12 +7,28 @@ import {
   compose,
   createSingletonMixin,
   createTemplate,
+  unflatten,
 } from '@descope/sdk-helpers';
 import { formMixin, loggerMixin, modalMixin } from '@descope/sdk-mixins';
+import { CreateAccessKeyConfig } from '../../../api/types';
 import { getTenantRoles } from '../../../state/selectors';
 import { stateManagementMixin } from '../../stateManagementMixin';
 import { initWidgetRootMixin } from './initWidgetRootMixin';
 import { initCreatedAccessKeyModalMixin } from './initCreatedAccessKeyModalMixin';
+
+// group flat `customAttributes.<name>` form fields into a `customAttributes`
+// object, dropping empty ones first - there is nothing to clear on a new key
+export const buildCreateAccessKeyPayload = (
+  formData: Record<string, any>,
+): CreateAccessKeyConfig =>
+  unflatten(
+    Object.fromEntries(
+      Object.entries(formData).filter(
+        ([key, value]) => !key.startsWith('customAttributes.') || value !== '',
+      ),
+    ),
+    'customAttributes',
+  ) as CreateAccessKeyConfig;
 
 export const initCreateAccessKeyModalMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -59,9 +75,9 @@ export const initCreateAccessKeyModalMixin = createSingletonMixin(
         submitButton.onClick(async () => {
           if (this.validateForm(this.createAccessKeyModal.ele)) {
             const res: Record<string, any> = await this.actions.createAccessKey(
-              {
-                ...this.getFormData(this.createAccessKeyModal.ele),
-              },
+              buildCreateAccessKeyPayload(
+                this.getFormData(this.createAccessKeyModal.ele),
+              ),
             );
             this.createAccessKeyModal.close();
 
