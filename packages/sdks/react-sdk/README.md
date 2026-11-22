@@ -341,6 +341,80 @@ const App = () => {
 >
 > `isAuthenticated` is derived from the session's expiration, which the SDK receives in every token-storage mode. Read `sessionToken` only when you actually need the raw JWT (for example to attach it to an API request), and use `claims` to read claims out of the session.
 
+### Returning Users After an Idle Period
+
+When the short-lived session token expires, a user with a valid refresh token does not need to sign in again. The SDK renews the session once `useSession()` runs. Two things keep that working: the login page waits for `useSession()` to finish loading before it shows the flow, and it returns the user to the page they asked for. Accept only in-app return paths, otherwise the redirect can send users to another site.
+
+```tsx
+// src/components/ProtectedRoute.tsx
+import { useSession } from '@descope/react-sdk';
+import { Navigate, useLocation } from 'react-router-dom';
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isSessionLoading } = useSession();
+  const location = useLocation();
+
+  if (isSessionLoading) return <div>Loading...</div>;
+  if (!isAuthenticated) {
+    // Keep the requested page so the login page can return the user to it.
+    return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
+  }
+
+  return <>{children}</>;
+}
+```
+
+```tsx
+// src/pages/Login.tsx
+import { useEffect } from 'react';
+import { Descope, useSession } from '@descope/react-sdk';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+// Only allow paths inside this app, so the return path can't send users to another site.
+function safeNext(value: unknown): string {
+  if (typeof value !== 'string' || !value) return '/';
+  try {
+    const base = 'http://app.invalid'; // placeholder origin, only used for parsing
+    const url = new URL(value, base);
+    if (url.origin !== base || url.pathname.startsWith('//') || url.pathname.startsWith('/login')) {
+      return '/';
+    }
+    return url.pathname + url.search + url.hash;
+  } catch {
+    return '/';
+  }
+}
+
+function LoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const next = safeNext((location.state as { from?: string } | null)?.from);
+  const { isAuthenticated, isSessionLoading } = useSession();
+
+  useEffect(() => {
+    if (isAuthenticated) navigate(next, { replace: true });
+  }, [isAuthenticated, next, navigate]);
+
+  // Let the SDK renew the session from the refresh token before showing the login flow.
+  if (isSessionLoading || isAuthenticated) return <div>Checking your session...</div>;
+
+  return <Descope flowId="sign-up-or-in" onSuccess={() => navigate(next, { replace: true })} onError={(e) => console.error('Auth failed:', e.detail)} />;
+}
+```
+
+Before an API call that may run right after the user returns to a background tab, wait for an expired session token to renew:
+
+```tsx
+import { getSessionToken, isSessionTokenExpired, refresh } from '@descope/react-sdk';
+
+export async function ensureFreshSession() {
+  const token = getSessionToken();
+  if (!token || isSessionTokenExpired(token)) {
+    await refresh().catch(() => {});
+  }
+}
+```
+
 ### Trigger Auto Refresh
 
 `useSession` triggers a single request to the Descope backend to attempt to refresh the session. If you **don't** `useSession` in your app, the session will not be refreshed automatically. If your app does not require `useSession`, you can trigger the refresh manually by calling `refresh` from `useDescope` hook. Example:
