@@ -74,6 +74,8 @@ const Page = () => {
 };
 ```
 
+This minimal page always sends users to `/` and shows the flow even when the session can still be renewed. For a production sign-in page that returns users to the page they asked for, see [What the app is expected to do](#what-the-app-is-expected-to-do).
+
 Refer to the [Descope React SDK Section](../react-sdk/README.md) for a list of available props.
 
 > **Breaking change (v-next):** if you render custom screens via `onScreenUpdate`, the
@@ -310,12 +312,199 @@ const options = {
 
 ###### What the app is expected to do
 
-A user with an expired session token and a still valid refresh token is redirected to the sign-in route.
-On the client, `AuthProvider` refreshes the session token from the refresh token on its own (`autoRefresh` is on by default), so the user becomes authenticated again without re-authenticating.
+A user with an expired session token and a still valid refresh token is redirected to the sign-in route. They don't need to sign in again: the browser SDK can renew the session token from the refresh token. Your app has to let it, then send the user back. That takes these pieces:
 
-Your sign-in page is expected to send an already authenticated user away, otherwise they will sit on it.
-Rendering `<Descope />` with `redirectAfterSuccess` covers this, as does checking `useSession()` and routing away yourself.
-The redirect replaces the original pathname and only carries over its query parameters, so if you want to return the user to the page they came from, capture it yourself before redirecting.
+1. **Keep the requested page.** The redirect replaces the original pathname and only carries over its query parameters, so add the path as `next` yourself. Apply `skipRefreshTokenValidation` to page loads only, so a user with a valid refresh token is not redirected in the middle of a server action or API call. Those handlers check `session()` themselves. If the app sets `basePath`, or serves GET route handlers outside `/api`, adjust the sign-in URL and the `isPageLoad` check.
+
+```ts
+// src/proxy.ts (Next.js 16+) or src/middleware.ts (Next.js 13-15)
+import { NextResponse, type NextRequest } from 'next/server';
+import { authMiddleware } from '@descope/nextjs-sdk/server';
+
+// Added to the defaults ('/sign-in', '/sign-up'). All other routes are private.
+const publicRoutes = ['/', '/sign-in', '/api/public/*'];
+
+const pageAuth = authMiddleware({
+	// projectId defaults to process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID
+	redirectUrl: '/sign-in',
+	publicRoutes,
+	skipRefreshTokenValidation: true
+});
+
+const requestAuth = authMiddleware({ redirectUrl: '/sign-in', publicRoutes });
+
+export default async function proxy(req: NextRequest) {
+	const isPageLoad =
+		req.method === 'GET' &&
+		!req.headers.has('next-action') &&
+		!req.nextUrl.pathname.startsWith('/api');
+	if (!isPageLoad) return requestAuth(req);
+
+	const res = await pageAuth(req);
+	if (res.headers.get('location')) {
+		// Redirected to sign-in: remember the page the user asked for.
+		const signIn = new URL('/sign-in', req.url);
+		signIn.searchParams.set('next', req.nextUrl.pathname + req.nextUrl.search);
+		return NextResponse.redirect(signIn);
+	}
+	return res;
+}
+
+export const config = {
+	matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)']
+};
+```
+
+2. **Wait for renewal on the sign-in page.** `<Descope redirectAfterSuccess="/" />` is not enough: it shows the flow to a user whose refresh token is still valid and drops the page they asked for. Wait for `useSession()` to finish loading and return an authenticated user to `next`. Validate `next` by parsing it as a URL: browsers strip tabs and newlines, so string checks such as `startsWith('/')` let `/%09/evil.com` through.
+
+```tsx
+// src/app/sign-in/page.tsx
+'use client';
+
+import { Suspense, useEffect, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Descope } from '@descope/nextjs-sdk';
+import { useSession } from '@descope/nextjs-sdk/client';
+import { ensureFreshSession } from '@/lib/ensureFreshSession';
+
+// Only allow paths inside this app, so ?next= can't send users to another site.
+// Parse instead of string checks: browsers strip tabs and newlines from URLs, so
+// "/\t/evil.com" passes a startsWith('/') check and still leaves the site.
+function safeNext(value: string | null): string {
+	if (!value) return '/';
+	try {
+		const base = 'http://app.invalid'; // placeholder origin, only used for parsing
+		const url = new URL(value, base);
+		if (
+			url.origin !== base ||
+			url.pathname.startsWith('//') ||
+			url.pathname.startsWith('/sign-in')
+		) {
+			return '/';
+		}
+		return url.pathname + url.search + url.hash;
+	} catch {
+		return '/';
+	}
+}
+
+const LAST_RETURN_KEY = 'sign-in-last-return';
+
+function SignIn() {
+	const router = useRouter();
+	const params = useSearchParams();
+	const next = safeNext(params.get('next'));
+	const renewFailed = params.has('renewFailed');
+	const { isAuthenticated, isSessionLoading } = useSession();
+
+	const returning = useRef(false);
+
+	useEffect(() => {
+		// Run once per mount: React Strict Mode runs effects twice in development.
+		if (!isAuthenticated || renewFailed || returning.current) return;
+		returning.current = true;
+		(async () => {
+			// Sent back here seconds after returning the user: the server is rejecting the
+			// renewed session. Show the login flow instead of looping. Measure from page
+			// load, so a slow refresh doesn't hide the loop.
+			const startedAt = Date.now();
+			const last = Number(sessionStorage.getItem(LAST_RETURN_KEY) ?? 0);
+			// The SDK can report a session whose token is still being renewed.
+			await ensureFreshSession();
+			if (startedAt - last < 10_000) {
+				router.replace(
+					`/sign-in?renewFailed=1&next=${encodeURIComponent(next)}`
+				);
+				return;
+			}
+			sessionStorage.setItem(LAST_RETURN_KEY, String(Date.now()));
+			router.replace(next);
+		})();
+	}, [isAuthenticated, renewFailed, next, router]);
+
+	// Let the SDK renew the session from the refresh token before showing the login flow.
+	if (!renewFailed && (isSessionLoading || isAuthenticated)) {
+		return <p>Checking your session...</p>;
+	}
+
+	return (
+		<Descope
+			flowId="sign-up-or-in"
+			onSuccess={() => {
+				sessionStorage.removeItem(LAST_RETURN_KEY);
+				router.replace(next);
+			}}
+			onError={(e) => console.error('Auth failed:', e.detail)}
+		/>
+	);
+}
+
+export default function SignInPage() {
+	return (
+		<Suspense>
+			<SignIn />
+		</Suspense>
+	);
+}
+```
+
+3. **Refresh on every page.** `AuthProvider` alone does not refresh the session: the SDK starts once a component calls `useSession()`, and then also renews an expired token when the user returns to the tab. Render this once inside `AuthProvider` in the root layout.
+
+```tsx
+// src/app/components/SessionKeeper.tsx
+'use client';
+
+import { useSession } from '@descope/nextjs-sdk/client';
+
+export function SessionKeeper() {
+	useSession(); // starts the SDK's session refresh on every page
+	return null;
+}
+```
+
+4. **Wait for renewal before server actions.** Right after the user returns to a background tab, the renewal is still in flight. From a client component, wait for it before calling a server action. The action still checks `session()` itself.
+
+```ts
+// src/lib/ensureFreshSession.ts
+'use client';
+
+import {
+	getSessionToken,
+	isSessionTokenExpired,
+	refresh
+} from '@descope/nextjs-sdk/client';
+
+export async function ensureFreshSession() {
+	const token = getSessionToken();
+	// getSessionToken() returns '' when Descope manages the token as an HttpOnly
+	// cookie. Then this does nothing and the SDK's background renewal applies.
+	if (token && isSessionTokenExpired(token)) {
+		await refresh().catch(() => {});
+	}
+}
+```
+
+```tsx
+// src/app/projects/[id]/settings/SaveForm.tsx
+'use client';
+
+import { ensureFreshSession } from '@/lib/ensureFreshSession';
+import { saveDescription } from './actions';
+
+export function SaveForm({ id }: { id: string }) {
+	return (
+		<form
+			action={async (formData) => {
+				await ensureFreshSession();
+				await saveDescription(id, formData);
+			}}
+		>
+			<input name="description" />
+			<button type="submit">Save</button>
+		</form>
+	);
+}
+```
 
 ##### Read session information in server side
 
