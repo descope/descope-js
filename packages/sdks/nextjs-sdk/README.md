@@ -361,10 +361,11 @@ export const config = {
 // src/app/sign-in/page.tsx
 'use client';
 
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Descope } from '@descope/nextjs-sdk';
 import { useSession } from '@descope/nextjs-sdk/client';
+import { ensureFreshSession } from '@/lib/ensureFreshSession';
 
 // Only allow paths inside this app, so ?next= can't send users to another site.
 // Parse instead of string checks: browsers strip tabs and newlines from URLs, so
@@ -396,17 +397,27 @@ function SignIn() {
 	const renewFailed = params.has('renewFailed');
 	const { isAuthenticated, isSessionLoading } = useSession();
 
+	const returning = useRef(false);
+
 	useEffect(() => {
-		if (!isAuthenticated || renewFailed) return;
-		// Sent back here seconds after returning the user: the server is rejecting the
-		// renewed session. Show the login flow instead of looping.
-		const last = Number(sessionStorage.getItem(LAST_RETURN_KEY) ?? 0);
-		if (Date.now() - last < 10_000) {
-			router.replace(`/sign-in?renewFailed=1&next=${encodeURIComponent(next)}`);
-			return;
-		}
-		sessionStorage.setItem(LAST_RETURN_KEY, String(Date.now()));
-		router.replace(next);
+		// Run once per mount: React Strict Mode runs effects twice in development.
+		if (!isAuthenticated || renewFailed || returning.current) return;
+		returning.current = true;
+		(async () => {
+			// The SDK can report a session whose token is still being renewed.
+			await ensureFreshSession();
+			// Sent back here seconds after returning the user: the server is rejecting the
+			// renewed session. Show the login flow instead of looping.
+			const last = Number(sessionStorage.getItem(LAST_RETURN_KEY) ?? 0);
+			if (Date.now() - last < 10_000) {
+				router.replace(
+					`/sign-in?renewFailed=1&next=${encodeURIComponent(next)}`
+				);
+				return;
+			}
+			sessionStorage.setItem(LAST_RETURN_KEY, String(Date.now()));
+			router.replace(next);
+		})();
 	}, [isAuthenticated, renewFailed, next, router]);
 
 	// Let the SDK renew the session from the refresh token before showing the login flow.
@@ -463,7 +474,9 @@ import {
 
 export async function ensureFreshSession() {
 	const token = getSessionToken();
-	if (!token || isSessionTokenExpired(token)) {
+	// getSessionToken() returns '' when Descope manages the token as an HttpOnly
+	// cookie. Then this does nothing and the SDK's background renewal applies.
+	if (token && isSessionTokenExpired(token)) {
 		await refresh().catch(() => {});
 	}
 }

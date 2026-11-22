@@ -409,7 +409,9 @@ import { getSessionToken, isSessionTokenExpired, refresh } from '@descope/react-
 
 export async function ensureFreshSession() {
   const token = getSessionToken();
-  if (!token || isSessionTokenExpired(token)) {
+  // getSessionToken() returns '' when Descope manages the token as an HttpOnly
+  // cookie. Then this does nothing and the SDK's background renewal applies.
+  if (token && isSessionTokenExpired(token)) {
     await refresh().catch(() => {});
   }
 }
