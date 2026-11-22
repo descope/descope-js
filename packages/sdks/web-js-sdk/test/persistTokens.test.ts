@@ -1093,6 +1093,34 @@ describe('persistTokens', () => {
       expect(removeMock).toHaveBeenCalledWith('DSR', undefined);
     });
 
+    it.each(['logout', 'logoutAll'] as const)(
+      'should send sso logout options, return the sso logout url and clear tokens on %s',
+      async (method) => {
+        localStorage.setItem('DSR', authInfo.refreshJwt);
+        const mockFetch = jest.fn().mockReturnValue(
+          createMockReturnValue({
+            ssoLogoutUrl: 'https://idp.example.com/slo',
+          }),
+        );
+        global.fetch = mockFetch;
+
+        const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+        const res = await sdk[method](authInfo.refreshJwt, {
+          ssoLogout: true,
+          redirectUrl: 'https://app.example.com/signed-out',
+        });
+
+        expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toEqual({
+          ssoLogout: true,
+          redirectUrl: 'https://app.example.com/signed-out',
+        });
+        expect(res.data?.ssoLogoutUrl).toBe('https://idp.example.com/slo');
+        expect(localStorage.getItem('DSR')).toBeFalsy();
+        const removeMock = Cookies.remove as jest.Mock;
+        expect(removeMock).toHaveBeenCalledWith('DSR', undefined);
+      },
+    );
+
     it('should clear refresh token cookie on logout', async () => {
       const mockFetch = jest
         .fn()

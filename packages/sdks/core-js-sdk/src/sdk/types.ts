@@ -172,6 +172,30 @@ export type JWTResponse = {
   externalToken?: string;
 };
 
+/** Options for logout and logoutAll */
+export type LogoutOptions = {
+  /**
+   * Also log the user out of the SSO identity provider, when the session signed in
+   * through an SSO configuration that has single logout turned on.
+   * The response then has `ssoLogoutUrl`.
+   */
+  ssoLogout?: boolean;
+  /**
+   * Where to send the browser after the identity provider logs the user out.
+   * Must be in the project's approved domains. Defaults to the SSO configuration's redirect URL.
+   */
+  redirectUrl?: string;
+};
+
+/** Result of logout and logoutAll */
+export type LogoutResponse = {
+  /**
+   * Set only when `ssoLogout` was requested and there is a logout to do at the identity provider.
+   * Send the browser to this URL to finish it. The Descope session has already ended.
+   */
+  ssoLogoutUrl?: string;
+};
+
 /** Authentication info result from exchanging access keys for a session */
 export type ExchangeAccessKeyResponse = {
   keyId: string;

@@ -110,6 +110,20 @@ if (!res.ok) {
 const sessionToken = sdk.getSessionToken();
 ```
 
+### SSO Single Logout
+
+`logout` and `logoutAll` clear the stored tokens and end the Descope session. When the user signed in through a SAML SSO configuration that has single logout turned on, pass `ssoLogout: true` to also log the user out of the identity provider. If there is a logout to do there, the response has `ssoLogoutUrl`, and the app sends the browser to it. The identity provider then sends the browser back to `redirectUrl`, which must be in the project's approved domains (when empty, the SSO configuration's redirect URL is used).
+
+```js
+const res = await sdk.logout(undefined, {
+  ssoLogout: true,
+  redirectUrl: 'https://app.example.com/signed-out',
+});
+if (res.data?.ssoLogoutUrl) {
+  window.location.href = res.data.ssoLogoutUrl;
+}
+```
+
 ### Usage with OIDC
 
 Descope also supports OIDC login. To enable OIDC login, pass `oidcConfig` attribute to the SDK initialization. The `oidcConfig` attribute is either a boolean or a configuration object. If you pass `oidcConfig: true`, the SDK will use the Descope OIDC default application

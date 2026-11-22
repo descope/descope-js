@@ -40,6 +40,8 @@ export type {
   Claims,
   JWTResponse,
   LoginOptions,
+  LogoutOptions,
+  LogoutResponse,
   PasskeyOptions,
   PhoneEnchantedLinkResponse,
   ResponseData,

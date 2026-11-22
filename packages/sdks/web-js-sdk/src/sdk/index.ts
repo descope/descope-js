@@ -1,4 +1,8 @@
-import createCoreSdk, { SdkResponse } from '@descope/core-js-sdk';
+import createCoreSdk, {
+  LogoutOptions,
+  LogoutResponse,
+  SdkResponse,
+} from '@descope/core-js-sdk';
 import createWebAuthn from './webauthn';
 import createFedCM from './fedcm';
 import withFlow from './flow';
@@ -107,7 +111,10 @@ const createSdk = (config: WebSdkConfig) => {
     },
     // Call the logout function according to the oidcConfig
     // And return the response in the same format
-    logout: async (token?: string): Promise<SdkResponse<never>> => {
+    logout: async (
+      token?: string,
+      options?: LogoutOptions,
+    ): Promise<SdkResponse<LogoutResponse>> => {
       if (config.oidcConfig) {
         // logout is made with id_token_hint
         try {
@@ -123,7 +130,7 @@ const createSdk = (config: WebSdkConfig) => {
           });
         }
       }
-      return coreSdk.logout(token);
+      return coreSdk.logout(token, options);
     },
     flow: withFlow(coreSdk),
     webauthn: createWebAuthn(coreSdk),

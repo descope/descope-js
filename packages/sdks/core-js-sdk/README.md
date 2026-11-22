@@ -24,6 +24,20 @@ const loginId = 'loginId';
 sdk.otp.signIn.email(loginId);
 ```
 
+## SSO Single Logout
+
+`logout` and `logoutAll` take an optional refresh token and options. When the user signed in through a SAML SSO configuration that has single logout turned on, pass `ssoLogout: true` to also log the user out of the identity provider. The Descope session ends either way. If there is a logout to do at the identity provider, the response has `ssoLogoutUrl`: send the browser there. The identity provider then sends the browser back to `redirectUrl`, which must be in the project's approved domains (when empty, the SSO configuration's redirect URL is used).
+
+```js
+const res = await sdk.logout(refreshToken, {
+  ssoLogout: true,
+  redirectUrl: 'https://app.example.com/signed-out',
+});
+if (res.data?.ssoLogoutUrl) {
+  window.location.href = res.data.ssoLogoutUrl;
+}
+```
+
 ## Enchanted Link over SMS
 
 The enchanted link can be delivered by SMS instead of email, using `signInWithPhone`,
