@@ -79,6 +79,10 @@ export const ELEMENTS_TO_IGNORE_ENTER_KEY_ON = [
 
 export const SDK_SCRIPTS_LOAD_TIMEOUT = 5000;
 
+// The script id of the client-signals connector (content repo,
+// connectors/templates/client-signals/metadata.json). Not loaded in preview.
+export const CLIENT_SIGNALS_SCRIPT_ID = 'clientSignals';
+
 // Password manager extensions can leave navigator.credentials.get/create
 // pending for minutes after their prompt is dismissed, with no signal we can
 // observe. Long on purpose, so a slow but genuine passkey is not cut off.

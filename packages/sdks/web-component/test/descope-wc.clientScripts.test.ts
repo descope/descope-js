@@ -456,6 +456,74 @@ describe('web-component', () => {
       );
     });
 
+    describe('preview', () => {
+      const makeModule = () =>
+        jest.fn(() => ({
+          start: jest.fn(),
+          stop: jest.fn(),
+          refresh: jest.fn(),
+        }));
+
+      const renderWithScreenScripts = async (preview: boolean) => {
+        const clientSignals = makeModule();
+        const hcaptcha = makeModule();
+        window.descope = { clientSignals, hcaptcha };
+
+        // no start screen in config, so both scripts arrive only from the
+        // start response's screen.state.clientScripts (no flag seed)
+        startMock.mockReturnValueOnce(
+          generateSdkResponse({
+            screenState: {
+              clientScripts: [
+                { id: 'clientSignals', initArgs: {}, resultKey: 'signals' },
+                {
+                  id: 'hcaptcha',
+                  initArgs: { siteKey: 'SITE_KEY' },
+                  resultKey: 'riskToken',
+                },
+              ],
+            },
+          }),
+        );
+        fixtures.pageContent = '<span>hey</span>';
+
+        document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" ${
+          preview ? 'preview="true"' : ''
+        }></descope-wc>`;
+
+        await waitFor(() => screen.findByShadowText('hey'), {
+          timeout: WAIT_TIMEOUT,
+        });
+        await waitFor(() => expect(hcaptcha).toHaveBeenCalled(), {
+          timeout: WAIT_TIMEOUT,
+        });
+
+        const wc = document.querySelector('descope-wc');
+        return { wc, clientSignals, hcaptcha };
+      };
+
+      it('should not load client signals in preview, but still load other scripts', async () => {
+        const { wc, clientSignals } = await renderWithScreenScripts(true);
+
+        expect(clientSignals).not.toHaveBeenCalled();
+        expect(
+          wc.shadowRoot.querySelector('div[data-script-id="clientSignals"]'),
+        ).toBeNull();
+        expect(
+          wc.shadowRoot.querySelector('div[data-script-id="hcaptcha"]'),
+        ).toBeTruthy();
+      });
+
+      it('should load client signals when not in preview', async () => {
+        const { wc, clientSignals } = await renderWithScreenScripts(false);
+
+        expect(clientSignals).toHaveBeenCalled();
+        expect(
+          wc.shadowRoot.querySelector('div[data-script-id="clientSignals"]'),
+        ).toBeTruthy();
+      });
+    });
+
     it('should load sdk script when flow configured with sdk script', async () => {
       startMock.mockReturnValueOnce(generateSdkResponse());
       const mockForterScript = jest.fn(() => ({
@@ -667,6 +735,58 @@ describe('web-component', () => {
       readyHealthy!();
       await loading;
       expect(settled).toBe(true);
+    });
+
+    it('builds a script once when it is requested again while still downloading', async () => {
+      // The flow config and the first screen both list clientSignals, and the
+      // second request arrives before flow-scripts finished downloading
+      jest
+        .spyOn(document, 'createElement')
+        .mockImplementation((el) => orginalCreateElement.apply(document, [el]));
+      const moduleFn = jest.fn(() => ({
+        id: 'clientSignals',
+        start: jest.fn(),
+        stop: jest.fn(() => false),
+        refresh: jest.fn(),
+      }));
+      window.descope = {};
+      const clientSignals = {
+        id: 'clientSignals',
+        initArgs: {},
+        resultKey: 'signals',
+      };
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: { 'sign-in': { clientScripts: [clientSignals] } },
+      };
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({
+          screenState: { clientScripts: [clientSignals] },
+        }),
+      );
+      fixtures.pageContent = '<span>hey</span>';
+
+      document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+      await waitFor(() => screen.findByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const flowScriptsTags = document.querySelectorAll(
+        'script[id^="npmlib-descope_flow-scripts"]',
+      );
+      window.descope.clientSignals = moduleFn;
+      flowScriptsTags.forEach((tag) => tag.dispatchEvent(new Event('load')));
+
+      await waitFor(() => expect(moduleFn).toHaveBeenCalled(), {
+        timeout: WAIT_TIMEOUT,
+      });
+      const wc = document.querySelector('descope-wc');
+      await waitFor(() =>
+        expect(
+          wc.shadowRoot.querySelectorAll('div[data-script-id="clientSignals"]'),
+        ).toHaveLength(1),
+      );
+      expect(moduleFn).toHaveBeenCalledTimes(1);
     });
 
     it('should skip npm lib injection when script is already available in globalThis.descope', async () => {

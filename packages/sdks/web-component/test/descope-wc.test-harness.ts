@@ -55,6 +55,7 @@ export const defaultOptionsValues = {
   applicationScopes: null,
   outboundAppId: null,
   outboundAppScopes: null,
+  preview: false,
 };
 
 export class MockFileReader {
