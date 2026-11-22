@@ -404,12 +404,14 @@ function SignIn() {
 		if (!isAuthenticated || renewFailed || returning.current) return;
 		returning.current = true;
 		(async () => {
+			// Sent back here seconds after returning the user: the server is rejecting the
+			// renewed session. Show the login flow instead of looping. Measure from page
+			// load, so a slow refresh doesn't hide the loop.
+			const startedAt = Date.now();
+			const last = Number(sessionStorage.getItem(LAST_RETURN_KEY) ?? 0);
 			// The SDK can report a session whose token is still being renewed.
 			await ensureFreshSession();
-			// Sent back here seconds after returning the user: the server is rejecting the
-			// renewed session. Show the login flow instead of looping.
-			const last = Number(sessionStorage.getItem(LAST_RETURN_KEY) ?? 0);
-			if (Date.now() - last < 10_000) {
+			if (startedAt - last < 10_000) {
 				router.replace(
 					`/sign-in?renewFailed=1&next=${encodeURIComponent(next)}`
 				);
