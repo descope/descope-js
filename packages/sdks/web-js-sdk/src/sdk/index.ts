@@ -72,10 +72,13 @@ const createSdk = (config: WebSdkConfig) => {
       // OIDC mode is handled above and bypasses this optimization, since OIDC
       // sessions live under a separate `oidc-client-ts` key and `oidc.refreshToken`
       // performs its own no-session short-circuit.
+      // A refresh token the SDK can read (e.g. refreshTokenViaCookie on a shared
+      // domain) is a session sign too, even with no indicator on this origin.
       if (
         tryRefresh &&
         isInternalStorageAvailable() &&
         !hasLoginIndicator() &&
+        !getRefreshToken() &&
         !getInternalStorage(LOGGED_IN_INDICATOR_DISABLED_KEY)
       ) {
         return Promise.resolve({ ok: true });

@@ -264,7 +264,9 @@ type CustomStorage = {
 
 The SDK maintains a `DSLI` (Descope Session Login Indicator) entry in real `window.localStorage` — always, even when a `customStorage` is provided — that tracks whether this browser has previously had an active authenticated session. On every successful authentication, `DSLI` is written. On logout or an invalid-session response, it is cleared.
 
-When `sdk.refresh()` is called in "try-refresh" mode (i.e. on SDK initialization, to restore a prior session), the SDK skips the network call entirely if neither `DSLI` nor the last-user key (`dls_last_user_login_id`) is present. This eliminates a redundant `/v1/auth/try-refresh` round-trip for anonymous visitors who have never logged in.
+The backend also sets a readable `DSLI` cookie next to the refresh cookie, on the same domain and with the same lifetime, and clears it on logout. Since localStorage is per origin, this cookie is what lets a page on a sibling subdomain (e.g. `www.example.com`) know about a login made on another one (e.g. `app.example.com`) when the refresh cookie is shared across them.
+
+When `sdk.refresh()` is called in "try-refresh" mode (i.e. on SDK initialization, to restore a prior session), the SDK skips the network call entirely if none of these is present: the `DSLI` localStorage entry, the last-user key (`dls_last_user_login_id`), the `DSLI` cookie, or a refresh token the SDK can read (from a non-HttpOnly refresh cookie or localStorage). This eliminates a redundant `/v1/auth/try-refresh` round-trip for anonymous visitors who have never logged in.
 
 > **Note:** If you set `storeLastAuthenticatedUser: false`, `dls_last_user_login_id` is never written. In that case, only `DSLI` is available as the indicator. Existing authenticated users will trigger the refresh as expected once they authenticate with the new SDK version.
 
