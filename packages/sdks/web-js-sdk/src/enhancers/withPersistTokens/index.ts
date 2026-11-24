@@ -52,6 +52,7 @@ export const withPersistTokens =
     // Cache to store the cookie options that were used when setting the cookie
     // This allows us to use the exact same options when removing the cookie
     let lastCookieOptions: LastCookieOptions | undefined;
+    let warnedAboutRefreshTokenStorage = false;
 
     const afterRequest: AfterRequestHook = async (req, res) => {
       if (isInvalidSessionResponse(req, res)) {
@@ -77,6 +78,16 @@ export const withPersistTokens =
           removeLocalStorage(
             `${storagePrefix || ''}${REFRESH_COOKIE_NAME_KEY}`,
           );
+        }
+        if (
+          authInfo.refreshJwt &&
+          !refreshTokenViaCookie &&
+          !warnedAboutRefreshTokenStorage
+        ) {
+          logger.warn(
+            'Refresh tokens stored in localStorage are accessible to JavaScript and can be stolen by an XSS attack. Configure your Descope project to issue HttpOnly refresh cookies to protect them.',
+          );
+          warnedAboutRefreshTokenStorage = true;
         }
 
         const newCookieOptions = persistTokens(
