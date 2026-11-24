@@ -18,6 +18,7 @@ export type AccessKey = {
   clientId: string;
   editable: boolean;
   boundUserId: string;
+  customAttributes?: Record<string, unknown>;
 };
 
 export type SortParams = { field: string; desc: boolean };
@@ -35,6 +36,7 @@ export type CreateAccessKeyConfig = {
   roleNames: string[];
   userId: string;
   permittedIps: string[];
+  customAttributes?: Record<string, unknown>;
 };
 
 export type ActivateAccessKeyConfig = {

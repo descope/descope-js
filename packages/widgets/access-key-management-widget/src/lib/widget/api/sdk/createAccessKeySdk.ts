@@ -75,6 +75,7 @@ export const createAccessKeySdk = ({
     roleNames,
     userId,
     permittedIps,
+    customAttributes,
   }) => {
     const expirationTime = new Date();
     expirationTime.setDate(expirationTime.getDate() + +expiration);
@@ -82,7 +83,7 @@ export const createAccessKeySdk = ({
       expiration[0] === '0' ? 0 : Math.floor(expirationTime.getTime() / 1000);
     if (mock) {
       return accessKey.create(
-        { name, expiration, roleNames, userId, permittedIps },
+        { name, expiration, roleNames, userId, permittedIps, customAttributes },
         expireTime,
       );
     }
@@ -95,6 +96,7 @@ export const createAccessKeySdk = ({
         roleNames,
         userId,
         permittedIps,
+        customAttributes,
       },
       {
         queryParams: { tenant },

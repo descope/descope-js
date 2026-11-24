@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { flatten } from '@descope/sdk-helpers';
 import { State } from './types';
 
 export const getRawAccessKeysList = (state: State) => state.accessKeysList.data;
@@ -13,6 +14,18 @@ export const getAccessKeysList = createSelector(
   (accessKeys) =>
     accessKeys.map((accessKey) => ({
       ...accessKey,
+      // grid columns read `item[path]` (no nested path support), so expose each
+      // custom attribute under a flat `customAttributes.<name>` key.
+      // the grid text column renders `item[path] || ''`, so a `false` boolean
+      // would show as an empty cell - stringify booleans so they stay visible.
+      ...flatten(
+        Object.fromEntries(
+          Object.entries(accessKey?.customAttributes || {}).map(
+            ([key, val]) => [key, typeof val === 'boolean' ? String(val) : val],
+          ),
+        ),
+        'customAttributes',
+      ),
       expireTimeFormatted: !accessKey?.expireTime
         ? 'Never'
         : new Date((accessKey?.expireTime || 0) * 1000).toLocaleString(),

@@ -14,6 +14,7 @@ import { State } from '../src/lib/widget/state/types';
 import '../src/lib/index';
 import rootMock from './mocks/rootMock';
 import createAccessKeyModalMock from './mocks/createAccessKeyModalMock';
+import { buildCreateAccessKeyPayload } from '../src/lib/widget/mixins/initMixin/initComponentsMixins/initCreateAccessKeyModalMixin';
 import createdAccessKeyModalMock from './mocks/createdAccessKeyModalMock';
 import deleteAccessKeyModalMock from './mocks/deleteAccessKeyModalMock';
 import activateAccessKeyModalMock from './mocks/activateAccessKeyModalMock';
@@ -279,6 +280,44 @@ describe('access-key-management-widget', () => {
           },
         ),
       );
+    });
+  });
+
+  describe('custom attributes', () => {
+    it('create sends customAttributes', async () => {
+      const sdk = createSdk({ projectId: mockProjectId }, mockTenant, false);
+      const customAttributes = { team: 'infra', tier: 2 };
+
+      await sdk.accesskey.create({ ...mockNewAccessKey, customAttributes });
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.accesskey.create,
+        expect.objectContaining({ customAttributes }),
+        { queryParams: { tenant: mockTenant } },
+      );
+    });
+
+    it('buildCreateAccessKeyPayload groups prefixed fields and drops empty ones', () => {
+      expect(
+        buildCreateAccessKeyPayload({
+          name: 'key',
+          'customAttributes.team': 'infra',
+          'customAttributes.a.b': 1,
+          'customAttributes.empty': '',
+        }),
+      ).toEqual({
+        name: 'key',
+        customAttributes: { team: 'infra', 'a.b': 1 },
+      });
+    });
+
+    it('buildCreateAccessKeyPayload omits customAttributes when all are empty', () => {
+      expect(
+        buildCreateAccessKeyPayload({
+          name: 'key',
+          'customAttributes.team': '',
+        }),
+      ).toEqual({ name: 'key' });
     });
   });
 
