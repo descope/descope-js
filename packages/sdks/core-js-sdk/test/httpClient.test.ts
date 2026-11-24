@@ -550,7 +550,6 @@ describe('createFetchLogger', () => {
         'Url: http://descope.com/1/2/3',
         'Method: POST',
         'Headers: {"test":"123"}',
-        'Body: reqBody',
       ].join('\n'),
     );
   });
@@ -588,7 +587,6 @@ describe('createFetchLogger', () => {
         'Url: http://descope.com/',
         'Status: 200 OK',
         'Headers: {"header":"header"}',
-        'Body: resBody',
       ].join('\n'),
     );
   });
@@ -626,7 +624,6 @@ describe('createFetchLogger', () => {
         'Url: http://descope.com/',
         'Status: 200 OK',
         'Headers: {"header":"header"}',
-        'Body: resBody',
       ].join('\n'),
     );
   });

@@ -1,6 +1,67 @@
 import { Logger } from '../../sdk/types';
 import { Fetch } from '../types';
 
+const REDACTED = '[REDACTED]';
+const sensitiveHeader =
+  /^(authorization|cookie|set-cookie|x-descope-.*-token)$/i;
+const sensitiveBodyKey =
+  /jwts?$|token|secret|cleartext|password|key|authorization|cookie|^code$/i;
+const sensitiveQueryKey = /^(t|token|code)$/i;
+const jwtValue = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
+
+const redactJson = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(redactJson);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [
+        key,
+        sensitiveBodyKey.test(key) ? REDACTED : redactJson(entry),
+      ]),
+    );
+  }
+  if (typeof value === 'string') {
+    try {
+      return redactJson(JSON.parse(value));
+    } catch {
+      return value;
+    }
+  }
+  return value;
+};
+
+const redactBody = (body: string): string | undefined => {
+  if (!body) return undefined;
+  try {
+    const parsed = JSON.parse(body);
+    if (typeof parsed === 'string') {
+      const nested = JSON.parse(parsed);
+      if (!nested || typeof nested !== 'object') return undefined;
+    } else if (!parsed || typeof parsed !== 'object') {
+      return undefined;
+    }
+    return JSON.stringify(redactJson(parsed));
+  } catch {
+    return undefined;
+  }
+};
+
+const redactUrl = (url: URL | string): string => {
+  try {
+    const parsed = new URL(url.toString());
+    if (parsed.username) parsed.username = REDACTED;
+    if (parsed.password) parsed.password = REDACTED;
+    parsed.hash = '';
+    parsed.searchParams.forEach((value, key) => {
+      if (sensitiveQueryKey.test(key) || jwtValue.test(value)) {
+        parsed.searchParams.set(key, REDACTED);
+      }
+    });
+    return parsed.toString();
+  } catch {
+    return '[INVALID URL]';
+  }
+};
+
 /** Build a log message around HTTP calls  */
 const httpLogBuilder = () => {
   const msg: {
@@ -15,22 +76,21 @@ const httpLogBuilder = () => {
 
   return {
     headers(headers: HeadersInit) {
-      const headersObj =
-        typeof headers.entries === 'function'
-          ? Object.fromEntries(headers.entries())
-          : headers;
-      msg.Headers = JSON.stringify(headersObj);
+      const safeHeaders = Array.from(new Headers(headers).entries()).map(
+        ([key, value]) => [key, sensitiveHeader.test(key) ? REDACTED : value],
+      );
+      msg.Headers = JSON.stringify(Object.fromEntries(safeHeaders));
 
       return this;
     },
 
     body(body: string) {
-      msg.Body = body;
+      msg.Body = redactBody(body);
       return this;
     },
 
     url(url: URL | string) {
-      msg.Url = url.toString();
+      msg.Url = redactUrl(url);
       return this;
     },
 
