@@ -1184,19 +1184,20 @@ class DescopeWc extends BaseDescopeWc {
         }
       } else {
         // the final redirect back to the app ends an OIDC login, so its stored
-        // context goes now. A magic link page keeps its adopted context out of
-        // flow state, so it is passed in separately.
-        clearSsoContextOnAppRedirect(
-          redirectTo,
-          getIdFromExecId(executionId),
-          {
-            ...this.adoptedSsoQueryParams,
-            ...pickSsoQueryParams(ssoQueryParams),
-          },
-          projectId,
-          flowId,
-        );
-        this.handleRedirect(redirectTo);
+        // context goes now, but only once the redirect passed validation. A magic
+        // link page keeps its adopted context out of flow state, so it is passed in separately.
+        if (this.handleRedirect(redirectTo) !== false) {
+          clearSsoContextOnAppRedirect(
+            redirectTo,
+            getIdFromExecId(executionId),
+            {
+              ...this.adoptedSsoQueryParams,
+              ...pickSsoQueryParams(ssoQueryParams),
+            },
+            projectId,
+            flowId,
+          );
+        }
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
         // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
         // while the flow continues to run inside a webview.
@@ -1416,13 +1417,14 @@ class DescopeWc extends BaseDescopeWc {
 
   // this function is used to handle redirects in the web component
   // it can be overridden by the user to handle redirects in a custom way
-  handleRedirect = (redirectTo: string) => {
+  // returns false when the redirect was blocked (custom overrides may return nothing)
+  handleRedirect = (redirectTo: string): boolean | void => {
     let destination: URL;
     try {
       destination = new URL(redirectTo, window.location.href);
     } catch (e) {
       this.loggerWrapper.error('Blocked unsafe redirect URL');
-      return;
+      return false;
     }
 
     if (
@@ -1433,7 +1435,7 @@ class DescopeWc extends BaseDescopeWc {
       !!destination.password
     ) {
       this.loggerWrapper.error('Blocked unsafe redirect URL');
-      return;
+      return false;
     }
 
     let configuredOrigin: string | undefined;
@@ -1461,10 +1463,11 @@ class DescopeWc extends BaseDescopeWc {
       )
     ) {
       this.loggerWrapper.error('Blocked redirect to untrusted origin');
-      return;
+      return false;
     }
 
     window.location.assign(redirectTo);
+    return true;
   };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {

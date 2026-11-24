@@ -23,6 +23,12 @@ import {
   URL_RUN_IDS_PARAM_NAME,
   URL_CODE_PARAM_NAME,
 } from '../src/lib/constants';
+import { clearSsoContextOnAppRedirect } from '../src/lib/helpers/oidcSession';
+
+jest.mock('../src/lib/helpers/oidcSession', () => ({
+  ...jest.requireActual('../src/lib/helpers/oidcSession'),
+  clearSsoContextOnAppRedirect: jest.fn(),
+}));
 
 describe('web-component webauthn', () => {
   beforeEach(() => {
@@ -216,6 +222,51 @@ describe('web-component redirect', () => {
       { timeout: WAIT_TIMEOUT },
     );
     expect(window.location.assign).not.toHaveBeenCalled();
+  });
+
+  it('keeps SSO context when a server redirect is blocked', async () => {
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.redirect,
+        redirectUrl: 'https://evil.example/callback?code=1',
+      }),
+    );
+    const errorSpy = jest.spyOn(console, 'error');
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
+          'Blocked redirect to untrusted origin',
+          '',
+          expect.any(Error),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+    expect(clearSsoContextOnAppRedirect).not.toHaveBeenCalled();
+  });
+
+  it('clears SSO context when a server redirect is allowed', async () => {
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.redirect,
+        redirectUrl: '/welcome?code=123',
+      }),
+    );
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(clearSsoContextOnAppRedirect).toHaveBeenCalledWith(
+          '/welcome?code=123',
+          expect.anything(),
+          expect.anything(),
+          '1',
+          'versioned-flow',
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
   });
 
   it('permits a configured redirect-url origin for the app callback', async () => {
