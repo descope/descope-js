@@ -25,6 +25,19 @@ import {
   getSelectedUsersUserIds,
 } from '../../../state/selectors';
 
+// The flow's End can set `onSuccessRedirectUrl` (same output auth hosting
+// honors). Only http(s) is followed: location.assign runs javascript: URLs
+export const getSuccessRedirectUrl = (e: CustomEvent): string | null => {
+  const url = e?.detail?.flowOutput?.onSuccessRedirectUrl;
+  if (typeof url !== 'string' || !url) return null;
+  try {
+    const { protocol } = new URL(url, window.location.href);
+    return protocol === 'https:' || protocol === 'http:' ? url : null;
+  } catch {
+    return null;
+  }
+};
+
 export const initGenericFlowButtonMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
     class InitGenericFlowButtonMixinClass extends compose(
@@ -105,6 +118,10 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
           this.createFlowTemplate({
             flowId,
             lazyStart: false,
+            // a button flow acts on the selected users, not on the admin, so
+            // a session it returns (e.g. impersonation) must not replace theirs
+            persistTokens: false,
+            storeLastAuthenticatedUser: false,
             client: {
               userIds: getSelectedUsersUserIds(this.state),
               loginIds: getSelectedUsersAllIds(this.state),
@@ -114,8 +131,13 @@ export const initGenericFlowButtonMixin = createSingletonMixin(
           }),
         );
         this.#openModalIfNeeded(this.#modal, this.#modalCallback);
-        this.#flow.onSuccess(() => {
+        this.#flow.onSuccess((e: CustomEvent) => {
           this.#modal.close();
+          const redirectUrl = getSuccessRedirectUrl(e);
+          if (redirectUrl) {
+            window.location.assign(redirectUrl);
+            return;
+          }
           this.actions.searchUsers();
         });
       }

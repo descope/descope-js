@@ -17,7 +17,10 @@ interface ComponentsConditionsHost {
 // narrowed to this so no web-js-sdk/core-js-sdk type leaks into the widget's
 // public sdk surface. Declared last (with the mixin) to satisfy import/exports-last.
 export interface ConditionsHttpClient {
-  get: (path: string) => Promise<Response>;
+  get: (
+    path: string,
+    config?: { queryParams?: Record<string, string> },
+  ) => Promise<Response>;
 }
 
 /**
@@ -59,7 +62,13 @@ export const componentsConditionsMixin = createSingletonMixin(
         httpClient: ConditionsHttpClient,
       ): Promise<ComponentsState> {
         try {
-          const res = await httpClient.get(COMPONENTS_STATE_PATH);
+          // the widget's tenant, so tenant-scoped keys (user.tenant.permissions)
+          // evaluate in it - same query param as the widget's other mgmt calls
+          const tenant = this.getAttribute('tenant');
+          const res = await httpClient.get(
+            COMPONENTS_STATE_PATH,
+            tenant ? { queryParams: { tenant } } : undefined,
+          );
           if (!res?.ok) return {};
           const body = await res.json();
           return body?.componentsState ?? {};

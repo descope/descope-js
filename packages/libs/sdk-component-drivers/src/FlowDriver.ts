@@ -29,7 +29,7 @@ export class FlowDriver extends BaseDriver {
     (this.ele as any)?.start?.();
   }
 
-  onSuccess(cb: () => void) {
+  onSuccess(cb: (e: CustomEvent) => void) {
     this.ele?.addEventListener('success', cb);
 
     return () => this.ele?.removeEventListener('success', cb);
