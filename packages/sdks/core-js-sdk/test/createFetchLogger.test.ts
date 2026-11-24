@@ -56,9 +56,9 @@ it('redacts request and response secrets without changing the fetch exchange', a
   const requestLog = logger.log.mock.calls[0][0];
   const responseLog = logger.log.mock.calls[1][0];
   expect(requestLog).toContain('safe=yes');
-  expect(requestLog).toContain('t=%5BREDACTED%5D');
-  expect(requestLog).toContain('token=%5BREDACTED%5D');
-  expect(requestLog).toContain('jwt=%5BREDACTED%5D');
+  expect(requestLog).toContain('t=[REDACTED]');
+  expect(requestLog).toContain('token=[REDACTED]');
+  expect(requestLog).toContain('jwt=[REDACTED]');
   expect(requestLog).toContain('"authorization":"[REDACTED]"');
   expect(requestLog).toContain('"cookie":"[REDACTED]"');
   expect(requestLog).toContain('"x-descope-refresh-token":"[REDACTED]"');
@@ -66,7 +66,7 @@ it('redacts request and response secrets without changing the fetch exchange', a
   expect(requestLog).toContain(
     '"config":{"cleartext":"[REDACTED]","code":"[REDACTED]"}',
   );
-  expect(responseLog).toContain('code=%5BREDACTED%5D');
+  expect(responseLog).toContain('code=[REDACTED]');
   expect(responseLog).toContain('"set-cookie":"[REDACTED]"');
   expect(responseLog).toContain('"statusCode":200');
   for (const log of [requestLog, responseLog]) {
@@ -125,4 +125,56 @@ it('omits unparseable request and response bodies', async () => {
   expect(logger.log.mock.calls[0][0]).not.toContain('unparseable-request');
   expect(logger.error.mock.calls[0][0]).toContain('Status: 400');
   expect(logger.error.mock.calls[0][0]).not.toContain('unparseable-response');
+});
+
+it('redacts pendingRef and keeps scalar JSON strings as sent', async () => {
+  const logger = createLogger();
+  const body = JSON.stringify({
+    pendingRef: 'pending-value',
+    loginId: '123',
+    enabled: 'false',
+  });
+  const response = new Response(body);
+  Object.defineProperty(response, 'url', { value: 'https://api.descope.com/' });
+  const loggedFetch = createFetchLogger(
+    logger,
+    jest.fn().mockResolvedValue(response),
+  );
+
+  await loggedFetch('https://api.descope.com/', { method: 'POST', body });
+
+  for (const log of logger.log.mock.calls.map(([message]) => message)) {
+    expect(log).toContain('"pendingRef":"[REDACTED]"');
+    expect(log).toContain('"loginId":"123"');
+    expect(log).toContain('"enabled":"false"');
+    expect(log).not.toContain('pending-value');
+  }
+});
+
+it('redacts URLs without relying on the URL API (React Native)', async () => {
+  const logger = createLogger();
+  const response = new Response('{}');
+  Object.defineProperty(response, 'url', { value: 'https://api.descope.com/' });
+  const loggedFetch = createFetchLogger(
+    logger,
+    jest.fn().mockResolvedValue(response),
+  );
+  const OriginalURL = global.URL;
+  global.URL = function () {
+    throw new Error('not implemented');
+  } as unknown as typeof URL;
+  try {
+    await loggedFetch(
+      'https://user:pass@api.descope.com/v1/auth?code=otp-value&safe=yes#frag',
+      { method: 'GET' },
+    );
+  } finally {
+    global.URL = OriginalURL;
+  }
+
+  const requestLog = logger.log.mock.calls[0][0];
+  expect(requestLog).toContain(
+    'https://[REDACTED]@api.descope.com/v1/auth?code=[REDACTED]&safe=yes',
+  );
+  expect(requestLog).not.toMatch(/user|pass|otp-value|frag/);
 });

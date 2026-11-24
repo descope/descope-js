@@ -5,7 +5,7 @@ const REDACTED = '[REDACTED]';
 const sensitiveHeader =
   /^(authorization|cookie|set-cookie|x-descope-.*-token)$/i;
 const sensitiveBodyKey =
-  /jwts?$|token|secret|cleartext|password|key|authorization|cookie|^code$/i;
+  /jwts?$|token|secret|cleartext|password|key|authorization|cookie|pendingref|^code$/i;
 const sensitiveQueryKey = /^(t|token|code)$/i;
 const jwtValue = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
 
@@ -21,7 +21,8 @@ const redactJson = (value: unknown): unknown => {
   }
   if (typeof value === 'string') {
     try {
-      return redactJson(JSON.parse(value));
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' ? redactJson(parsed) : value;
     } catch {
       return value;
     }
@@ -44,23 +45,17 @@ const redactBody = (body: string): string | undefined => {
     return undefined;
   }
 };
-
-const redactUrl = (url: URL | string): string => {
-  try {
-    const parsed = new URL(url.toString());
-    if (parsed.username) parsed.username = REDACTED;
-    if (parsed.password) parsed.password = REDACTED;
-    parsed.hash = '';
-    parsed.searchParams.forEach((value, key) => {
-      if (sensitiveQueryKey.test(key) || jwtValue.test(value)) {
-        parsed.searchParams.set(key, REDACTED);
-      }
-    });
-    return parsed.toString();
-  } catch {
-    return '[INVALID URL]';
-  }
-};
+// String-based on purpose: React Native's URL lacks most fields/mutators (see urlBuilder)
+const redactUrl = (url: URL | string): string =>
+  url
+    .toString()
+    .replace(/#.*$/, '')
+    .replace(/^([a-z][a-z0-9+.-]*:\/\/)[^/?@]*@/i, `$1${REDACTED}@`)
+    .replace(/([?&])([^=&]*)=([^&]*)/g, (match, sep, key, value) =>
+      sensitiveQueryKey.test(key) || jwtValue.test(value)
+        ? `${sep}${key}=${REDACTED}`
+        : match,
+    );
 
 /** Build a log message around HTTP calls  */
 const httpLogBuilder = () => {
