@@ -300,9 +300,8 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
       this.webComponent.errorTransformer = this.errorTransformer;
     }
 
-    if (this.allowedRedirectOrigins) {
-      this.webComponent.allowedRedirectOrigins = this.allowedRedirectOrigins;
-    }
+    this.webComponent.allowedRedirectOrigins =
+      this.allowedRedirectOrigins ?? [];
 
     if (this.onScreenUpdate) {
       this.webComponent.onScreenUpdate = this.onScreenUpdate;

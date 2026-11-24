@@ -134,6 +134,18 @@ describe('DescopeComponent', () => {
     expect(webComponent.allowedRedirectOrigins).toBe(allowedRedirectOrigins);
   });
 
+  it('clears allowed redirect origins when the input is removed', () => {
+    fixture.componentRef.setInput('allowedRedirectOrigins', [
+      'https://a.example'
+    ]);
+    fixture.detectChanges();
+    fixture.componentRef.setInput('allowedRedirectOrigins', undefined);
+    fixture.detectChanges();
+
+    const webComponent = fixture.nativeElement.querySelector('descope-wc');
+    expect(webComponent.allowedRedirectOrigins).toEqual([]);
+  });
+
   it('should emit success when web component emits success', async () => {
     const html: HTMLElement = fixture.nativeElement;
     const webComponentHtml = html.querySelector('descope-wc')!;

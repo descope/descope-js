@@ -138,14 +138,14 @@ describe('web-component', () => {
       expect(wc.shouldUsePopupPostMessage()).toBe(false);
     });
 
-    it('shouldUsePopupPostMessage returns true for valid different origin', async () => {
+    it('shouldUsePopupPostMessage returns false for a different origin', async () => {
       fixtures.pageContent = '<div>Loaded popup test</div>';
       document.body.innerHTML = `<descope-wc flow-id="otpSignInEmail" project-id="1" popup-origin="https://example.com"></descope-wc>`;
       const wc: any = document.querySelector('descope-wc');
       await waitFor(() => screen.getByShadowText('Loaded popup test'), {
         timeout: WAIT_TIMEOUT,
       });
-      expect(wc.shouldUsePopupPostMessage()).toBe(true);
+      expect(wc.shouldUsePopupPostMessage()).toBe(false);
     });
 
     it('notifyOpener uses BroadcastChannel when window.name not set', async () => {

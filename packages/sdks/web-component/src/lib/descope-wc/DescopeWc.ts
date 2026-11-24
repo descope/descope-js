@@ -2575,12 +2575,18 @@ class DescopeWc extends BaseDescopeWc {
   // Determine if we should use postMessage fallback (popup-origin attribute exists)
   protected shouldUsePopupPostMessage(): boolean {
     if (!this.popupOrigin) return false;
+    let origin: string;
     try {
-      // validate origin format
-      // eslint-disable-next-line no-new
-      new URL(this.popupOrigin);
+      origin = new URL(this.popupOrigin).origin;
     } catch {
       return false; // malformed origin -> ignore
+    }
+    if (origin !== window.location.origin) {
+      this.loggerWrapper.warn(
+        'Cross-origin popup-origin is not supported; host the popup redirect page on this origin',
+        this.popupOrigin,
+      );
+      return false;
     }
     return true;
   }
