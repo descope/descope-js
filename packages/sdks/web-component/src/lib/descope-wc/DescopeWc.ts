@@ -130,6 +130,10 @@ class DescopeWc extends BaseDescopeWc {
     ref: typeof this,
   ) => boolean | Promise<boolean>;
 
+  // Additional destinations explicitly trusted by the application. Entries must
+  // be full origins (for example, https://accounts.example.com), not URL paths.
+  allowedRedirectOrigins: string[] = [];
+
   #sdkScriptsLoading = null;
 
   constructor() {
@@ -1412,8 +1416,54 @@ class DescopeWc extends BaseDescopeWc {
 
   // this function is used to handle redirects in the web component
   // it can be overridden by the user to handle redirects in a custom way
-  // eslint-disable-next-line class-methods-use-this
   handleRedirect = (redirectTo: string) => {
+    let destination: URL;
+    try {
+      destination = new URL(redirectTo, window.location.href);
+    } catch (e) {
+      this.loggerWrapper.error('Blocked unsafe redirect URL');
+      return;
+    }
+
+    if (
+      (destination.protocol !== 'https:' && destination.protocol !== 'http:') ||
+      (window.location.protocol === 'https:' &&
+        destination.protocol !== 'https:') ||
+      !!destination.username ||
+      !!destination.password
+    ) {
+      this.loggerWrapper.error('Blocked unsafe redirect URL');
+      return;
+    }
+
+    let configuredOrigin: string | undefined;
+    try {
+      const configuredRedirect = this.redirectUrl;
+      if (configuredRedirect) {
+        const url = new URL(configuredRedirect, window.location.href);
+        if (
+          (url.protocol === 'https:' || url.protocol === 'http:') &&
+          !url.username &&
+          !url.password
+        ) {
+          configuredOrigin = url.origin;
+        }
+      }
+    } catch (e) {
+      // Ignore an invalid redirect-url; same-origin navigation remains safe.
+    }
+    if (
+      destination.origin !== window.location.origin &&
+      destination.origin !== configuredOrigin &&
+      !(
+        Array.isArray(this.allowedRedirectOrigins) &&
+        this.allowedRedirectOrigins.includes(destination.origin)
+      )
+    ) {
+      this.loggerWrapper.error('Blocked redirect to untrusted origin');
+      return;
+    }
+
     window.location.assign(redirectTo);
   };
 
@@ -2544,14 +2594,14 @@ class DescopeWc extends BaseDescopeWc {
       : undefined;
     if (requestsPostMessage && !targetOrigin) {
       this.loggerWrapper.warn(
-        'Popup opener origin is not approved for this project, add it to the approved domains to send the OAuth result to it',
+        'Cross-origin popup postMessage is not supported; host the popup redirect page on the opener origin',
         openerOrigin,
       );
     }
 
     const message = { data: { code, exchangeError }, action: 'code' };
 
-    // PostMessage fallback path (for cross-origin popups)
+    // postMessage fallback only targets a same-origin opener.
     if (targetOrigin) {
       this.loggerWrapper.debug(
         'Using postMessage fallback to notify opener in origin',
@@ -2564,7 +2614,7 @@ class DescopeWc extends BaseDescopeWc {
           'Failed to send postMessage fallback (likely COOP isolation)',
           (err as any)?.message,
         );
-        // If blocked by COOP, we cannot communicate cross-origin; log & abort silently
+        // If blocked by COOP, log and leave the fallback channel untouched.
       }
     } else {
       // BroadcastChannel path (original behavior)

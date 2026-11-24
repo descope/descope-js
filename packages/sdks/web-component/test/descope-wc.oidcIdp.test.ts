@@ -1322,7 +1322,7 @@ describe('web-component', () => {
           }),
         );
         openNewTab(magicLinkUrl());
-        mount();
+        document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1" redirect-url="http://localhost:3000/callback"></descope-wc>`;
         await waitFor(
           () =>
             expect(window.location.assign).toHaveBeenCalledWith(
@@ -1345,7 +1345,7 @@ describe('web-component', () => {
           }),
         );
         window.location.search = oidcUrl;
-        mount();
+        document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1" redirect-url="http://localhost:3000/callback"></descope-wc>`;
         await waitFor(
           () =>
             expect(window.location.assign).toHaveBeenCalledWith(
@@ -1371,7 +1371,10 @@ describe('web-component', () => {
           }),
         );
         openNewTab(magicLinkUrl());
-        mount();
+        document.body.innerHTML = `<descope-wc flow-id="sign-in" project-id="1"></descope-wc>`;
+        document.querySelector('descope-wc').allowedRedirectOrigins = [
+          'https://accounts.google.com',
+        ];
         await waitFor(
           () =>
             expect(window.location.assign).toHaveBeenCalledWith(
