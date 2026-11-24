@@ -23,6 +23,7 @@ export class SignUpOrInFlowComponent {
   @Input() tenant: string;
   @Input() telemetryKey: string;
   @Input() redirectUrl: string;
+  @Input() allowedRedirectOrigins: string[];
   @Input() autoFocus: true | false | 'skipFirstScreen';
   @Input() validateOnBlur: boolean;
   @Input() restartOnError: boolean;
