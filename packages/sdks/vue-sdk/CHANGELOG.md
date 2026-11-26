@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.3.0](https://github.com/descope/descope-js/compare/vue-sdk-3.2.6...vue-sdk-3.3.0) (2026-11-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.20`
+* `audit-management-widget` updated to version `0.9.20`
+* `role-management-widget` updated to version `0.10.20`
+* `user-management-widget` updated to version `0.21.18`
+* `user-profile-widget` updated to version `0.21.7`
+* `applications-portal-widget` updated to version `0.9.20`
+* `web-component` updated to version `4.8.0`
+* `web-js-sdk` updated to version `1.55.0`
+* `core-js-sdk` updated to version `2.79.0`
+
+### Features
+
+* **sdks:** add SSO single logout options to logout and logoutAll RELEASE ([#1568](https://github.com/descope/descope-js/issues/1568)) ([63b6e5b](https://github.com/descope/descope-js/commit/63b6e5b6e9abd03bfb38cad675b147f8e843b5f1))
+
 ## [3.2.6](https://github.com/descope/descope-js/compare/vue-sdk-3.2.5...vue-sdk-3.2.6) (2026-11-17)
 
 ### Dependency Updates
