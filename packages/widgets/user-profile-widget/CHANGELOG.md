@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.21.7](https://github.com/descope/descope-js/compare/user-profile-widget-0.21.6...user-profile-widget-0.21.7) (2026-11-26)
+
+### Dependency Updates
+
+* `core-js-sdk` updated to version `2.79.0`
+* `web-js-sdk` updated to version `1.55.0`
+* `web-component` updated to version `4.8.0`
+
+### Bug Fixes
+
+* **user-profile-widget:** keep flows in modal under native bridge ([#1566](https://github.com/descope/descope-js/issues/1566)) RELEASE ([c49c97a](https://github.com/descope/descope-js/commit/c49c97ab8a83e70dd9e525b80d8e8d8ef206b4f9))
+
 ## [0.21.6](https://github.com/descope/descope-js/compare/user-profile-widget-0.21.5...user-profile-widget-0.21.6) (2026-11-17)
 
 ### Dependency Updates
