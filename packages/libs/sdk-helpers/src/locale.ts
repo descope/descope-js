@@ -1,3 +1,8 @@
+// The language flows and widgets are written in. It is not part of their targetLocales, since its
+// content is the default (not translated) content. Update it if a different source language is
+// ever supported.
+const SOURCE_LANGUAGE = 'en';
+
 export type Locale = {
   locale: string;
   fallback: string;
@@ -70,7 +75,10 @@ export function getUserLocaleCandidates(locale: string): string[] {
 
 /**
  * Picks the most preferred candidate that is in `availableLocales` (case-insensitive).
- * When none is available, returns the most preferred candidate with `available: false`, so callers
+ * When the source language has no translation in `availableLocales`, a candidate in it (e.g. 'en',
+ * 'en-us') also matches, as its content is the default content, so it is returned with
+ * `available: false`.
+ * When none matches, returns the most preferred candidate with `available: false`, so callers
  * still report the user's locale (e.g. to the server) while rendering the default content.
  */
 export function resolveUserLocale(
@@ -79,9 +87,15 @@ export function resolveUserLocale(
 ): ResolvedLocale {
   const available = (availableLocales ?? []).map((l) => l.toLowerCase());
   const candidates = getUserLocaleCandidates(locale);
-  const match = candidates.find((c) => available.includes(c));
+  const isSourceLanguage = (l: string) => l.split('-')[0] === SOURCE_LANGUAGE;
+  // when the source language also has a translation, match it like any other target locale
+  const matchSourceLanguage = !available.some(isSourceLanguage);
+  const match = candidates.find(
+    (c) =>
+      available.includes(c) || (matchSourceLanguage && isSourceLanguage(c)),
+  );
   if (match) {
-    return { locale: match, available: true };
+    return { locale: match, available: available.includes(match) };
   }
   return { locale: candidates[0] ?? '', available: false };
 }

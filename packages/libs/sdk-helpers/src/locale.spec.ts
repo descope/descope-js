@@ -103,6 +103,28 @@ describe('resolveUserLocale', () => {
     });
   });
 
+  it('matches the source language (en), which is not a target locale, as unavailable', () => {
+    expect(resolveUserLocale('en,fr', ['fr'])).toEqual({
+      locale: 'en',
+      available: false,
+    });
+    expect(resolveUserLocale('de,en-US,fr', ['fr'])).toEqual({
+      locale: 'en-us',
+      available: false,
+    });
+  });
+
+  it('matches the source language like any target locale when it has a translation', () => {
+    expect(resolveUserLocale('en,fr', ['fr', 'en'])).toEqual({
+      locale: 'en',
+      available: true,
+    });
+    expect(resolveUserLocale('en-US,fr', ['fr', 'en'])).toEqual({
+      locale: 'fr',
+      available: true,
+    });
+  });
+
   it('returns the most preferred entry as unavailable when none is available', () => {
     expect(resolveUserLocale('pt-BR,it', ['de'])).toEqual({
       locale: 'pt-br',

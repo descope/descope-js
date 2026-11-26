@@ -75,6 +75,12 @@ describe('localeMixin', () => {
       ).toBe('fr-ca');
     });
 
+    it('returns empty string (default content) when the source language comes before an available locale', () => {
+      expect(
+        createLocaleMixin({ locale: 'en,fr' }).firstAvailableLocale(['fr']),
+      ).toBe('');
+    });
+
     it('returns empty string when no candidate is available', () => {
       expect(
         createLocaleMixin({ locale: 'de' }).firstAvailableLocale(['es', 'fr']),

@@ -600,21 +600,6 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  // resolve the provided locale (a single locale or a preference list), otherwise the browser locale, against the flow target locales
-  async resolveLocale(locale: string) {
-    return resolveUserLocale(locale, await this.getTargetLocales());
-  }
-
-  async getHtmlFilenameWithLocale(locale: string, screenId: string) {
-    let filenameWithLocale: string;
-    const userLocale = await this.resolveLocale(locale);
-
-    if (userLocale.available) {
-      filenameWithLocale = `${screenId}-${userLocale.locale}.html`;
-    }
-    return filenameWithLocale;
-  }
-
   async getPageContent(htmlFilename: string, htmlLocaleFilename: string) {
     if (htmlLocaleFilename) {
       // try first locale url, if can't get for some reason, fallback to the original html url (the one without locale)
@@ -856,10 +841,15 @@ class DescopeWc extends BaseDescopeWc {
     const flowConfig = await this.getFlowConfig();
     this.#syncValidationTracking(flowConfig, executionId, isChanged);
     const projectConfig = await this.getProjectConfig();
+    // resolve the provided locale (a single locale or a preference list), otherwise the browser locale, against the flow target locales
+    const resolvedLocale = resolveUserLocale(
+      locale,
+      await this.getTargetLocales(),
+    );
     // the locale reported to the server and to the screen: the entry picked from the provided locale preference list,
     // otherwise the full browser locale (keeping its region even when only its language part is a target locale)
     const userLocale = parseLocales(locale).length
-      ? (await this.resolveLocale(locale)).locale
+      ? resolvedLocale.locale
       : getUserLocale(locale).locale;
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow
@@ -1293,10 +1283,9 @@ class DescopeWc extends BaseDescopeWc {
     const readyScreenId = startScreenId || screenId;
 
     // get the right filename according to the user locale and flow target locales
-    const filenameWithLocale: string = await this.getHtmlFilenameWithLocale(
-      locale,
-      readyScreenId,
-    );
+    const filenameWithLocale = resolvedLocale.available
+      ? `${readyScreenId}-${resolvedLocale.locale}.html`
+      : undefined;
 
     const {
       oidcLoginHint,
