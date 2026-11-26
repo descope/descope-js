@@ -146,7 +146,7 @@ The popup's redirect page must be on the same origin as the opener to send the O
 | keep-last-authenticated-user-after-logout | **"true"** - Do not clear the last authenticated user details from the browser storage after logout</br>**"false"** - Clear the last authenticated user details from the browser storage after logout                                      | **"false"**   |
 | style-id                                  | **"String"** - Set a specific style to load rather then the default style                                                                                                                                                                  | **""**        |
 | nonce                                     | **"String"** - Set a CSP nonce that will be used for style and script tags. Works with SRI for enhanced security                                                                                                                           | **""**        |
-| popup-origin                              | **"String"** - Enables the popup `postMessage` fallback for an OAuth popup callback hosted on the opener's origin; cross-origin callbacks cannot send results this way                                                                | **""**        |
+| popup-origin                              | **"String"** - Enables the popup `postMessage` fallback for an OAuth popup callback hosted on the opener's origin; cross-origin callbacks cannot send results this way                                                                     | **""**        |
 | dismiss-screen-error-on-input             | **"true"** - Clear screen error message on user input </br> **"false"** - Do not clear screen error message on user input                                                                                                                  | **"false"**   |
 | outbound-app-id                           | **"String"** - Outbound application ID to use for connecting to external services                                                                                                                                                          | **""**        |
 | outbound-app-scopes                       | **"String[]"** - JSON array of scopes to request from the outbound application (e.g., '["email", "profile"]')                                                                                                                              | **null**      |
@@ -155,17 +155,14 @@ The popup's redirect page must be on the same origin as the opener to send the O
 
 ### Redirect destinations
 
-By default, the web component follows server-provided **non-popup** redirects only to HTTP(S) URLs on the current page's origin. It rejects script/data URLs, protocol-relative URLs to other origins, and HTTPS-to-HTTP downgrades. A configured `redirect-url` attribute also permits redirects to that URL's origin (for example, an app callback on a separate origin). If a flow sends the browser to an external OAuth/SSO provider or a different app origin, explicitly set the component's `allowedRedirectOrigins` property to those exact origins **before starting the flow**:
+The web component always rejects server-provided **non-popup** redirects to non-HTTP(S) URLs (such as script/data URLs) and URLs with embedded credentials. To also restrict redirect origins, opt in by setting the component's `allowedRedirectOrigins` property **before starting the flow**. Once set, redirects may only go to the listed origins, the current page's origin, or the origin of a configured `redirect-url` attribute, and HTTPS-to-HTTP downgrades are rejected:
 
 ```js
 const descopeWcEle = document.querySelector('descope-wc');
-descopeWcEle.allowedRedirectOrigins = [
-  'https://accounts.example.com',
-  'https://app.example.com',
-];
+descopeWcEle.allowedRedirectOrigins = ['https://accounts.example.com', 'https://app.example.com'];
 ```
 
-Entries must include scheme and host (and port if applicable), without paths or trailing slashes. This setting applies to full-page redirects, not OAuth popups. Cross-origin redirects that previously worked without configuration now require an explicit trusted origin; do not derive allowed origins from untrusted URL parameters or the server redirect response.
+Entries must include scheme and host (and port if applicable), without paths or trailing slashes. This setting applies to full-page redirects, not OAuth popups. When enabled, include every external OAuth/SSO provider and app origin your flows redirect to; do not derive allowed origins from untrusted URL parameters or the server redirect response.
 
 ### `errorTransformer` - A function that receives an error object and returns a string. The returned string will be displayed to the user.
 
