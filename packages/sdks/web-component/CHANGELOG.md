@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [4.8.0](https://github.com/descope/descope-js/compare/web-component-4.7.5...web-component-4.8.0) (2026-11-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.55.0`
+
+### Features
+
+* **web-component:** skip client signals in preview and load each script once RELEASE ([#1569](https://github.com/descope/descope-js/issues/1569)) ([6cd3c71](https://github.com/descope/descope-js/commit/6cd3c7132c2649333fc629cbe977133f33bd3d30))
+
 ## [4.7.5](https://github.com/descope/descope-js/compare/web-component-4.7.4...web-component-4.7.5) (2026-11-17)
 
 ### Dependency Updates
