@@ -1,15 +1,22 @@
-import { createSingletonMixin, getUserLocale } from '@descope/sdk-helpers';
+import {
+  createSingletonMixin,
+  getUserLocaleCandidates,
+  resolveUserLocale,
+} from '@descope/sdk-helpers';
 
 /**
  * Exposes the widget's locale to mixins that need it (HTML fetching, flow propagation).
  * Mirrors web-component's BaseDescopeWc locale handling:
  *  - `locale` getter returns the raw attribute value, defaulting to '' when unset (like themeMixin's
  *    theme/styleId), so callers can pass it straight to setAttribute without emitting "undefined".
- *  - `localeCandidates` returns the lowercased locales to try, most-specific first: the resolved
- *    locale and then its language-only fallback (e.g. 'en-us' then 'en'), matching the
- *    web-component's getHtmlFilenameWithLocale probe order. Falls back to navigator.language.
- *  - `firstAvailableLocale(availableLocales)` returns the most-specific candidate that the consumer
- *    actually publishes (e.g. a widget's config.json targetLocales), or '' when none match.
+ *  - `localeCandidates` returns the lowercased locales to try, most preferred first: every entry of
+ *    the attribute (a single locale or a comma-separated list, e.g. 'fr-CA,fr,en'), or, when it is
+ *    unset, navigator.language and its language-only fallback (e.g. 'en-us' then 'en'), matching
+ *    the web-component's locale resolution (`resolveUserLocale`).
+ *  - `firstAvailableLocale(availableLocales)` returns the most preferred locale that the consumer
+ *    actually publishes (e.g. a widget's config.json targetLocales), which for a list entry can be
+ *    its language part (e.g. 'fr' for 'fr-CA'), or '' when none match or the source language
+ *    (default content) is preferred.
  */
 export const localeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>
@@ -19,14 +26,15 @@ export const localeMixin = createSingletonMixin(
       }
 
       get localeCandidates(): string[] {
-        const { locale, fallback } = getUserLocale(this.locale);
-        return [...new Set([locale, fallback].filter(Boolean))];
+        return getUserLocaleCandidates(this.locale);
       }
 
       firstAvailableLocale(availableLocales: string[]): string {
-        const available = (availableLocales ?? []).map((l) => l.toLowerCase());
-        // localeCandidates are already lowercased, most-specific first.
-        return this.localeCandidates.find((c) => available.includes(c)) ?? '';
+        const { locale, available } = resolveUserLocale(
+          this.locale,
+          availableLocales,
+        );
+        return available ? locale : '';
       }
     },
 );

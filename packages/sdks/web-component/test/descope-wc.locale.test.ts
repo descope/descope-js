@@ -207,6 +207,9 @@ describe('web-component', () => {
         expect.any(Object),
       );
 
+      // the browser locale keeps its region even when only its language part is a target locale
+      expect(startMock.mock.calls[0][1].locale).toBe('en-us');
+
       Object.defineProperty(navigator, 'language', {
         value: '',
         writable: true,
@@ -443,6 +446,144 @@ describe('web-component', () => {
         value: '',
         writable: true,
       });
+    });
+
+    it('should pick the first locale of a preference list that is part of the target locales', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['FR', 'en'],
+          },
+        },
+      };
+
+      fixtures.pageContent =
+        '<input id="email"></input><span lang="autoDetect">It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="de-AT, fr ,en"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const fetchedUrls = fetchMock.mock.calls.map(([url]) => url);
+      expect(fetchedUrls).toContainEqual(
+        expect.stringMatching(
+          new RegExp(`//[^/]+/pages/1/${ASSETS_FOLDER}/0-fr.html$`),
+        ),
+      );
+      expect(fetchedUrls).not.toContainEqual(
+        expect.stringMatching(/0-(de-at|de|en)\.html$/),
+      );
+      expect(startMock.mock.calls[0][1].locale).toBe('fr');
+      expect(screen.getByShadowText('It works!')).toHaveAttribute('lang', 'fr');
+    });
+
+    it('should use the language part of a preference list entry and report the entry itself', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['fr', 'en'],
+          },
+        },
+      };
+
+      fixtures.pageContent =
+        '<input id="email"></input><span lang="autoDetect">It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="fr-CA en"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const fetchedUrls = fetchMock.mock.calls.map(([url]) => url);
+      expect(fetchedUrls).toContainEqual(
+        expect.stringMatching(
+          new RegExp(`//[^/]+/pages/1/${ASSETS_FOLDER}/0-fr.html$`),
+        ),
+      );
+      expect(fetchedUrls).not.toContainEqual(
+        expect.stringMatching(/0-(fr-ca|en)\.html$/),
+      );
+      expect(startMock.mock.calls[0][1].locale).toBe('fr-ca');
+      expect(screen.getByShadowText('It works!')).toHaveAttribute(
+        'lang',
+        'fr-CA',
+      );
+    });
+
+    it('should report the first locale of a preference list and fetch the default page when none is part of the target locales', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['de'],
+          },
+        },
+      };
+
+      fixtures.pageContent = '<input id="email"></input><span>It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="pt-BR,it"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const fetchedUrls = fetchMock.mock.calls.map(([url]) => url);
+      expect(fetchedUrls).toContainEqual(
+        expect.stringMatching(
+          new RegExp(`//[^/]+/pages/1/${ASSETS_FOLDER}/0.html$`),
+        ),
+      );
+      expect(fetchedUrls).not.toContainEqual(
+        expect.stringMatching(/0-[a-z-]+\.html$/),
+      );
+      expect(startMock.mock.calls[0][1].locale).toBe('pt-br');
+    });
+
+    it('should show the default page when the source language comes first in a preference list', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      // the source language (en) is not part of the target locales
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['fr'],
+          },
+        },
+      };
+
+      fixtures.pageContent =
+        '<input id="email"></input><span lang="autoDetect">It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="en,fr"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const fetchedUrls = fetchMock.mock.calls.map(([url]) => url);
+      expect(fetchedUrls).toContainEqual(
+        expect.stringMatching(
+          new RegExp(`//[^/]+/pages/1/${ASSETS_FOLDER}/0.html$`),
+        ),
+      );
+      expect(fetchedUrls).not.toContainEqual(
+        expect.stringMatching(/0-[a-z-]+\.html$/),
+      );
+      expect(startMock.mock.calls[0][1].locale).toBe('en');
+      expect(screen.getByShadowText('It works!')).toHaveAttribute('lang', 'en');
     });
   });
 });

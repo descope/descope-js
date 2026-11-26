@@ -45,7 +45,7 @@ app.mount('#app');
   <!-- additional props -->
   <!-- theme="dark" theme can be "light", "dark" or "os", which auto select a theme based on the OS theme. Default is "light" -->
   <!-- v-bind:debug="true" debug can be set to true to enable debug mode -->
-  <!-- locale="en" locale can be any supported locale which the flow's screen translated to, if not provided, the locale is taken from the browser's locale. -->
+  <!-- locale="en" locale can be any supported locale which the flow's screen translated to, if not provided, the locale is taken from the browser's locale. It can also be a comma-separated preference list (e.g. "fr-CA,en"), in which case the first locale the flow is translated to is used. A list entry like "fr-CA" also matches "fr" when "fr-CA" itself is not translated. -->
   <!-- tenant="tenantId" tenant ID for SSO (SAML) login. If not provided, Descope will use the domain of available email to choose the tenant -->
   <!-- redirectUrl="redirectUrl" Redirect URL for OAuth and SSO (will be used when redirecting back from the OAuth provider / IdP), or for "Magic Link" and "Enchanted Link" (will be used as a link in the message sent to the the user) -->
   <!-- autoFocus="skipFirstScreen" autoFocus can be true, false or "skipFirstScreen". Default is true. - true: automatically focus on the first input of each screen - false: do not automatically focus on screen's inputs - "skipFirstScreen": automatically focus on the first input of each screen, except first screen -->

@@ -1,4 +1,8 @@
-import { getUserLocale } from '@descope/sdk-helpers';
+import {
+  getUserLocale,
+  parseLocales,
+  resolveUserLocale,
+} from '@descope/sdk-helpers';
 import {
   clearFingerprintData,
   ensureFingerprintIds,
@@ -596,19 +600,6 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
-  async getHtmlFilenameWithLocale(locale: string, screenId: string) {
-    let filenameWithLocale: string;
-    const userLocale = getUserLocale(locale); // use provided locals, otherwise use browser locale
-    const targetLocales = await this.getTargetLocales();
-
-    if (targetLocales.includes(userLocale.locale)) {
-      filenameWithLocale = `${screenId}-${userLocale.locale}.html`;
-    } else if (targetLocales.includes(userLocale.fallback)) {
-      filenameWithLocale = `${screenId}-${userLocale.fallback}.html`;
-    }
-    return filenameWithLocale;
-  }
-
   async getPageContent(htmlFilename: string, htmlLocaleFilename: string) {
     if (htmlLocaleFilename) {
       // try first locale url, if can't get for some reason, fallback to the original html url (the one without locale)
@@ -850,6 +841,16 @@ class DescopeWc extends BaseDescopeWc {
     const flowConfig = await this.getFlowConfig();
     this.#syncValidationTracking(flowConfig, executionId, isChanged);
     const projectConfig = await this.getProjectConfig();
+    // resolve the provided locale (a single locale or a preference list), otherwise the browser locale, against the flow target locales
+    const resolvedLocale = resolveUserLocale(
+      locale,
+      await this.getTargetLocales(),
+    );
+    // the locale reported to the server and to the screen: the entry picked from the provided locale preference list,
+    // otherwise the full browser locale (both keep their region even when only their language part is a target locale)
+    const userLocale = parseLocales(locale).length
+      ? resolvedLocale.requestedLocale
+      : getUserLocale(locale).locale;
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow
       (acc, [key, value]) => {
@@ -946,7 +947,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId, this.loggerWrapper),
             abTestingKey,
-            locale: getUserLocale(locale).locale,
+            locale: userLocale,
             nativeOptions,
             outboundAppId,
             outboundAppScopes,
@@ -1282,10 +1283,9 @@ class DescopeWc extends BaseDescopeWc {
     const readyScreenId = startScreenId || screenId;
 
     // get the right filename according to the user locale and flow target locales
-    const filenameWithLocale: string = await this.getHtmlFilenameWithLocale(
-      locale,
-      readyScreenId,
-    );
+    const filenameWithLocale = resolvedLocale.available
+      ? `${readyScreenId}-${resolvedLocale.locale}.html`
+      : undefined;
 
     const {
       oidcLoginHint,
@@ -1324,7 +1324,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcErrorRedirectUri,
       oidcResource,
       action,
-      locale: getUserLocale(locale).locale,
+      locale: userLocale,
     };
 
     const lastAuth = getLastAuth(loginId, this.loggerWrapper);
@@ -1348,7 +1348,7 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
-            locale: getUserLocale(locale).locale,
+            locale: userLocale,
             nativeOptions,
             outboundAppId,
             outboundAppScopes,
