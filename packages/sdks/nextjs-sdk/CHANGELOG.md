@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.17.0](https://github.com/descope/descope-js/compare/nextjs-sdk-0.16.34...nextjs-sdk-0.17.0) (2026-11-26)
+
+### Dependency Updates
+
+* `web-js-sdk` updated to version `1.55.0`
+* `react-sdk` updated to version `3.6.0`
+* `core-js-sdk` updated to version `2.79.0`
+* `web-component` updated to version `4.8.0`
+
+### Features
+
+* **sdks:** add SSO single logout options to logout and logoutAll RELEASE ([#1568](https://github.com/descope/descope-js/issues/1568)) ([63b6e5b](https://github.com/descope/descope-js/commit/63b6e5b6e9abd03bfb38cad675b147f8e843b5f1))
+
 ## [0.16.34](https://github.com/descope/descope-js/compare/nextjs-sdk-0.16.33...nextjs-sdk-0.16.34) (2026-11-17)
 
 ### Dependency Updates
