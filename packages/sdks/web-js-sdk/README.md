@@ -42,6 +42,12 @@ const sdk = descopeSdk({
      */
   */
   sessionTokenViaCookie: false,
+
+  /* By default, refresh tokens returned in the response are stored in localStorage.
+  An XSS vulnerability can expose them. For XSS-resistant refresh token storage,
+  configure your Descope project to manage refresh tokens in Secure, HttpOnly cookies.
+  `refreshTokenViaCookie: true` sets a JavaScript-readable cookie (not HttpOnly),
+  so it does not protect against XSS. */
   /* Automatically schedule a call refresh session call after a successful authentication:
   Note: due to browser limitation, the maximum interval for the refresh has an upper bound of 2^32 - 1 milliseconds (approximately 24.8 days).
   */

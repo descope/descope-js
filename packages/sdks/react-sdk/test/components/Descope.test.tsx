@@ -274,6 +274,23 @@ describe('Descope', () => {
     });
   });
 
+  it('should pass allowed redirect origins as a web-component property', async () => {
+    const allowedRedirectOrigins = ['https://idp.example.com'];
+    renderWithProvider(
+      <Descope
+        flowId="flow-1"
+        allowedRedirectOrigins={allowedRedirectOrigins}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(document.querySelector('descope-wc')).toHaveProperty(
+        'allowedRedirectOrigins',
+        allowedRedirectOrigins,
+      );
+    });
+  });
+
   it('should render web-component with locale when provided', async () => {
     renderWithProvider(<Descope flowId="flow-1" locale="de" />);
     await waitFor(() => {

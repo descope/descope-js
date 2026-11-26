@@ -63,6 +63,18 @@ describe('Descope.vue', () => {
     expect(descopeWc.attributes('style-id')).toBe('test-style-id');
   });
 
+  it('passes allowed redirect origins to the web component', () => {
+    const allowedRedirectOrigins = ['https://accounts.example.com'];
+    const wrapper = mount(Descope, {
+      props: { flowId: 'test-flow-id', allowedRedirectOrigins },
+    });
+
+    const element = wrapper.find('descope-wc').element;
+    expect(
+      'allowedRedirectOrigins' in element && element.allowedRedirectOrigins
+    ).toEqual(allowedRedirectOrigins);
+  });
+
   it('renders a DescopeWc component with empty props', () => {
     const wrapper = mount(Descope, {
       props: {

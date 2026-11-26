@@ -13,6 +13,7 @@
       :debug.attr="debug"
       :telemetryKey.attr="telemetryKey"
       :redirect-url="redirectUrl"
+      :allowedRedirectOrigins.prop="allowedRedirectOrigins"
       :auto-focus="autoFocus"
       :style-id="styleId"
       :therme-override="themeOverride"
@@ -92,6 +93,9 @@ const props = defineProps({
   },
   redirectUrl: {
     type: String,
+  },
+  allowedRedirectOrigins: {
+    type: Array as () => string[],
   },
   autoFocus: {
     type: Boolean || String,

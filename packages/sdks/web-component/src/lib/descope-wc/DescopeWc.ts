@@ -130,6 +130,11 @@ class DescopeWc extends BaseDescopeWc {
     ref: typeof this,
   ) => boolean | Promise<boolean>;
 
+  // opt-in redirect origin allowlist. When non-empty, flow redirects may only go to
+  // these origins, the page origin, or the redirect-url origin. Entries must be
+  // full origins (for example, https://accounts.example.com), not URL paths.
+  allowedRedirectOrigins: string[] = [];
+
   #sdkScriptsLoading = null;
 
   constructor() {
@@ -1180,19 +1185,21 @@ class DescopeWc extends BaseDescopeWc {
         }
       } else {
         // the final redirect back to the app ends an OIDC login, so its stored
-        // context goes now. A magic link page keeps its adopted context out of
-        // flow state, so it is passed in separately.
-        clearSsoContextOnAppRedirect(
-          redirectTo,
-          getIdFromExecId(executionId),
-          {
-            ...this.adoptedSsoQueryParams,
-            ...pickSsoQueryParams(ssoQueryParams),
-          },
-          projectId,
-          flowId,
-        );
-        this.handleRedirect(redirectTo);
+        // context goes now, but only once the redirect passed validation. A magic
+        // link page keeps its adopted context out of flow state, so it is passed in separately.
+        if (this.#isRedirectAllowed(redirectTo)) {
+          clearSsoContextOnAppRedirect(
+            redirectTo,
+            getIdFromExecId(executionId),
+            {
+              ...this.adoptedSsoQueryParams,
+              ...pickSsoQueryParams(ssoQueryParams),
+            },
+            projectId,
+            flowId,
+          );
+          this.handleRedirect(redirectTo);
+        }
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
         // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
         // while the flow continues to run inside a webview.
@@ -1410,11 +1417,73 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.update(stepStateUpdate);
   }
 
+  // non-web schemes and embedded credentials are always blocked. The origin
+  // allowlist is opt-in: it applies only once allowedRedirectOrigins is set, and
+  // then also permits the page origin and the redirect-url origin
+  #isRedirectAllowed(redirectTo: string): boolean {
+    let destination: URL;
+    try {
+      destination = new URL(redirectTo, window.location.href);
+    } catch (e) {
+      this.loggerWrapper.error('Blocked unsafe redirect URL');
+      return false;
+    }
+
+    if (
+      (destination.protocol !== 'https:' && destination.protocol !== 'http:') ||
+      !!destination.username ||
+      !!destination.password
+    ) {
+      this.loggerWrapper.error('Blocked unsafe redirect URL');
+      return false;
+    }
+
+    if (
+      !Array.isArray(this.allowedRedirectOrigins) ||
+      !this.allowedRedirectOrigins.length
+    ) {
+      return true;
+    }
+
+    if (
+      window.location.protocol === 'https:' &&
+      destination.protocol !== 'https:'
+    ) {
+      this.loggerWrapper.error('Blocked unsafe redirect URL');
+      return false;
+    }
+
+    let configuredOrigin: string | undefined;
+    try {
+      const configuredRedirect = this.redirectUrl;
+      if (configuredRedirect) {
+        const url = new URL(configuredRedirect, window.location.href);
+        if (
+          (url.protocol === 'https:' || url.protocol === 'http:') &&
+          !url.username &&
+          !url.password
+        ) {
+          configuredOrigin = url.origin;
+        }
+      }
+    } catch (e) {
+      // Ignore an invalid redirect-url; same-origin navigation remains safe.
+    }
+    if (
+      destination.origin !== window.location.origin &&
+      destination.origin !== configuredOrigin &&
+      !this.allowedRedirectOrigins.includes(destination.origin)
+    ) {
+      this.loggerWrapper.error('Blocked redirect to untrusted origin');
+      return false;
+    }
+    return true;
+  }
+
   // this function is used to handle redirects in the web component
   // it can be overridden by the user to handle redirects in a custom way
-  // eslint-disable-next-line class-methods-use-this
   handleRedirect = (redirectTo: string) => {
-    window.location.assign(redirectTo);
+    if (this.#isRedirectAllowed(redirectTo)) window.location.assign(redirectTo);
   };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {
@@ -2525,12 +2594,18 @@ class DescopeWc extends BaseDescopeWc {
   // Determine if we should use postMessage fallback (popup-origin attribute exists)
   protected shouldUsePopupPostMessage(): boolean {
     if (!this.popupOrigin) return false;
+    let origin: string;
     try {
-      // validate origin format
-      // eslint-disable-next-line no-new
-      new URL(this.popupOrigin);
+      origin = new URL(this.popupOrigin).origin;
     } catch {
       return false; // malformed origin -> ignore
+    }
+    if (origin !== window.location.origin) {
+      this.loggerWrapper.warn(
+        'Cross-origin popup-origin is not supported; host the popup redirect page on this origin',
+        this.popupOrigin,
+      );
+      return false;
     }
     return true;
   }
@@ -2544,14 +2619,14 @@ class DescopeWc extends BaseDescopeWc {
       : undefined;
     if (requestsPostMessage && !targetOrigin) {
       this.loggerWrapper.warn(
-        'Popup opener origin is not approved for this project, add it to the approved domains to send the OAuth result to it',
+        'Cross-origin popup postMessage is not supported; host the popup redirect page on the opener origin',
         openerOrigin,
       );
     }
 
     const message = { data: { code, exchangeError }, action: 'code' };
 
-    // PostMessage fallback path (for cross-origin popups)
+    // postMessage fallback only targets a same-origin opener.
     if (targetOrigin) {
       this.loggerWrapper.debug(
         'Using postMessage fallback to notify opener in origin',
@@ -2564,7 +2639,7 @@ class DescopeWc extends BaseDescopeWc {
           'Failed to send postMessage fallback (likely COOP isolation)',
           (err as any)?.message,
         );
-        // If blocked by COOP, we cannot communicate cross-origin; log & abort silently
+        // If blocked by COOP, log and leave the fallback channel untouched.
       }
     } else {
       // BroadcastChannel path (original behavior)

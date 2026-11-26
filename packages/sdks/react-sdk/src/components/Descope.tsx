@@ -85,6 +85,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
       form,
       telemetryKey,
       redirectUrl,
+      allowedRedirectOrigins,
       autoFocus,
       validateOnBlur,
       restartOnError,
@@ -222,6 +223,7 @@ const Descope = React.forwardRef<HTMLElement, DescopeProps>(
               'dismiss-screen-error-on-input.attr': dismissScreenErrorOnInput,
               // props
               'errorTransformer.prop': errorTransformer,
+              'allowedRedirectOrigins.prop': allowedRedirectOrigins,
               'logger.prop': logger,
               'onScreenUpdate.prop': onScreenUpdate,
               'customStorage.prop': customStorage,

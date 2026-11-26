@@ -157,6 +157,7 @@ export type DescopeProps = {
   debug?: boolean;
   telemetryKey?: string;
   redirectUrl?: string;
+  allowedRedirectOrigins?: string[];
   outboundAppId?: string;
   outboundAppScopes?: string[];
   popupOrigin?: string;

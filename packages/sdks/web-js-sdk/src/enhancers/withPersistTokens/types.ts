@@ -21,10 +21,10 @@ export type PersistTokensOptions<A extends CookieConfig> = {
   // Use this option if session token will stay small (less than 1k)
   // NOTE: Session token can grow, especially in cases of using authorization, or adding custom claims
   sessionTokenViaCookie?: A extends false ? never : true | CookieConfig;
-  // If true, refresh token will be stored on cookie. Otherwise, the refresh token will be
-  // stored on local storage and can be accessed with getRefreshToken function
+  // If true, store the refresh token in a JavaScript-readable cookie. Otherwise,
+  // store it in localStorage, where it is vulnerable to theft via XSS.
+  // For HttpOnly refresh cookies, configure cookie management in the Descope project.
   // Use this option if you need server-side access to the refresh token (e.g., in Next.js middleware)
-  // to enable refreshing sessions on the server before they expire
   refreshTokenViaCookie?: A extends false ? never : true | CookieConfig;
 };
 

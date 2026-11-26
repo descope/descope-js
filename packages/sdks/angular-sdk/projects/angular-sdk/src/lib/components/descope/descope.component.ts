@@ -129,6 +129,7 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tenant: string;
   @Input() telemetryKey: string;
   @Input() redirectUrl: string;
+  @Input() allowedRedirectOrigins: string[];
   @Input() autoFocus: true | false | 'skipFirstScreen';
   @Input() validateOnBlur: boolean;
   @Input() restartOnError: boolean;
@@ -298,6 +299,9 @@ export class DescopeComponent implements OnInit, OnChanges, OnDestroy {
     if (this.errorTransformer) {
       this.webComponent.errorTransformer = this.errorTransformer;
     }
+
+    this.webComponent.allowedRedirectOrigins =
+      this.allowedRedirectOrigins ?? [];
 
     if (this.onScreenUpdate) {
       this.webComponent.onScreenUpdate = this.onScreenUpdate;

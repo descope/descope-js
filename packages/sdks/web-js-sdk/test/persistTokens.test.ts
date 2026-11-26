@@ -52,6 +52,39 @@ describe('persistTokens', () => {
     expect(sdk.getRefreshToken()).toEqual(authInfo.refreshJwt);
   });
 
+  it('warns once when a refresh token is persisted to localStorage by default', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    global.fetch = jest.fn().mockReturnValue(createMockReturnValue(authInfo));
+
+    const sdk = createSdk({ projectId: 'pid', persistTokens: true });
+    await sdk.httpClient.get('1/2/3');
+    await sdk.httpClient.get('1/2/3');
+
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Refresh tokens stored in localStorage are accessible to JavaScript and can be stolen by an XSS attack. Configure your Descope project to issue HttpOnly refresh cookies to protect them.',
+    );
+    expect(localStorage.getItem('DSR')).toEqual(authInfo.refreshJwt);
+    warnSpy.mockRestore();
+  });
+
+  it('does not warn when a refresh token is persisted to a cookie', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    global.fetch = jest.fn().mockReturnValue(createMockReturnValue(authInfo));
+
+    const sdk = createSdk({
+      projectId: 'pid',
+      persistTokens: true,
+      refreshTokenViaCookie: true,
+    });
+    await sdk.httpClient.get('1/2/3');
+
+    expect(warnSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('Refresh tokens stored in localStorage'),
+    );
+    warnSpy.mockRestore();
+  });
+
   describe('set session token via cookie', () => {
     beforeEach(() => {
       delete window.location;
@@ -108,7 +141,9 @@ describe('persistTokens', () => {
 
       await new Promise(process.nextTick);
 
-      expect(warnSpy).not.toHaveBeenCalled();
+      expect(warnSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Session token cookie'),
+      );
 
       warnSpy.mockRestore();
     });
@@ -135,7 +170,9 @@ describe('persistTokens', () => {
 
       await new Promise(process.nextTick);
 
-      expect(warnSpy).not.toHaveBeenCalled();
+      expect(warnSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Session token cookie'),
+      );
 
       warnSpy.mockRestore();
     });

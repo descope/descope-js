@@ -23,6 +23,12 @@ import {
   URL_RUN_IDS_PARAM_NAME,
   URL_CODE_PARAM_NAME,
 } from '../src/lib/constants';
+import { clearSsoContextOnAppRedirect } from '../src/lib/helpers/oidcSession';
+
+jest.mock('../src/lib/helpers/oidcSession', () => ({
+  ...jest.requireActual('../src/lib/helpers/oidcSession'),
+  clearSsoContextOnAppRedirect: jest.fn(),
+}));
 
 describe('web-component webauthn', () => {
   beforeEach(() => {
@@ -168,11 +174,11 @@ describe('web-component redirect', () => {
     teardownWebComponentTestEnv();
   });
 
-  it('When action type is "redirect" it navigates to the "redirectUrl" that is received from the server', async () => {
+  it('When action type is "redirect" it navigates to the same-origin "redirectUrl" from the server', async () => {
     nextMock.mockReturnValueOnce(
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
-        redirectUrl: 'https://myurl.com',
+        redirectUrl: '/welcome?code=123',
       }),
     );
 
@@ -180,11 +186,158 @@ describe('web-component redirect', () => {
     document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(
-      () => expect(window.location.assign).toHaveBeenCalledTimes(1),
-      {
-        timeout: WAIT_TIMEOUT,
-      },
+      () =>
+        expect(window.location.assign).toHaveBeenCalledWith(
+          '/welcome?code=123',
+        ),
+      { timeout: WAIT_TIMEOUT },
     );
+  });
+
+  it.each([
+    // eslint-disable-next-line no-script-url
+    'javascript:alert(1)',
+    'data:text/html,<script>alert(1)</script>',
+    'http://user@localhost/steal',
+    'http://[invalid',
+  ])('blocks unsafe server redirect %s', async (redirectUrl) => {
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({ action: RESPONSE_ACTIONS.redirect, redirectUrl }),
+    );
+    const errorSpy = jest.spyOn(console, 'error');
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          '[Descope]',
+          expect.stringContaining('Blocked'),
+          '',
+          expect.any(Error),
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+    expect(window.location.assign).not.toHaveBeenCalled();
+    expect(clearSsoContextOnAppRedirect).not.toHaveBeenCalled();
+  });
+
+  it('follows a cross-origin server redirect when no allowlist is set', async () => {
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.redirect,
+        redirectUrl: 'https://accounts.example/authorize',
+      }),
+    );
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(window.location.assign).toHaveBeenCalledWith(
+          'https://accounts.example/authorize',
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it.each([
+    '//evil.example/steal',
+    'https://evil.example/steal',
+    'https://localhost.evil.example/steal',
+    'http://evil.example\\@localhost/steal',
+  ])(
+    'blocks %s and keeps SSO context when an allowlist is set',
+    async (redirectUrl) => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({ action: RESPONSE_ACTIONS.redirect, redirectUrl }),
+      );
+      const errorSpy = jest.spyOn(console, 'error');
+      document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+      document.querySelector('descope-wc').allowedRedirectOrigins = [
+        'https://accounts.example',
+      ];
+
+      await waitFor(
+        () =>
+          expect(errorSpy).toHaveBeenCalledWith(
+            '[Descope]',
+            'Blocked redirect to untrusted origin',
+            '',
+            expect.any(Error),
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+      expect(window.location.assign).not.toHaveBeenCalled();
+      expect(clearSsoContextOnAppRedirect).not.toHaveBeenCalled();
+    },
+  );
+
+  it('clears SSO context when a server redirect is allowed', async () => {
+    startMock.mockReturnValueOnce(
+      generateSdkResponse({
+        action: RESPONSE_ACTIONS.redirect,
+        redirectUrl: '/welcome?code=123',
+      }),
+    );
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+
+    await waitFor(
+      () =>
+        expect(clearSsoContextOnAppRedirect).toHaveBeenCalledWith(
+          '/welcome?code=123',
+          expect.anything(),
+          expect.anything(),
+          '1',
+          'versioned-flow',
+        ),
+      { timeout: WAIT_TIMEOUT },
+    );
+  });
+
+  it('permits a configured redirect-url origin for the app callback', async () => {
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1" redirect-url="https://app.example/callback"></descope-wc>`;
+    document.querySelector('descope-wc').allowedRedirectOrigins = [
+      'https://accounts.example',
+    ];
+    document
+      .querySelector('descope-wc')
+      .handleRedirect('https://app.example/callback?code=123');
+
+    await waitFor(() =>
+      expect(window.location.assign).toHaveBeenCalledWith(
+        'https://app.example/callback?code=123',
+      ),
+    );
+  });
+
+  it('permits an explicitly allowed OAuth provider origin', async () => {
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+    const wc = document.querySelector('descope-wc');
+    wc.allowedRedirectOrigins = ['https://accounts.example'];
+    wc.handleRedirect('https://accounts.example/authorize');
+
+    await waitFor(() =>
+      expect(window.location.assign).toHaveBeenCalledWith(
+        'https://accounts.example/authorize',
+      ),
+    );
+  });
+
+  it('does not accept a path as an allowed origin', async () => {
+    const errorSpy = jest.spyOn(console, 'error');
+    document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+    const wc = document.querySelector('descope-wc');
+    wc.allowedRedirectOrigins = ['https://accounts.example/authorize'];
+    wc.handleRedirect('https://accounts.example/authorize');
+
+    await waitFor(() =>
+      expect(errorSpy).toHaveBeenCalledWith(
+        '[Descope]',
+        'Blocked redirect to untrusted origin',
+        '',
+        expect.any(Error),
+      ),
+    );
+    expect(window.location.assign).not.toHaveBeenCalled();
   });
 
   it('When action type is "redirect" and redirectUrl is missing should log an error ', async () => {
@@ -214,7 +367,7 @@ describe('web-component redirect', () => {
     nextMock.mockReturnValueOnce(
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
-        redirectUrl: 'https://myurl.com',
+        redirectUrl: 'http://localhost/welcome',
       }),
     );
 
@@ -233,7 +386,7 @@ describe('web-component redirect', () => {
       timeout: WAIT_TIMEOUT,
     });
     expect(window.location.assign).not.toHaveBeenCalledWith(
-      'https://myurl.com',
+      'http://localhost/welcome',
     );
 
     isHidden = false;
@@ -241,7 +394,7 @@ describe('web-component redirect', () => {
     await waitFor(
       () =>
         expect(window.location.assign).toHaveBeenCalledWith(
-          'https://myurl.com',
+          'http://localhost/welcome',
         ),
       {
         timeout: WAIT_TIMEOUT,
@@ -253,7 +406,7 @@ describe('web-component redirect', () => {
     nextMock.mockReturnValueOnce(
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
-        redirectUrl: 'https://myurl.com',
+        redirectUrl: 'http://localhost/welcome',
       }),
     );
 
@@ -274,7 +427,7 @@ describe('web-component redirect', () => {
     await waitFor(
       () =>
         expect(window.location.assign).toHaveBeenCalledWith(
-          'https://myurl.com',
+          'http://localhost/welcome',
         ),
       {
         timeout: WAIT_TIMEOUT,
