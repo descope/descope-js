@@ -341,6 +341,24 @@ const App = () => {
 >
 > `isAuthenticated` is derived from the session's expiration, which the SDK receives in every token-storage mode. Read `sessionToken` only when you actually need the raw JWT (for example to attach it to an API request), and use `claims` to read claims out of the session.
 
+### SSO Single Logout
+
+When the user signed in through a SAML SSO configuration that has single logout turned on, pass `ssoLogout: true` to `sdk.logout` (or `sdk.logoutAll`) to also log the user out of the identity provider. The Descope session ends either way. If there is a logout to do at the identity provider, the response has `ssoLogoutUrl`, and the app sends the browser to it. The identity provider then sends the browser back to `redirectUrl`, which must be in the project's approved domains (when empty, the SSO configuration's redirect URL is used).
+
+```js
+const sdk = useDescope();
+
+const handleLogout = useCallback(async () => {
+  const res = await sdk.logout(undefined, {
+    ssoLogout: true,
+    redirectUrl: 'https://app.example.com/signed-out',
+  });
+  if (res.data?.ssoLogoutUrl) {
+    window.location.href = res.data.ssoLogoutUrl;
+  }
+}, [sdk]);
+```
+
 ### Returning Users After an Idle Period
 
 When the short-lived session token expires, a user with a valid refresh token does not need to sign in again. The SDK renews the session once `useSession()` runs. Two things keep that working: the login page waits for `useSession()` to finish loading before it shows the flow, and it returns the user to the page they asked for. Accept only in-app return paths, otherwise the redirect can send users to another site.

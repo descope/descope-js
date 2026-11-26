@@ -306,6 +306,25 @@ export class AppComponent implements OnInit {
 }
 ```
 
+### SSO Single Logout
+
+When the user signed in through a SAML SSO configuration that has single logout turned on, pass `ssoLogout: true` to `logout` (or `logoutAll`) to also log the user out of the identity provider. The Descope session ends either way. If there is a logout to do at the identity provider, the response has `ssoLogoutUrl`, and the app sends the browser to it. The identity provider then sends the browser back to `redirectUrl`, which must be in the project's approved domains (when empty, the SSO configuration's redirect URL is used).
+
+```ts
+logout() {
+  this.authService.descopeSdk
+    .logout(undefined, {
+      ssoLogout: true,
+      redirectUrl: 'https://app.example.com/signed-out'
+    })
+    .subscribe((res) => {
+      if (res.data?.ssoLogoutUrl) {
+        window.location.href = res.data.ssoLogoutUrl;
+      }
+    });
+}
+```
+
 ### Session Refresh
 
 `DescopeAuthService` provides `refreshSession` and `refreshUser` methods that triggers a single request to the Descope backend to attempt to refresh the session or user. You can use them whenever you want to refresh the session/user. For example you can use `APP_INITIALIZER` provider to attempt to refresh session and user on each page refresh:

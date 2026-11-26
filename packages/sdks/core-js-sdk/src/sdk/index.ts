@@ -21,6 +21,8 @@ import withEmailVerification from './emailVerification';
 import withPassword from './password';
 import {
   JWTResponse,
+  LogoutOptions,
+  LogoutResponse,
   TenantsResponse,
   UserHistoryResponse,
   UserResponse,
@@ -42,6 +44,18 @@ const withJwtValidations = withValidations(stringNonEmpty('token'));
 const withOptionalTokenValidations = withValidations(
   isStringOrUndefinedValidator('token'),
 );
+
+// Sends only the options that are set, so a plain logout keeps sending an empty body
+const logoutBody = (options?: LogoutOptions) => {
+  const body = {};
+  if (options?.ssoLogout) {
+    body['ssoLogout'] = true;
+  }
+  if (options?.redirectUrl) {
+    body['redirectUrl'] = options.redirectUrl;
+  }
+  return body;
+};
 
 /** Returns Descope SDK with all available operations */
 export default (httpClient: HttpClient) => ({
@@ -103,18 +117,26 @@ export default (httpClient: HttpClient) => ({
   /**
    * Logs out the current session
    * @param token A valid refresh token
+   * @param options Set `ssoLogout` to also log the user out of the SSO identity provider
+   * @returns `ssoLogoutUrl` when the browser should be sent to the identity provider to finish the logout
    */
-  logout: withOptionalTokenValidations((token?: string) =>
-    transformResponse<never>(httpClient.post(apiPaths.logout, {}, { token })),
+  logout: withOptionalTokenValidations(
+    (token?: string, options?: LogoutOptions) =>
+      transformResponse<LogoutResponse>(
+        httpClient.post(apiPaths.logout, logoutBody(options), { token }),
+      ),
   ),
   /**
    * Logs out all sessions for the current user
    * @param token A valid refresh token
+   * @param options Set `ssoLogout` to also log the user out of the SSO identity provider
+   * @returns `ssoLogoutUrl` when the browser should be sent to the identity provider to finish the logout
    */
-  logoutAll: withOptionalTokenValidations((token?: string) =>
-    transformResponse<never>(
-      httpClient.post(apiPaths.logoutAll, {}, { token }),
-    ),
+  logoutAll: withOptionalTokenValidations(
+    (token?: string, options?: LogoutOptions) =>
+      transformResponse<LogoutResponse>(
+        httpClient.post(apiPaths.logoutAll, logoutBody(options), { token }),
+      ),
   ),
   /**
    * Returns the current user details

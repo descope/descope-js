@@ -42,6 +42,8 @@ export { hasOidcParamsInUrl } from './sdk/oidc/helpers';
 
 export type {
   JWTResponse,
+  LogoutOptions,
+  LogoutResponse,
   FlowStartOptions,
   FlowNextOptions,
   UserFamily,

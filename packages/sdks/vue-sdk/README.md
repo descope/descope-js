@@ -161,6 +161,24 @@ Note: `useSession` triggers a single request to the Descope backend to attempt t
 
 **For more SDK usage examples refer to [docs](https://docs.descope.com/build/guides/client_sdks/)**
 
+### SSO Single Logout
+
+When the user signed in through a SAML SSO configuration that has single logout turned on, pass `ssoLogout: true` to `logout` (or `logoutAll`) to also log the user out of the identity provider. The Descope session ends either way. If there is a logout to do at the identity provider, the response has `ssoLogoutUrl`, and the app sends the browser to it. The identity provider then sends the browser back to `redirectUrl`, which must be in the project's approved domains (when empty, the SSO configuration's redirect URL is used).
+
+```js
+const { logout } = useDescope();
+
+const onLogout = async () => {
+  const res = await logout(undefined, {
+    ssoLogout: true,
+    redirectUrl: 'https://app.example.com/signed-out',
+  });
+  if (res.data?.ssoLogoutUrl) {
+    window.location.href = res.data.ssoLogoutUrl;
+  }
+};
+```
+
 ### Session token server validation (pass session token to server API)
 
 When developing a full-stack application, it is common to have private server API which requires a valid session token:

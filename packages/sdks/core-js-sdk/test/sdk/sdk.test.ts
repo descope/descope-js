@@ -255,6 +255,33 @@ describe('sdk', () => {
         { token: 'token' },
       );
     });
+
+    it('should send sso logout options and return the sso logout url', async () => {
+      const httpRespJson = { ssoLogoutUrl: 'https://idp.example.com/slo' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      const res = await sdk.logout('token', {
+        ssoLogout: true,
+        redirectUrl: 'https://app.example.com/signed-out',
+      });
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.logout,
+        {
+          ssoLogout: true,
+          redirectUrl: 'https://app.example.com/signed-out',
+        },
+        { token: 'token' },
+      );
+      expect(res.data.ssoLogoutUrl).toBe('https://idp.example.com/slo');
+    });
   });
 
   describe('logoutAll', () => {
@@ -281,6 +308,27 @@ describe('sdk', () => {
         {},
         { token: 'token' },
       );
+    });
+
+    it('should send sso logout options and return the sso logout url', async () => {
+      const httpRespJson = { ssoLogoutUrl: 'https://idp.example.com/slo' };
+      const httpResponse = {
+        ok: true,
+        json: () => httpRespJson,
+        clone: () => ({
+          json: () => Promise.resolve(httpRespJson),
+        }),
+        status: 200,
+      };
+      mockHttpClient.post.mockResolvedValue(httpResponse);
+
+      const res = await sdk.logoutAll('token', { ssoLogout: true });
+      expect(mockHttpClient.post).toHaveBeenCalledWith(
+        apiPaths.logoutAll,
+        { ssoLogout: true },
+        { token: 'token' },
+      );
+      expect(res.data.ssoLogoutUrl).toBe('https://idp.example.com/slo');
     });
   });
 
