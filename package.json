@@ -65,7 +65,7 @@
       "git add pnpm-lock.yaml"
     ]
   },
-  "packageManager": "pnpm@10.0.0",
+  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": "^22.18.0"
   }
