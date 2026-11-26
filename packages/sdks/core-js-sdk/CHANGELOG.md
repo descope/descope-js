@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [2.79.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.78.0...core-js-sdk-2.79.0) (2026-11-26)
+
+
+### Features
+
+* **sdks:** add SSO single logout options to logout and logoutAll RELEASE ([#1568](https://github.com/descope/descope-js/issues/1568)) ([63b6e5b](https://github.com/descope/descope-js/commit/63b6e5b6e9abd03bfb38cad675b147f8e843b5f1))
+* **web-js-sdk:** send authenticatorAttachment and add externalPasskey to JWTResponse ([#1563](https://github.com/descope/descope-js/issues/1563)) ([b03a9d2](https://github.com/descope/descope-js/commit/b03a9d27635db9a372321d062c12e03f815d3b89))
+
 ## [2.78.0](https://github.com/descope/descope-js/compare/core-js-sdk-2.77.0...core-js-sdk-2.78.0) (2026-11-08)
 
 
