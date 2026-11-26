@@ -130,8 +130,9 @@ class DescopeWc extends BaseDescopeWc {
     ref: typeof this,
   ) => boolean | Promise<boolean>;
 
-  // Additional destinations explicitly trusted by the application. Entries must
-  // be full origins (for example, https://accounts.example.com), not URL paths.
+  // opt-in redirect origin allowlist. When non-empty, flow redirects may only go to
+  // these origins, the page origin, or the redirect-url origin. Entries must be
+  // full origins (for example, https://accounts.example.com), not URL paths.
   allowedRedirectOrigins: string[] = [];
 
   #sdkScriptsLoading = null;
@@ -1186,7 +1187,7 @@ class DescopeWc extends BaseDescopeWc {
         // the final redirect back to the app ends an OIDC login, so its stored
         // context goes now, but only once the redirect passed validation. A magic
         // link page keeps its adopted context out of flow state, so it is passed in separately.
-        if (this.handleRedirect(redirectTo) !== false) {
+        if (this.#isRedirectAllowed(redirectTo)) {
           clearSsoContextOnAppRedirect(
             redirectTo,
             getIdFromExecId(executionId),
@@ -1197,6 +1198,7 @@ class DescopeWc extends BaseDescopeWc {
             projectId,
             flowId,
           );
+          this.handleRedirect(redirectTo);
         }
         // on web we should not get here as when a redirect is performed the contents of the page immediately change,
         // but on mobile, there is usually no redirect in place, instead the url is opened in a new browser tab
@@ -1415,10 +1417,10 @@ class DescopeWc extends BaseDescopeWc {
     this.stepState.update(stepStateUpdate);
   }
 
-  // this function is used to handle redirects in the web component
-  // it can be overridden by the user to handle redirects in a custom way
-  // returns false when the redirect was blocked (custom overrides may return nothing)
-  handleRedirect = (redirectTo: string): boolean | void => {
+  // non-web schemes and embedded credentials are always blocked. The origin
+  // allowlist is opt-in: it applies only once allowedRedirectOrigins is set, and
+  // then also permits the page origin and the redirect-url origin
+  #isRedirectAllowed(redirectTo: string): boolean {
     let destination: URL;
     try {
       destination = new URL(redirectTo, window.location.href);
@@ -1429,10 +1431,23 @@ class DescopeWc extends BaseDescopeWc {
 
     if (
       (destination.protocol !== 'https:' && destination.protocol !== 'http:') ||
-      (window.location.protocol === 'https:' &&
-        destination.protocol !== 'https:') ||
       !!destination.username ||
       !!destination.password
+    ) {
+      this.loggerWrapper.error('Blocked unsafe redirect URL');
+      return false;
+    }
+
+    if (
+      !Array.isArray(this.allowedRedirectOrigins) ||
+      !this.allowedRedirectOrigins.length
+    ) {
+      return true;
+    }
+
+    if (
+      window.location.protocol === 'https:' &&
+      destination.protocol !== 'https:'
     ) {
       this.loggerWrapper.error('Blocked unsafe redirect URL');
       return false;
@@ -1457,17 +1472,18 @@ class DescopeWc extends BaseDescopeWc {
     if (
       destination.origin !== window.location.origin &&
       destination.origin !== configuredOrigin &&
-      !(
-        Array.isArray(this.allowedRedirectOrigins) &&
-        this.allowedRedirectOrigins.includes(destination.origin)
-      )
+      !this.allowedRedirectOrigins.includes(destination.origin)
     ) {
       this.loggerWrapper.error('Blocked redirect to untrusted origin');
       return false;
     }
-
-    window.location.assign(redirectTo);
     return true;
+  }
+
+  // this function is used to handle redirects in the web component
+  // it can be overridden by the user to handle redirects in a custom way
+  handleRedirect = (redirectTo: string) => {
+    if (this.#isRedirectAllowed(redirectTo)) window.location.assign(redirectTo);
   };
 
   #toggleScreenVisibility = (isCustomScreen: boolean) => {

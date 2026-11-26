@@ -198,10 +198,6 @@ describe('web-component redirect', () => {
     // eslint-disable-next-line no-script-url
     'javascript:alert(1)',
     'data:text/html,<script>alert(1)</script>',
-    '//evil.example/steal',
-    'https://evil.example/steal',
-    'https://localhost.evil.example/steal',
-    'http://evil.example\\@localhost/steal',
     'http://user@localhost/steal',
     'http://[invalid',
   ])('blocks unsafe server redirect %s', async (redirectUrl) => {
@@ -222,30 +218,58 @@ describe('web-component redirect', () => {
       { timeout: WAIT_TIMEOUT },
     );
     expect(window.location.assign).not.toHaveBeenCalled();
+    expect(clearSsoContextOnAppRedirect).not.toHaveBeenCalled();
   });
 
-  it('keeps SSO context when a server redirect is blocked', async () => {
+  it('follows a cross-origin server redirect when no allowlist is set', async () => {
     startMock.mockReturnValueOnce(
       generateSdkResponse({
         action: RESPONSE_ACTIONS.redirect,
-        redirectUrl: 'https://evil.example/callback?code=1',
+        redirectUrl: 'https://accounts.example/authorize',
       }),
     );
-    const errorSpy = jest.spyOn(console, 'error');
     document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
 
     await waitFor(
       () =>
-        expect(errorSpy).toHaveBeenCalledWith(
-          '[Descope]',
-          'Blocked redirect to untrusted origin',
-          '',
-          expect.any(Error),
+        expect(window.location.assign).toHaveBeenCalledWith(
+          'https://accounts.example/authorize',
         ),
       { timeout: WAIT_TIMEOUT },
     );
-    expect(clearSsoContextOnAppRedirect).not.toHaveBeenCalled();
   });
+
+  it.each([
+    '//evil.example/steal',
+    'https://evil.example/steal',
+    'https://localhost.evil.example/steal',
+    'http://evil.example\\@localhost/steal',
+  ])(
+    'blocks %s and keeps SSO context when an allowlist is set',
+    async (redirectUrl) => {
+      startMock.mockReturnValueOnce(
+        generateSdkResponse({ action: RESPONSE_ACTIONS.redirect, redirectUrl }),
+      );
+      const errorSpy = jest.spyOn(console, 'error');
+      document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1"></descope-wc>`;
+      document.querySelector('descope-wc').allowedRedirectOrigins = [
+        'https://accounts.example',
+      ];
+
+      await waitFor(
+        () =>
+          expect(errorSpy).toHaveBeenCalledWith(
+            '[Descope]',
+            'Blocked redirect to untrusted origin',
+            '',
+            expect.any(Error),
+          ),
+        { timeout: WAIT_TIMEOUT },
+      );
+      expect(window.location.assign).not.toHaveBeenCalled();
+      expect(clearSsoContextOnAppRedirect).not.toHaveBeenCalled();
+    },
+  );
 
   it('clears SSO context when a server redirect is allowed', async () => {
     startMock.mockReturnValueOnce(
@@ -271,6 +295,9 @@ describe('web-component redirect', () => {
 
   it('permits a configured redirect-url origin for the app callback', async () => {
     document.body.innerHTML = `<descope-wc flow-id="versioned-flow" project-id="1" redirect-url="https://app.example/callback"></descope-wc>`;
+    document.querySelector('descope-wc').allowedRedirectOrigins = [
+      'https://accounts.example',
+    ];
     document
       .querySelector('descope-wc')
       .handleRedirect('https://app.example/callback?code=123');
