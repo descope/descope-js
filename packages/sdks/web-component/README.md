@@ -162,7 +162,7 @@ const descopeWcEle = document.querySelector('descope-wc');
 descopeWcEle.allowedRedirectOrigins = ['https://accounts.example.com', 'https://app.example.com'];
 ```
 
-Entries must include scheme and host (and port if applicable), without paths or trailing slashes. This setting applies to full-page redirects, not OAuth popups. When enabled, include every external OAuth/SSO provider and app origin your flows redirect to; do not derive allowed origins from untrusted URL parameters or the server redirect response.
+Entries must include scheme and host (and port if applicable), without paths or trailing slashes. This setting applies to flow `redirect` actions only, not to OAuth popups or to SAML/WS-Fed IdP response form submissions. When enabled, include every external OAuth/SSO provider and app origin your flows redirect to; do not derive allowed origins from untrusted URL parameters or the server redirect response.
 
 ### `errorTransformer` - A function that receives an error object and returns a string. The returned string will be displayed to the user.
 
