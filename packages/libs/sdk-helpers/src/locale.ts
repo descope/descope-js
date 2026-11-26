@@ -10,6 +10,8 @@ export type Locale = {
 
 export type ResolvedLocale = {
   locale: string;
+  // the user's locale that `locale` was picked for (e.g. 'fr-ca' when `locale` is 'fr'), to report
+  requestedLocale: string;
   // whether `locale` is one of the available locales (e.g. a flow's targetLocales)
   available: boolean;
 };
@@ -60,8 +62,8 @@ export function getUserLocale(locale: string): Locale {
 
 /**
  * Returns the lowercased locales to try, most preferred first:
- *  - every entry of an explicit locale value, as given (no language split, so list 'fr' after
- *    'fr-CA' to accept it)
+ *  - every entry of an explicit locale value, as given (`resolveUserLocale` tries the language
+ *    part of each entry of a list)
  *  - otherwise navigator.language and its language-only fallback (e.g. 'en-us' then 'en')
  */
 export function getUserLocaleCandidates(locale: string): string[] {
@@ -74,10 +76,14 @@ export function getUserLocaleCandidates(locale: string): string[] {
 }
 
 /**
- * Picks the most preferred candidate that is in `availableLocales` (case-insensitive).
- * When the source language has no translation in `availableLocales`, a candidate in it (e.g. 'en',
- * 'en-us') also matches, as its content is the default content, so it is returned with
- * `available: false`.
+ * Picks the most preferred candidate that matches `availableLocales` (case-insensitive). Each
+ * candidate is tried in order, and matches when:
+ *  - it is in `availableLocales`
+ *  - only for a list of locales: its language part is (e.g. 'fr-ca' matches 'fr'). `locale` is then
+ *    the available locale, and `requestedLocale` keeps the candidate
+ *  - the source language has no translation in `availableLocales`, and the candidate is in it
+ *    (e.g. 'en', 'en-us'). Its content is the default content, so it is returned with
+ *    `available: false`
  * When none matches, returns the most preferred candidate with `available: false`, so callers
  * still report the user's locale (e.g. to the server) while rendering the default content.
  */
@@ -87,15 +93,30 @@ export function resolveUserLocale(
 ): ResolvedLocale {
   const available = (availableLocales ?? []).map((l) => l.toLowerCase());
   const candidates = getUserLocaleCandidates(locale);
-  const isSourceLanguage = (l: string) => l.split('-')[0] === SOURCE_LANGUAGE;
+  // a single explicit locale is not split to its language part, to keep how it worked before lists
+  // were supported (e.g. 'fr-CA' alone does not match 'fr')
+  const isList = parseLocales(locale).length > 1;
+  const getLanguage = (l: string) => l.split('-')[0];
   // when the source language also has a translation, match it like any other target locale
-  const matchSourceLanguage = !available.some(isSourceLanguage);
-  const match = candidates.find(
-    (c) =>
-      available.includes(c) || (matchSourceLanguage && isSourceLanguage(c)),
+  const matchSourceLanguage = !available.some(
+    (l) => getLanguage(l) === SOURCE_LANGUAGE,
   );
-  if (match) {
-    return { locale: match, available: available.includes(match) };
-  }
-  return { locale: candidates[0] ?? '', available: false };
+
+  // the locale that a candidate matches, if any
+  const matchCandidate = (c: string): string | undefined => {
+    const language = getLanguage(c);
+    if (available.includes(c)) return c;
+    if (isList && available.includes(language)) return language;
+    if (matchSourceLanguage && language === SOURCE_LANGUAGE) return c;
+    return undefined;
+  };
+
+  const requestedLocale =
+    candidates.find((c) => matchCandidate(c)) ?? candidates[0] ?? '';
+  const matched = matchCandidate(requestedLocale) ?? requestedLocale;
+  return {
+    locale: matched,
+    requestedLocale,
+    available: available.includes(matched),
+  };
 }

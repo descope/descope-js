@@ -82,77 +82,81 @@ describe('getUserLocaleCandidates', () => {
 });
 
 describe('resolveUserLocale', () => {
+  const resolved = (
+    locale: string,
+    available: boolean,
+    requestedLocale = locale,
+  ) => ({ locale, requestedLocale, available });
+
   it('picks the most preferred available entry (case-insensitive)', () => {
-    expect(resolveUserLocale('fr-CA,fr,en', ['EN', 'Fr'])).toEqual({
-      locale: 'fr',
-      available: true,
-    });
+    expect(resolveUserLocale('fr,de,en', ['EN', 'De'])).toEqual(
+      resolved('de', true),
+    );
   });
 
   it('follows the preference order, not the available order', () => {
-    expect(resolveUserLocale('en,fr', ['fr', 'en'])).toEqual({
-      locale: 'en',
-      available: true,
-    });
+    expect(resolveUserLocale('en,fr', ['fr', 'en'])).toEqual(
+      resolved('en', true),
+    );
   });
 
-  it('does not split the language part of an explicit entry', () => {
-    expect(resolveUserLocale('fr-CA,en', ['fr', 'en'])).toEqual({
-      locale: 'en',
-      available: true,
-    });
+  it('tries the language part of a list entry before moving to the next entry', () => {
+    expect(resolveUserLocale('fr-CA,en', ['fr', 'en'])).toEqual(
+      resolved('fr', true, 'fr-ca'),
+    );
+    expect(resolveUserLocale('de-AT fr', ['fr', 'de'])).toEqual(
+      resolved('de', true, 'de-at'),
+    );
+    expect(resolveUserLocale('pt-BR,fr-CA', ['fr'])).toEqual(
+      resolved('fr', true, 'fr-ca'),
+    );
+  });
+
+  it('prefers an exact match of an entry over its language part', () => {
+    expect(resolveUserLocale('fr-CA,en', ['fr', 'fr-ca'])).toEqual(
+      resolved('fr-ca', true),
+    );
+  });
+
+  it('does not split the language part of a single explicit locale', () => {
+    expect(resolveUserLocale('fr-CA', ['fr', 'en'])).toEqual(
+      resolved('fr-ca', false),
+    );
   });
 
   it('matches the source language (en), which is not a target locale, as unavailable', () => {
-    expect(resolveUserLocale('en,fr', ['fr'])).toEqual({
-      locale: 'en',
-      available: false,
-    });
-    expect(resolveUserLocale('de,en-US,fr', ['fr'])).toEqual({
-      locale: 'en-us',
-      available: false,
-    });
+    expect(resolveUserLocale('en,fr', ['fr'])).toEqual(resolved('en', false));
+    expect(resolveUserLocale('de,en-US,fr', ['fr'])).toEqual(
+      resolved('en-us', false),
+    );
   });
 
   it('matches the source language like any target locale when it has a translation', () => {
-    expect(resolveUserLocale('en,fr', ['fr', 'en'])).toEqual({
-      locale: 'en',
-      available: true,
-    });
-    expect(resolveUserLocale('en-US,fr', ['fr', 'en'])).toEqual({
-      locale: 'fr',
-      available: true,
-    });
+    expect(resolveUserLocale('en,fr', ['fr', 'en'])).toEqual(
+      resolved('en', true),
+    );
+    expect(resolveUserLocale('en-US,fr', ['fr', 'en'])).toEqual(
+      resolved('en', true, 'en-us'),
+    );
   });
 
   it('returns the most preferred entry as unavailable when none is available', () => {
-    expect(resolveUserLocale('pt-BR,it', ['de'])).toEqual({
-      locale: 'pt-br',
-      available: false,
-    });
-    expect(resolveUserLocale('pt-BR,it', undefined)).toEqual({
-      locale: 'pt-br',
-      available: false,
-    });
+    expect(resolveUserLocale('pt-BR,it', ['de'])).toEqual(
+      resolved('pt-br', false),
+    );
+    expect(resolveUserLocale('pt-BR,it', undefined)).toEqual(
+      resolved('pt-br', false),
+    );
   });
 
   it('matches navigator.language, then its language part', () => {
     setNavigatorLanguage('en-US');
-    expect(resolveUserLocale('', ['en'])).toEqual({
-      locale: 'en',
-      available: true,
-    });
-    expect(resolveUserLocale('', ['de'])).toEqual({
-      locale: 'en-us',
-      available: false,
-    });
+    expect(resolveUserLocale('', ['en'])).toEqual(resolved('en', true));
+    expect(resolveUserLocale('', ['de'])).toEqual(resolved('en-us', false));
   });
 
   it('returns an empty unavailable locale when there is nothing to resolve', () => {
     setNavigatorLanguage('');
-    expect(resolveUserLocale('', ['en'])).toEqual({
-      locale: '',
-      available: false,
-    });
+    expect(resolveUserLocale('', ['en'])).toEqual(resolved('', false));
   });
 });

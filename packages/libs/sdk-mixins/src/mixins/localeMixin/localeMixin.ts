@@ -13,9 +13,10 @@ import {
  *    the attribute (a single locale or a comma-separated list, e.g. 'fr-CA,fr,en'), or, when it is
  *    unset, navigator.language and its language-only fallback (e.g. 'en-us' then 'en'), matching
  *    the web-component's locale resolution (`resolveUserLocale`).
- *  - `firstAvailableLocale(availableLocales)` returns the most preferred candidate that the consumer
- *    actually publishes (e.g. a widget's config.json targetLocales), or '' when none match or the
- *    source language (default content) is preferred.
+ *  - `firstAvailableLocale(availableLocales)` returns the most preferred locale that the consumer
+ *    actually publishes (e.g. a widget's config.json targetLocales), which for a list entry can be
+ *    its language part (e.g. 'fr' for 'fr-CA'), or '' when none match or the source language
+ *    (default content) is preferred.
  */
 export const localeMixin = createSingletonMixin(
   <T extends CustomElementConstructor>(superclass: T) =>

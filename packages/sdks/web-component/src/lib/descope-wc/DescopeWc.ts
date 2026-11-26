@@ -847,9 +847,9 @@ class DescopeWc extends BaseDescopeWc {
       await this.getTargetLocales(),
     );
     // the locale reported to the server and to the screen: the entry picked from the provided locale preference list,
-    // otherwise the full browser locale (keeping its region even when only its language part is a target locale)
+    // otherwise the full browser locale (both keep their region even when only their language part is a target locale)
     const userLocale = parseLocales(locale).length
-      ? resolvedLocale.locale
+      ? resolvedLocale.requestedLocale
       : getUserLocale(locale).locale;
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow

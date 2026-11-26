@@ -463,7 +463,41 @@ describe('web-component', () => {
       fixtures.pageContent =
         '<input id="email"></input><span lang="autoDetect">It works!</span>';
 
-      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="fr-CA, fr ,en"></descope-wc>`;
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="de-AT, fr ,en"></descope-wc>`;
+
+      await waitFor(() => screen.getByShadowText('It works!'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      const fetchedUrls = fetchMock.mock.calls.map(([url]) => url);
+      expect(fetchedUrls).toContainEqual(
+        expect.stringMatching(
+          new RegExp(`//[^/]+/pages/1/${ASSETS_FOLDER}/0-fr.html$`),
+        ),
+      );
+      expect(fetchedUrls).not.toContainEqual(
+        expect.stringMatching(/0-(de-at|de|en)\.html$/),
+      );
+      expect(startMock.mock.calls[0][1].locale).toBe('fr');
+      expect(screen.getByShadowText('It works!')).toHaveAttribute('lang', 'fr');
+    });
+
+    it('should use the language part of a preference list entry and report the entry itself', async () => {
+      startMock.mockReturnValue(generateSdkResponse());
+
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          otpSignInEmail: {
+            targetLocales: ['fr', 'en'],
+          },
+        },
+      };
+
+      fixtures.pageContent =
+        '<input id="email"></input><span lang="autoDetect">It works!</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc project-id="1" flow-id="otpSignInEmail" locale="fr-CA en"></descope-wc>`;
 
       await waitFor(() => screen.getByShadowText('It works!'), {
         timeout: WAIT_TIMEOUT,
@@ -478,8 +512,11 @@ describe('web-component', () => {
       expect(fetchedUrls).not.toContainEqual(
         expect.stringMatching(/0-(fr-ca|en)\.html$/),
       );
-      expect(startMock.mock.calls[0][1].locale).toBe('fr');
-      expect(screen.getByShadowText('It works!')).toHaveAttribute('lang', 'fr');
+      expect(startMock.mock.calls[0][1].locale).toBe('fr-ca');
+      expect(screen.getByShadowText('It works!')).toHaveAttribute(
+        'lang',
+        'fr-CA',
+      );
     });
 
     it('should report the first locale of a preference list and fetch the default page when none is part of the target locales', async () => {
