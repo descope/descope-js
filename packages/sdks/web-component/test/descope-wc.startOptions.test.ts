@@ -239,6 +239,53 @@ describe('web-component start options', () => {
     );
   });
 
+  describe('preview', () => {
+    it('should send preview on the direct start (no start screen)', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      fixtures.pageContent = '<span>hey</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" preview="true"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
+
+      expect(startMock).toHaveBeenCalledTimes(1);
+      expect(startMock.mock.calls[0][1]).toEqual(
+        expect.objectContaining({ preview: true }),
+      );
+    });
+
+    it('should send preview on the deferred start (cached start screen)', async () => {
+      startMock.mockReturnValueOnce(generateSdkResponse());
+      fixtures.configContent = {
+        ...fixtures.configContent,
+        flows: {
+          'sign-in': { startScreenId: 'screen-0' },
+        },
+      };
+      fixtures.pageContent =
+        '<descope-button id="submitterId">click</descope-button><span>hey</span>';
+
+      document.body.innerHTML = `<h1>Custom element test</h1> <descope-wc flow-id="sign-in" project-id="1" preview="true"></descope-wc>`;
+
+      await waitFor(() => screen.findByShadowText('hey'), {
+        timeout: WAIT_TIMEOUT,
+      });
+      // the cached start screen renders without calling start
+      expect(startMock).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByShadowText('click'));
+
+      await waitFor(() => expect(startMock).toHaveBeenCalledTimes(1), {
+        timeout: WAIT_TIMEOUT,
+      });
+      expect(startMock.mock.calls[0][1]).toEqual(
+        expect.objectContaining({ preview: true }),
+      );
+    });
+  });
+
   it('should update dynamic attribute values', async () => {
     fixtures.pageContent = `<input ${HAS_DYNAMIC_VALUES_ATTR_NAME}="" testAttr="{{form.varName}}" id="email" name="email" placeholder="email"></input>`;
 

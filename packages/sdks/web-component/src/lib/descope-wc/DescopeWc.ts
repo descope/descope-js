@@ -4,6 +4,7 @@ import {
   ensureFingerprintIds,
 } from '@descope/web-js-sdk';
 import {
+  CLIENT_SIGNALS_SCRIPT_ID,
   CUSTOM_INTERACTIONS,
   DESCOPE_ATTRIBUTE_EXCLUDE_FIELD,
   DESCOPE_ATTRIBUTE_EXCLUDE_NEXT_BUTTON,
@@ -131,6 +132,9 @@ class DescopeWc extends BaseDescopeWc {
   ) => boolean | Promise<boolean>;
 
   #sdkScriptsLoading = null;
+
+  // script id -> its flow-scripts download, while it is still downloading
+  #sdkScriptDownloads = new Map<string, Promise<unknown>>();
 
   constructor() {
     const flowState = new State<FlowState>({
@@ -307,7 +311,15 @@ class DescopeWc extends BaseDescopeWc {
       .filter((module): module is ScriptModule => !!module);
   }
 
-  loadSdkScripts(scripts: ClientScript[]) {
+  loadSdkScripts(requestedScripts: ClientScript[]) {
+    // A preview (the console flow editor) runs in the admin's own browser, so
+    // client signals collected there would describe the admin, not an end user.
+    // Every script load goes through here, so this one check covers them all.
+    const scripts = this.preview
+      ? requestedScripts?.filter(
+          (script) => script.id !== CLIENT_SIGNALS_SCRIPT_ID,
+        )
+      : requestedScripts;
     if (!scripts?.length) {
       return null;
     }
@@ -339,7 +351,7 @@ class DescopeWc extends BaseDescopeWc {
     this.loggerWrapper.debug(
       `Preparing to load scripts: ${scripts.map((s) => s.id).join(', ')}`,
     );
-    const loadScript = async (script: ClientScript) => {
+    const loadScript = async (script: ClientScript): Promise<unknown> => {
       const scriptElement = this.shadowRoot.querySelector(
         `[data-script-id="${script.id}"]`,
       ) as ScriptElement;
@@ -350,11 +362,26 @@ class DescopeWc extends BaseDescopeWc {
         return moduleRes;
       }
       if (!globalThis.descope?.[script.id]) {
-        await this.injectNpmLib(
+        // The script element above is only added once the download is done, so a
+        // second load of the same script during the download (e.g. the flow
+        // config and the first screen both list it) waits for that download and
+        // then reuses the element the first load created.
+        const pendingDownload = this.#sdkScriptDownloads.get(script.id);
+        if (pendingDownload) {
+          await pendingDownload;
+          return loadScript(script);
+        }
+        const download = this.injectNpmLib(
           '@descope/flow-scripts',
           '1.0.22', // currently using a fixed version when loading scripts
           `dist/${script.id}.js`,
         );
+        this.#sdkScriptDownloads.set(script.id, download);
+        try {
+          await download;
+        } finally {
+          this.#sdkScriptDownloads.delete(script.id);
+        }
       }
       const module = globalThis.descope?.[script.id];
       return new Promise((resolve, reject) => {
@@ -945,6 +972,7 @@ class DescopeWc extends BaseDescopeWc {
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId, this.loggerWrapper),
+            preview: this.preview,
             abTestingKey,
             locale: getUserLocale(locale).locale,
             nativeOptions,
