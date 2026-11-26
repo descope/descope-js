@@ -2,6 +2,31 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [3.6.0](https://github.com/descope/descope-js/compare/react-sdk-3.5.7...react-sdk-3.6.0) (2026-11-26)
+
+### Dependency Updates
+
+* `access-key-management-widget` updated to version `0.10.20`
+* `applications-portal-widget` updated to version `0.9.20`
+* `audit-management-widget` updated to version `0.9.20`
+* `core-js-sdk` updated to version `2.79.0`
+* `outbound-applications-widget` updated to version `0.7.27`
+* `role-management-widget` updated to version `0.10.20`
+* `tenant-profile-widget` updated to version `0.11.21`
+* `user-management-widget` updated to version `0.21.18`
+* `user-profile-widget` updated to version `0.21.7`
+* `web-component` updated to version `4.8.0`
+* `web-js-sdk` updated to version `1.55.0`
+
+### Features
+
+* **sdks:** add SSO single logout options to logout and logoutAll RELEASE ([#1568](https://github.com/descope/descope-js/issues/1568)) ([63b6e5b](https://github.com/descope/descope-js/commit/63b6e5b6e9abd03bfb38cad675b147f8e843b5f1))
+
+
+### Bug Fixes
+
+* **react-sdk:** move example app to react-router v7 ([#1562](https://github.com/descope/descope-js/issues/1562)) ([79dc0d3](https://github.com/descope/descope-js/commit/79dc0d3f536159f69ee56747601f60af21fe3e0c)), closes [#703](https://github.com/descope/descope-js/issues/703) [#737](https://github.com/descope/descope-js/issues/737) [#1537](https://github.com/descope/descope-js/issues/1537) [#1539](https://github.com/descope/descope-js/issues/1539) [#1537](https://github.com/descope/descope-js/issues/1537) [#1539](https://github.com/descope/descope-js/issues/1539)
+
 ## [3.5.7](https://github.com/descope/descope-js/compare/react-sdk-3.5.6...react-sdk-3.5.7) (2026-11-17)
 
 ### Dependency Updates
