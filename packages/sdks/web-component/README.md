@@ -61,7 +61,7 @@ DESCOPE_PROJECT_ID=<project-id>
 DESCOPE_FLOW_ID=<flow-id>
 # Optional - Descope base URL
 DESCOPE_BASE_URL
-# Optional - Descope locale (according to the target locales configured in the flow)
+# Optional - Descope locale (according to the target locales configured in the flow), or a comma-separated preference list (e.g. fr-CA,fr,en)
 DESCOPE_LOCALE=<locale>
 
 # Telemetry fallback config (AWS CloudWatch RUM).

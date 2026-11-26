@@ -1,4 +1,8 @@
-import { getUserLocale } from '@descope/sdk-helpers';
+import {
+  getUserLocale,
+  parseLocales,
+  resolveUserLocale,
+} from '@descope/sdk-helpers';
 import {
   clearFingerprintData,
   ensureFingerprintIds,
@@ -596,15 +600,17 @@ class DescopeWc extends BaseDescopeWc {
     );
   }
 
+  // resolve the provided locale (a single locale or a preference list), otherwise the browser locale, against the flow target locales
+  async resolveLocale(locale: string) {
+    return resolveUserLocale(locale, await this.getTargetLocales());
+  }
+
   async getHtmlFilenameWithLocale(locale: string, screenId: string) {
     let filenameWithLocale: string;
-    const userLocale = getUserLocale(locale); // use provided locals, otherwise use browser locale
-    const targetLocales = await this.getTargetLocales();
+    const userLocale = await this.resolveLocale(locale);
 
-    if (targetLocales.includes(userLocale.locale)) {
+    if (userLocale.available) {
       filenameWithLocale = `${screenId}-${userLocale.locale}.html`;
-    } else if (targetLocales.includes(userLocale.fallback)) {
-      filenameWithLocale = `${screenId}-${userLocale.fallback}.html`;
     }
     return filenameWithLocale;
   }
@@ -850,6 +856,11 @@ class DescopeWc extends BaseDescopeWc {
     const flowConfig = await this.getFlowConfig();
     this.#syncValidationTracking(flowConfig, executionId, isChanged);
     const projectConfig = await this.getProjectConfig();
+    // the locale reported to the server and to the screen: the entry picked from the provided locale preference list,
+    // otherwise the full browser locale (keeping its region even when only its language part is a target locale)
+    const userLocale = parseLocales(locale).length
+      ? (await this.resolveLocale(locale)).locale
+      : getUserLocale(locale).locale;
     const flowVersions = Object.entries(projectConfig.flows || {}).reduce(
       // pass also current versions for all flows, it may be used as a part of the current flow
       (acc, [key, value]) => {
@@ -946,7 +957,7 @@ class DescopeWc extends BaseDescopeWc {
             ...(redirectUrl && { redirectUrl }),
             lastAuth: getLastAuth(loginId, this.loggerWrapper),
             abTestingKey,
-            locale: getUserLocale(locale).locale,
+            locale: userLocale,
             nativeOptions,
             outboundAppId,
             outboundAppScopes,
@@ -1324,7 +1335,7 @@ class DescopeWc extends BaseDescopeWc {
       oidcErrorRedirectUri,
       oidcResource,
       action,
-      locale: getUserLocale(locale).locale,
+      locale: userLocale,
     };
 
     const lastAuth = getLastAuth(loginId, this.loggerWrapper);
@@ -1348,7 +1359,7 @@ class DescopeWc extends BaseDescopeWc {
             abTestingKey,
             client: this.client,
             ...(redirectUrl && { redirectUrl }),
-            locale: getUserLocale(locale).locale,
+            locale: userLocale,
             nativeOptions,
             outboundAppId,
             outboundAppScopes,

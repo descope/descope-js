@@ -42,6 +42,7 @@ type WidgetProps = {
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
   // If locale is not provided - the browser's locale will be used
+  // It can also be a comma-separated preference list (e.g. 'fr-CA,fr,en'), the first translated locale will be used
   locale?: string;
   debug?: boolean;
   styleId?: string;
@@ -147,6 +148,7 @@ export type DescopeProps = {
   // If theme is not provided - the OS theme will be used
   theme?: ThemeOptions;
   // If locale is not provided - the browser's locale will be used
+  // It can also be a comma-separated preference list (e.g. 'fr-CA,fr,en'), the first translated locale will be used
   locale?: string;
   nonce?: string;
   autoFocus?: AutoFocusOptions;

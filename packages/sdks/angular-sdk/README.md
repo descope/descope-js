@@ -128,7 +128,7 @@ export class AppComponent {
 <!-- theme can be "light", "dark" or "os", which auto select a theme based on the OS theme. Default is "light"
      theme="dark"
 
-     locale can be any supported locale which the flow's screen translated to, if not provided, the locale is taken from the browser's locale.
+     locale can be any supported locale which the flow's screen translated to, if not provided, the locale is taken from the browser's locale. It can also be a comma-separated preference list (e.g. "fr-CA,fr,en"), in which case the first locale the flow is translated to is used.
      locale="en"
 
      debug can be set to true to enable debug mode

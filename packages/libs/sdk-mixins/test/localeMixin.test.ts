@@ -48,6 +48,12 @@ describe('localeMixin', () => {
     expect(createLocaleMixin().localeCandidates).toEqual([]);
   });
 
+  it('localeCandidates returns every entry of a locale list, in order', () => {
+    expect(
+      createLocaleMixin({ locale: 'fr-CA, fr,en' }).localeCandidates,
+    ).toEqual(['fr-ca', 'fr', 'en']);
+  });
+
   describe('firstAvailableLocale', () => {
     it('returns the matching candidate present in the available locales (case-insensitive)', () => {
       expect(
@@ -58,6 +64,15 @@ describe('localeMixin', () => {
     it('falls back from a region locale to its language candidate', () => {
       setNavigatorLanguage('en-US'); // candidates: ['en-us', 'en']
       expect(createLocaleMixin().firstAvailableLocale(['en'])).toBe('en');
+    });
+
+    it('returns the most preferred entry of a locale list that is available', () => {
+      expect(
+        createLocaleMixin({ locale: 'de,fr-CA,es' }).firstAvailableLocale([
+          'es',
+          'fr-ca',
+        ]),
+      ).toBe('fr-ca');
     });
 
     it('returns empty string when no candidate is available', () => {
