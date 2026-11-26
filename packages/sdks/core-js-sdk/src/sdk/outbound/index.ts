@@ -3,7 +3,10 @@ import { HttpClient } from '../../httpClient';
 import { transformResponse } from '../helpers';
 import { ConnectOptions } from './types';
 import { SdkResponse, URLResponse } from '../types';
-import { withConnectValidations } from './validations';
+import {
+  withConnectFinishValidations,
+  withConnectValidations,
+} from './validations';
 
 const withOutbound = (httpClient: HttpClient) => ({
   connect: withConnectValidations(
@@ -31,6 +34,18 @@ const withOutbound = (httpClient: HttpClient) => ({
         ),
       );
     },
+  ),
+  // Finishes a connect when the project stores the provider tokens only once the connect is finished.
+  // code is the `code` query param on the redirect back to your application.
+  connectFinish: withConnectFinishValidations(
+    (code: string, tenantId?: string, token?: string) =>
+      transformResponse<never>(
+        httpClient.post(
+          apiPaths.outbound.connectFinish,
+          { code, tenantId },
+          { token },
+        ),
+      ),
   ),
 });
 
